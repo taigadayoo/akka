@@ -3,16 +3,26 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UniRx;
 
-
+/// <summary>
+/// プレイヤーのコントローラー入力を監視し、入力データを発行するクラス
+/// </summary>
 public class PlayerControllerObserver : MonoBehaviour
 {
+    // プレイヤーの入力を管理する PlayerInput コンポーネント
     private PlayerInput _playerInput;
 
+    // ControllerData を発行する Subject
     private Subject<ControllerData> _controllerDataSubject = new Subject<ControllerData>();
+
+    // ControllerData の購読可能な Observable
     public IObservable<ControllerData> OnControllerData => _controllerDataSubject;
 
+    // スティック入力の閾値
     private float ControllerStickThreshold => ControllerManager.Instance.ControllerStickThreshold;
 
+    /// <summary>
+    /// オブジェクトが有効になったときに呼び出されるメソッド
+    /// </summary>
     private void OnEnable()
     {
         _playerInput = GetComponent<PlayerInput>();
@@ -21,12 +31,20 @@ public class PlayerControllerObserver : MonoBehaviour
         EnableActionMap();
         ControllerManager.Instance.EnablePlayerControllerEventHandle(this);
     }
+
+    /// <summary>
+    /// オブジェクトが無効になったときに呼び出されるメソッド
+    /// </summary>
     public void OnDisable()
     {
         _playerInput.onActionTriggered -= OnButtonActionTriggered;
         DisableActionMap();
     }
 
+    /// <summary>
+    /// 入力アクションがトリガーされたときに呼び出されるコールバックメソッド
+    /// </summary>
+    /// <param name="context">入力アクションのコンテキスト</param>
     private void OnButtonActionTriggered(InputAction.CallbackContext context)
     {
         if (context.phase == InputActionPhase.Performed)
@@ -53,6 +71,12 @@ public class PlayerControllerObserver : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// アクション名から ButtonType を取得します
+    /// </summary>
+    /// <param name="actionName">アクションの名前</param>
+    /// <returns>対応する ButtonType</returns>
+    /// <exception cref="ArgumentOutOfRangeException">無効なアクション名が渡された場合にスローされます</exception>
     private ButtonType GetButtonType(string actionName)
     {
         return actionName switch
@@ -75,6 +99,11 @@ public class PlayerControllerObserver : MonoBehaviour
         };
     }
 
+    /// <summary>
+    /// スティックの入力値から StickDirection を取得します
+    /// </summary>
+    /// <param name="value">スティックの入力値（Vector2）</param>
+    /// <returns>対応する StickDirection</returns>
     private StickDirection GetStickDirection(Vector2 value)
     {
         if (value.y > ControllerStickThreshold)
@@ -96,6 +125,9 @@ public class PlayerControllerObserver : MonoBehaviour
         return StickDirection.None;
     }
 
+    /// <summary>
+    /// ボタンおよびスティックのアクションマップを有効にします
+    /// </summary>
     private void EnableActionMap()
     {
         var buttonMap = _playerInput.actions.FindActionMap("Buttons", true);
@@ -105,6 +137,9 @@ public class PlayerControllerObserver : MonoBehaviour
         stickMap.Enable();
     }
 
+    /// <summary>
+    /// ボタンおよびスティックのアクションマップを無効にします
+    /// </summary>
     private void DisableActionMap()
     {
         var buttonMap = _playerInput.actions.FindActionMap("Buttons", true);
@@ -113,5 +148,4 @@ public class PlayerControllerObserver : MonoBehaviour
         var stickMap = _playerInput.actions.FindActionMap("Sticks", true);
         stickMap.Disable();
     }
-
 }
