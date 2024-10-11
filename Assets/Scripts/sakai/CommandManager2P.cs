@@ -2,13 +2,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UniRx;
+using UnityEngine.UI;
 
 public class CommandManager2P : MonoBehaviour
 {
     public SpriteRenderer FirstImage;
     public SpriteRenderer SecondImage;
     public SpriteRenderer ThirdImage;
-
+    public Slider LeftHP;
+    public Slider RightHP;
     public Sprite ASprite, BSprite, XSprite, YSprite, RightSprite, LeftSprite, UpSprite, DownSprite;
 
     private List<string> _commands;
@@ -24,7 +26,8 @@ public class CommandManager2P : MonoBehaviour
     private float _resetCooldown = 0.2f;
     private float _stickInputThreshold = 0.6f;
     private float _stickReleaseThreshold = 0.3f;
-
+    private float _commandTime = 0f;
+    private float _commandTimeout = 3f; // 3秒
     private void Start()
     {
         _commands = new List<string> { "A", "B", "X", "Y", "Right", "Left", "Up", "Down" };
@@ -71,15 +74,27 @@ public class CommandManager2P : MonoBehaviour
                     ThirdImage.sprite = commandSprite;
             }
 
+            _commandTime = 0f;
+
             while (_currentIndex < _currentSequence.Count)
             {
+                _commandTime += Time.deltaTime; // 経過時間を加算
+
+                if (_commandTime >= _commandTimeout) // 3秒経過した場合
+                {
+                    ResetCommands();
+                    yield break; // コルーチンを終了
+                }
+
                 yield return null;
             }
+
 
             FirstImage.gameObject.SetActive(false);
             SecondImage.gameObject.SetActive(false);
             ThirdImage.gameObject.SetActive(false);
-
+            LeftHP.value -= 2.5f;
+            RightHP.value -= 2.5f;
             yield return new WaitForSeconds(0.1f);
         }
     }
@@ -92,6 +107,7 @@ public class CommandManager2P : MonoBehaviour
         StopAllCoroutines();
         StartCoroutine(GenerateCommands());
         _lastResetTime = Time.time;
+        _commandTime = 0f; // 経過時間リセット
     }
 
     private void OnControllerDataReceived(ControllerData controllerData)
@@ -122,6 +138,7 @@ public class CommandManager2P : MonoBehaviour
                 {
                     HandleCommandInput();
                     _isStickStrengthReset = false;
+                    _commandTime = 0f; // コマンドが正しく入力された場合、経過時間をリセット
                 }
                 else
                 {
