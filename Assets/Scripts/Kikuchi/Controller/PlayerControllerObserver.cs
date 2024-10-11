@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UniRx;
@@ -52,6 +52,7 @@ public class PlayerControllerObserver : MonoBehaviour
             Debug.Log($"Action Triggered: {context.action.actionMap.name}");
             var playerType = _playerInput.playerIndex == 0 ? PlayerType.Player1 : PlayerType.Player2;
             ControllerData controllerData;
+
             if (context.action.actionMap.name == "Buttons")
             {
                 var buttonType = GetButtonType(context.action.name);
@@ -59,8 +60,10 @@ public class PlayerControllerObserver : MonoBehaviour
             }
             else if (context.action.actionMap.name == "Sticks")
             {
-                var stickDirection = GetStickDirection(context.ReadValue<Vector2>());
-                controllerData = new ControllerData(playerType, stickDirection);
+                var stickValue = context.ReadValue<Vector2>();
+                var stickDirection = GetStickDirection(stickValue);
+                var stickStrength = stickValue.magnitude;  // スティックの強度を取得
+                controllerData = new ControllerData(playerType, stickDirection, stickStrength);
             }
             else
             {

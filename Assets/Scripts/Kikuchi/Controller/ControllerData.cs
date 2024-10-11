@@ -1,4 +1,4 @@
-/// <summary>
+﻿/// <summary>
 /// コントローラーのデータを保持するクラス
 /// </summary>
 public class ControllerData
@@ -24,6 +24,11 @@ public class ControllerData
     public StickDirection? StickDirection { get; private set; }
 
     /// <summary>
+    /// スティックの強度、スティック入力の場合に使用
+    /// </summary>
+    public float StickStrength { get; private set; }
+
+    /// <summary>
     /// ボタン入力用のコンストラクタ
     /// </summary>
     /// <param name="playerType">プレイヤーのタイプ</param>
@@ -40,11 +45,13 @@ public class ControllerData
     /// </summary>
     /// <param name="playerType">プレイヤーのタイプ</param>
     /// <param name="stickDirection">スティックの方向</param>
-    public ControllerData(PlayerType playerType, StickDirection stickDirection)
+    /// <param name="stickStrength">スティックの強度</param>
+    public ControllerData(PlayerType playerType, StickDirection stickDirection, float stickStrength)
     {
         PlayerType = playerType;
         ActionType = ActionType.Sticks;
         StickDirection = stickDirection;
+        StickStrength = stickStrength;
     }
 
     /// <summary>
@@ -56,7 +63,7 @@ public class ControllerData
         if (ButtonType.HasValue)
             return $"Player: {PlayerType}, Button: {ButtonType.Value}";
         if (StickDirection.HasValue)
-            return $"Player: {PlayerType}, Stick Direction: {StickDirection.Value}";
+            return $"Player: {PlayerType}, Stick Direction: {StickDirection.Value}, Stick Strength: {StickStrength}";
         return $"Player: {PlayerType}, No Input";
     }
 }
