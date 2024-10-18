@@ -10,14 +10,32 @@ public class GameManager : MonoBehaviour
    public Image[] Miss1P;
     [SerializeField]
     public Image[] Miss2P;
-
+    [SerializeField]
+    public Sprite[] SecondPhaseSprite;
+    [SerializeField]
+    public SpriteRenderer[] ThreeCommand;
+    [SerializeField]
+    public SpriteRenderer[] FourCommand;
+    [SerializeField]
+    public SpriteRenderer[] FiveCommand;
     public int MissCount = 0;
-
+    public SpriteRenderer SecondBoxSprite;
     public bool OnGameOver = false;
+    public Slider LeftHP;
+    public Slider RightHP;
+    public int PhaseCount = 0;
+    public int FirstPlayerRandomNum = 0;//先行がどちらか決める値
+    public int SecondPhaseRandom = 0; //第二フェーズの３～５個のランダムの個数
+    public bool ClearSecond = false;
+
+
+    public bool SwitchPlayer = false;
+    
     void Start()
     {
         Set1pImagesActive(false);
         Set2pImagesActive(false);//配列内のミスマークは非表示に
+        SecondBoxSprite.gameObject.SetActive(false);
     }
 
     // Update is called once per frame
@@ -26,6 +44,11 @@ public class GameManager : MonoBehaviour
         if(MissCount == 5)
         {
             StartCoroutine(GameOver());
+        }
+       if(LeftHP.value <= 40 && LeftHP.value > 20)
+        {
+            PhaseCount = 1;
+            SecondBoxSprite.gameObject.SetActive(true);
         }
     }
     public void Miss1pCountMark()
@@ -52,6 +75,46 @@ public class GameManager : MonoBehaviour
         {
             img.gameObject.SetActive(isActive);
         }
+    }
+    public void SecondBoxImage()
+    {
+        if (SecondPhaseRandom == 0)
+        {
+            SecondPhaseSprite[0] = SecondBoxSprite.sprite;
+        }
+        if (SecondPhaseRandom == 1)
+        {
+            SecondPhaseSprite[1] = SecondBoxSprite.sprite;
+        }
+        if (SecondPhaseRandom == 2)
+        {
+            SecondPhaseSprite[2] = SecondBoxSprite.sprite;
+        }
+    }
+    public void SecondImagesActive(bool isActive)
+    {
+        if (SecondPhaseRandom == 0)
+        {
+            foreach (SpriteRenderer sp in ThreeCommand)
+            {
+                sp.gameObject.SetActive(isActive);
+            }
+        }
+        if (SecondPhaseRandom == 1)
+        {
+            foreach (SpriteRenderer sp in FourCommand)
+            {
+                sp.gameObject.SetActive(isActive);
+            }
+        }
+        if (SecondPhaseRandom == 2)
+        {
+            foreach (SpriteRenderer sp in FiveCommand)
+            {
+                sp.gameObject.SetActive(isActive);
+            }
+        }
+        
     }
     IEnumerator GameOver()
     {
