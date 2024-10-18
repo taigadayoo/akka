@@ -20,16 +20,17 @@ public class CommandManager2P : MonoBehaviour
 
     private Dictionary<string, Sprite> _commandSprites;
 
-    private StickDirection _previousStickDirection = StickDirection.None;
-    private bool _isStickStrengthReset = true;
     private float _lastResetTime;
     private float _resetCooldown = 0.2f;
-    private float _stickInputThreshold = 0.6f;
-    private float _stickReleaseThreshold = 0.3f;
+
     private float _commandTime = 0f;
     private float _commandTimeout = 3f; // 3秒
+
+    GameManager _gameManager;
     private void Start()
     {
+        _gameManager = FindObjectOfType<GameManager>();
+
         _commands = new List<string> { "A", "B", "X", "Y", "Right", "Left", "Up", "Down" };
 
         _commandSprites = new Dictionary<string, Sprite>
@@ -71,10 +72,10 @@ public class CommandManager2P : MonoBehaviour
                 else if (i == 1)
                     SecondImage.sprite = commandSprite;
                 else if (i == 2)
-                    ThirdImage.sprite = commandSprite;
+                    ThirdImage.sprite = commandSprite; //3個までランダムでボタンスプライト表示
             }
 
-            _commandTime = 0f;
+            //_commandTime = 0f;
 
             while (_currentIndex < _currentSequence.Count)
             {
@@ -93,131 +94,59 @@ public class CommandManager2P : MonoBehaviour
             FirstImage.gameObject.SetActive(false);
             SecondImage.gameObject.SetActive(false);
             ThirdImage.gameObject.SetActive(false);
+
             LeftHP.value -= 2.5f;
-            RightHP.value -= 2.5f;
-            yield return new WaitForSeconds(0.1f);
+            RightHP.value -= 2.5f; //HP減少処理
+            _commandTime = 0f; // 経過時間リセット
+            yield return new WaitForSeconds(1.0f);
         }
     }
+    IEnumerator MissCommand()
+    {
+        FirstImage.gameObject.SetActive(false);
+        SecondImage.gameObject.SetActive(false);
+        ThirdImage.gameObject.SetActive(false);
 
+        _gameManager.Miss2pCountMark();
+        yield return new WaitForSeconds(2.0f);
+
+        ResetCommands();
+    }
     public void ResetCommands()
     {
         if (Time.time - _lastResetTime < _resetCooldown)
             return;
-
+        _commandTime = 0f; // 経過時間リセット
         StopAllCoroutines();
         StartCoroutine(GenerateCommands());
         _lastResetTime = Time.time;
-        _commandTime = 0f; // 経過時間リセット
     }
 
     private void OnControllerDataReceived(ControllerData controllerData)
     {
-        if (controllerData.PlayerType != PlayerType.Player2) // プレイヤー2用の処理
-            return;
+        if (controllerData.PlayerType != PlayerType.Player2)
+            return; // プレイヤー1以外の操作は無視
 
         if (_currentIndex >= _currentSequence.Count)
             return;
 
         string expectedCommand = _currentSequence[_currentIndex];
 
-        if (controllerData.ActionType == ActionType.Sticks)
-        {
-            StickDirection currentDirection = controllerData.StickDirection ?? StickDirection.None;
-            float stickStrength = controllerData.StickStrength;
 
-            Debug.Log($"P2 - Current Direction: {currentDirection}, Stick Strength: {stickStrength}");
-
-            if (_previousStickDirection == currentDirection && stickStrength <= _stickReleaseThreshold)
-            {
-                _isStickStrengthReset = true;
-            }
-
-            if (currentDirection != StickDirection.None && (_isStickStrengthReset && stickStrength >= _stickInputThreshold))
-            {
-                if (IsCorrectStickCommand(expectedCommand, currentDirection))
-                {
-                    HandleCommandInput();
-                    _isStickStrengthReset = false;
-                    _commandTime = 0f; // コマンドが正しく入力された場合、経過時間をリセット
-                }
-                else
-                {
-                    ResetCommands();
-                }
-            }
-
-            _previousStickDirection = currentDirection;
-        }
-        else if (controllerData.ActionType == ActionType.Buttons)
+        if (controllerData.ActionType == ActionType.Buttons)
         {
             if (IsCorrectCommand(controllerData, expectedCommand))
             {
                 HandleCommandInput();
+
             }
             else
             {
-                ResetCommands();
+                StartCoroutine(MissCommand());
             }
         }
     }
 
-    private bool IsCorrectStickCommand(string expectedCommand, StickDirection currentDirection)
-    {
-        float angle = GetStickDirectionAngle(currentDirection);
-
-        switch (expectedCommand)
-        {
-            case "Right":
-                return IsInAngleRange(angle, 0); // 0度
-            case "Left":
-                return IsInAngleRange(angle, 180); // 180度
-            case "Up":
-                return IsInAngleRange(angle, 90); // 90度
-            case "Down":
-                return IsInAngleRange(angle, 270); // 270度
-            default:
-                return false;
-        }
-    }
-
-    private float GetStickDirectionAngle(StickDirection direction)
-    {
-        switch (direction)
-        {
-            case StickDirection.Right:
-                return 0f;
-            case StickDirection.Up:
-                return 90f;
-            case StickDirection.Left:
-                return 180f;
-            case StickDirection.Down:
-                return 270f;
-            // 他の方向が必要なら追加
-            default:
-                return -1f; // 無効な方向
-        }
-    }
-
-    private bool IsInAngleRange(float inputAngle, float targetAngle)
-    {
-        float lowerBound = targetAngle - 45;
-        float upperBound = targetAngle + 45;
-
-        // 角度のラップアラウンド処理
-        if (lowerBound < 0)
-            lowerBound += 360;
-        if (upperBound >= 360)
-            upperBound -= 360;
-
-        if (lowerBound < upperBound)
-        {
-            return inputAngle >= lowerBound && inputAngle <= upperBound;
-        }
-        else // 角度が360度を跨いでいる場合
-        {
-            return inputAngle >= lowerBound || inputAngle <= upperBound;
-        }
-    }
 
     private void HandleCommandInput()
     {
@@ -232,7 +161,7 @@ public class CommandManager2P : MonoBehaviour
 
         if (_currentIndex >= _currentSequence.Count)
         {
-            Debug.Log("P2 Success! All commands entered correctly.");
+            Debug.Log("1P Success! All commands entered correctly.");
         }
     }
 
@@ -250,6 +179,14 @@ public class CommandManager2P : MonoBehaviour
                     return controllerData.ButtonType == ButtonType.West;
                 case "Y":
                     return controllerData.ButtonType == ButtonType.North;
+                case "Right":
+                    return controllerData.ButtonType == ButtonType.Right;
+                case "Up":
+                    return controllerData.ButtonType == ButtonType.Up;
+                case "Down":
+                    return controllerData.ButtonType == ButtonType.Down;
+                case "Left":
+                    return controllerData.ButtonType == ButtonType.Left;
                 default:
                     return false;
             }
