@@ -71,7 +71,7 @@ public class CommandManager1P : MonoBehaviour
                 else if (i == 1)
                     SecondImage.sprite = commandSprite;
                 else if (i == 2)
-                    ThirdImage.sprite = commandSprite;
+                    ThirdImage.sprite = commandSprite; //3個までランダムでボタンスプライト表示
             }
 
             _commandTime = 0f;
@@ -95,7 +95,7 @@ public class CommandManager1P : MonoBehaviour
             ThirdImage.gameObject.SetActive(false);
 
             LeftHP.value -= 2.5f;
-            RightHP.value -=2.5f;
+            RightHP.value -=2.5f;　//HP減少処理
             yield return new WaitForSeconds(0.1f);
         }
     }
@@ -143,7 +143,7 @@ public class CommandManager1P : MonoBehaviour
                 }
                 else
                 {
-                    ResetCommands();
+                    ResetCommands();//コマンドリセット
                 }
             }
 
@@ -202,7 +202,7 @@ public class CommandManager1P : MonoBehaviour
     private bool IsInAngleRange(float inputAngle, float targetAngle)
     {
         float lowerBound = targetAngle - 45;
-        float upperBound = targetAngle + 45;
+        float upperBound = targetAngle + 45;//上下左右+-45度まで取る
 
         // 角度のラップアラウンド処理
         if (lowerBound < 0)
