@@ -12,7 +12,7 @@ public class CommandManager2P : MonoBehaviour
     public Sprite ASprite, BSprite, XSprite, YSprite, RightSprite, LeftSprite, UpSprite, DownSprite;
 
     private List<string> _commands;
-    private List<string> _currentSequence;
+    private List<string> _currentSequence= new List<string>();
     private int _currentIndex;
 
     [SerializeField]
@@ -22,12 +22,14 @@ public class CommandManager2P : MonoBehaviour
     private float _lastResetTime;
     private float _resetCooldown = 0.2f;
     public GameObject FirstBox;
-    private float _commandTime = 0f;
+    public float CommandTime = 0f;
     private float _commandTimeout = 3f; // 3秒
     private float _commandTimeoutSecond = 5f;
-
+    [SerializeField]
+    CommandManager1P _1P;
     public bool ChangeNext = false;
     GameManager _gameManager;
+    public bool IsCoolDown = false;
     private void Start()
     {
         _gameManager = FindObjectOfType<GameManager>();
@@ -96,9 +98,9 @@ public class CommandManager2P : MonoBehaviour
 
                 while (_currentIndex < _currentSequence.Count)
                 {
-                    _commandTime += Time.deltaTime; // 経過時間を加算
+                    CommandTime += Time.deltaTime; // 経過時間を加算
 
-                    if (_commandTime >= _commandTimeout) // 3秒経過した場合
+                    if (CommandTime >= _commandTimeout) // 3秒経過した場合
                     {
                         ResetCommands();
                         yield break; // コルーチンを終了
@@ -114,7 +116,7 @@ public class CommandManager2P : MonoBehaviour
 
                 _gameManager.LeftHP.value -= 2.5f;
                 _gameManager.RightHP.value -= 2.5f; //HP減少処理
-                _commandTime = 0f; // 経過時間リセット
+                CommandTime = 0f; // 経過時間リセット
 
 
                     yield return new WaitForSeconds(1.0f);
@@ -228,24 +230,18 @@ public class CommandManager2P : MonoBehaviour
 
                     while (_currentIndex < _currentSequence.Count )
                     {
-                        _commandTime += Time.deltaTime; // 経過時間を加算
+                        _1P.CommandTime += Time.deltaTime; // 経過時間を加算
 
-                        if (_commandTime >= _commandTimeoutSecond) // 5秒経過した場合
+                        if (_1P.CommandTime >= _commandTimeoutSecond) // 5秒経過した場合
                         {
-                        MissSecondCommand();
-                        _gameManager.SecondImagesActive(false);
-                            yield break; // コルーチンを終了
+
+                        CommandTime = 0;
+                        yield break; // コルーチンを終了
                         }
 
                         yield return null;
                     }
-                if (_gameManager.ClearSecond)
-                {
-                    _commandTime = 0f; // 経過時間リセット
-                    _gameManager.SecondImagesActive(false);
 
-                    yield return new WaitForSeconds(1.0f);
-                }
             }
       
         }
@@ -264,7 +260,7 @@ public class CommandManager2P : MonoBehaviour
     public IEnumerator MissSecondCommand()
     {
         _gameManager.SecondImagesActive(false);
-
+        _command1P.CommandTime = 0;
         _gameManager.Miss2pCountMark();
         yield return new WaitForSeconds(2.0f);
 
@@ -272,6 +268,7 @@ public class CommandManager2P : MonoBehaviour
     }
     public IEnumerator MissSecondCommandNolife()
     {
+        CommandTime = 0;
 
         yield return new WaitForSeconds(2.0f);
 
@@ -282,7 +279,7 @@ public class CommandManager2P : MonoBehaviour
     {
         if (Time.time - _lastResetTime < _resetCooldown)
             return;
-        _commandTime = 0f; // 経過時間リセット
+        CommandTime = 0f; // 経過時間リセット
         StopAllCoroutines();
         StartCoroutine(GenerateCommands());
         _lastResetTime = Time.time;
@@ -313,21 +310,47 @@ public class CommandManager2P : MonoBehaviour
             }
             else
             {
-                if (_gameManager.PhaseCount == 0)
+                if (_gameManager.PhaseCount == 0 && !IsCoolDown)
                 {
-                    StartCoroutine(MissCommand());
+                    StartCoroutine(ExecutePhaseCount());
                 }
-                if (_gameManager.PhaseCount == 1)
+                if (_gameManager.PhaseCount == 1 && !IsCoolDown)
                 {
-                    StartCoroutine(MissSecondCommand());
-                    StartCoroutine(_command1P.MissSecondCommandNoLife());
+                    StartCoroutine(ExecutePhaseCountSecond());
                 }
             }
         }
     }
+    private IEnumerator ExecutePhaseCount()
+    {
+        // クールダウンを開始
+        IsCoolDown = true;
 
+        StartCoroutine(MissSecondCommand());
 
-    private void HandleCommandInput()
+        // 0.3秒間待機
+        yield return new WaitForSeconds(0.3f);
+
+        // クールダウン終了
+        IsCoolDown = false;
+    }
+    private IEnumerator ExecutePhaseCountSecond()
+    {
+        // クールダウンを開始
+        IsCoolDown = true;
+
+        // 実際の処理を実行
+        CommandTime = 0;
+        StartCoroutine(MissSecondCommand());
+        StartCoroutine(_command1P.MissSecondCommandNoLife());
+
+        // 0.3秒間待機
+        yield return new WaitForSeconds(0.3f);
+
+        // クールダウン終了
+        IsCoolDown = false;
+    }
+        private void HandleCommandInput()
     {
         if (_currentIndex == 0)
             FirstImage.gameObject.SetActive(false);
@@ -374,6 +397,7 @@ public class CommandManager2P : MonoBehaviour
                 {
                     _gameManager.FourCommand[3].gameObject.SetActive(false);
                     _gameManager.ClearSecond = true;
+                    _currentIndex++;
                 }
             }
             if (_gameManager.SecondPhaseRandom == 2)
