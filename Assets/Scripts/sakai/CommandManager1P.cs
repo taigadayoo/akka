@@ -26,12 +26,12 @@ public class CommandManager1P : MonoBehaviour
     public float CommandTime = 0f;
     private float _commandTimeout = 3f; // 3秒
     private float _commandTimeoutSecond = 7f;
-    public bool ChangeNext = false;
+
     GameManager _gameManager;
     [SerializeField]
     CommandManager2P _2P;
     public bool IsCoolDown = false;
-    private bool _oneRandom = false;
+   
     private void Start()
     {
 
@@ -57,12 +57,7 @@ public class CommandManager1P : MonoBehaviour
     private void Update()
     {
 
-        if (_gameManager.PhaseCount == 1 && !ChangeNext)
-        {
-            ResetCommands();
-            _2P.ResetCommands();
-            ChangeNext = true;
-        }
+      
         if(_gameManager.ClearSecond)
         {
             CommandTime = 0;
@@ -143,6 +138,7 @@ public class CommandManager1P : MonoBehaviour
                 {
                     if (_gameManager.FirstPlayerRandomNum == 0)
                     {
+                       
                         for (int i = 0; i < 2; i++)
                         {
                             string randomCommand = _commands[UnityEngine.Random.Range(0, _commands.Count)];
@@ -157,7 +153,7 @@ public class CommandManager1P : MonoBehaviour
                     }else if(_gameManager.FirstPlayerRandomNum == 1)
                     {
                       
-                            string randomCommand = _commands[UnityEngine.Random.Range(0, _commands.Count)];
+                        string randomCommand = _commands[UnityEngine.Random.Range(0, _commands.Count)];
                             _currentSequence.Add(randomCommand);
 
                             Sprite commandSprite = _commandSprites[randomCommand];
@@ -171,6 +167,7 @@ public class CommandManager1P : MonoBehaviour
                 {
                     if (_gameManager.FirstPlayerRandomNum == 0)
                     {
+                       
                         for (int i = 0; i < 2; i++)
                         {
                             string randomCommand = _commands[UnityEngine.Random.Range(0, _commands.Count)];
@@ -185,6 +182,7 @@ public class CommandManager1P : MonoBehaviour
                     }
                     else if (_gameManager.FirstPlayerRandomNum == 1)
                     {
+                      
                         for (int i = 0; i < 2; i++)
                         {
                             string randomCommand = _commands[UnityEngine.Random.Range(0, _commands.Count)];
@@ -202,6 +200,7 @@ public class CommandManager1P : MonoBehaviour
                 {
                     if (_gameManager.FirstPlayerRandomNum == 0)
                     {
+                    
                         for (int i = 0; i < 3; i++)
                         {
                             string randomCommand = _commands[UnityEngine.Random.Range(0, _commands.Count)];
@@ -218,6 +217,7 @@ public class CommandManager1P : MonoBehaviour
                     }
                     else if (_gameManager.FirstPlayerRandomNum == 1)
                     {
+                      
                         for (int i = 0; i < 2; i++)
                         {
                             string randomCommand = _commands[UnityEngine.Random.Range(0, _commands.Count)];
@@ -239,9 +239,8 @@ public class CommandManager1P : MonoBehaviour
                     if (CommandTime >= _commandTimeoutSecond) // 5秒経過した場合
                     {
                         _gameManager.SecondImagesActive(false);
-                        
-                        StartCoroutine(MissSecondCommand());
-                        StartCoroutine(_command2p.MissSecondCommandNolife());
+
+                        StartCoroutine(MissSecond());
                         yield break; // コルーチンを終了
                     }
 
@@ -258,39 +257,35 @@ public class CommandManager1P : MonoBehaviour
         FirstImage.gameObject.SetActive(false);
         SecondImage.gameObject.SetActive(false);
         ThirdImage.gameObject.SetActive(false);
+        // クールダウンを開始
+        IsCoolDown = true;
 
         _gameManager.Miss1pCountMark();
         yield return new WaitForSeconds(2.0f);
-
+        IsCoolDown = false;
         ResetCommands();
     }
-    public IEnumerator MissSecondCommand()
-    {
-        _gameManager.SecondImagesActive(false);
-        CommandTime = 0;
+    //public IEnumerator MissSecondCommand()
+    //{
+    //    _gameManager.SecondImagesActive(false);
+    //    CommandTime = 0;
+    //    IsCoolDown = true;
+    //        _gameManager.Miss1pCountMark();
 
-            _gameManager.Miss1pCountMark();
-
-
+    //    _2P.CommandTime = 0;
         
-        yield return new WaitForSeconds(2.0f);
+    //    yield return new WaitForSeconds(2.0f);
+    //    IsCoolDown = false;
+    //    _2P.ResetCommands();
+    //    ResetCommands();
+    //}
 
-        ResetCommands();
-    }
-    public IEnumerator MissSecondCommandNoLife()
-    {
-        CommandTime = 0;
-
-        yield return new WaitForSeconds(2.0f);
-
-        ResetCommands();
-    }
     public void ResetCommands()
     {
-        if (Time.time - _lastResetTime < _resetCooldown)
-            return;
+        //if (Time.time - _lastResetTime < _resetCooldown)
+        //    return;
         CommandTime = 0f; // 経過時間リセット
-
+       
 
         StopAllCoroutines();
         StartCoroutine(GenerateCommands());
@@ -306,9 +301,26 @@ public class CommandManager1P : MonoBehaviour
             _gameManager.RightHP.value -= 5f; //HP減少処理
 
             CommandTime = 0f; // 経過時間リセット
+        _2P.CommandTime = 0;
         _gameManager.ClearSecond = false;
             yield return new WaitForSeconds(1.0f);
 
+        ResetCommands();
+        _2P.ResetCommands();
+
+    }
+    public IEnumerator MissSecond()
+    {
+
+        _gameManager.SecondImagesActive(false);
+
+        CommandTime = 0f; // 経過時間リセット
+        _2P.CommandTime = 0;
+        IsCoolDown = true;
+        _2P.IsCoolDown = true;
+        yield return new WaitForSeconds(2.0f);
+        IsCoolDown = false;
+        _2P.IsCoolDown = false;
         ResetCommands();
         _2P.ResetCommands();
 
@@ -339,51 +351,38 @@ public class CommandManager1P : MonoBehaviour
                     HandleSecondCommandInput();
                     _gameManager.SwitchPlayer = true;
                 }
+              else if (_gameManager.SwitchPlayer)
+                {
+                    HandleSecondCommandInput();
+                    _gameManager.SwitchPlayer = false;
+                }
             }
             else
             {
                 if (_gameManager.PhaseCount == 0 && !IsCoolDown)
                 {
-                    StartCoroutine(ExecutePhaseCount());
+                    ExecutePhaseCount();
                 }
                 if (_gameManager.PhaseCount == 1 && !IsCoolDown)
                 {
-                    StartCoroutine(ExecutePhaseCountSecond());
+                    StartCoroutine(MissSecond());
                 }
             }
         }
       
     }
-    private IEnumerator ExecutePhaseCount()
+    private void ExecutePhaseCount()
     {
-        // クールダウンを開始
-        IsCoolDown = true;
 
         StartCoroutine(MissCommand());
 
-        // 0.3秒間待機
-        yield return new WaitForSeconds(0.3f);
+    }
+    //private void  ExecutePhaseCountSecond()
+    //{
 
-        // クールダウン終了
-        IsCoolDown = false;
-    }
-    private IEnumerator ExecutePhaseCountSecond()
-    {
-        // クールダウンを開始
-        IsCoolDown = true;
-       
-        // 実際の処理を実行
-        CommandTime = 0;
-        _2P.CommandTime = 0;
-        StartCoroutine(MissSecondCommand());
-        StartCoroutine(_command2p.MissSecondCommandNolife());
-        
-        // 0.3秒間待機
-        yield return new WaitForSeconds(0.3f);
-     
-        // クールダウン終了
-        IsCoolDown = false;
-    }
+    //    StartCoroutine(MissSecondCommand());
+
+    //}
 
     private void HandleCommandInput()
     {
@@ -468,6 +467,7 @@ public class CommandManager1P : MonoBehaviour
         {
             if (_gameManager.SecondPhaseRandom == 0)
             {
+                
                 if (_currentIndex == 0 && _gameManager.SwitchPlayer)
                 {
                     _gameManager.ThreeCommand[1].gameObject.SetActive(false);

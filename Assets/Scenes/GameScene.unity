@@ -1740,8 +1740,8 @@ MonoBehaviour:
   FirstBox: {fileID: 543158949}
   _command2p: {fileID: 1438424536}
   CommandTime: 0
-  ChangeNext: 0
   _2P: {fileID: 1438424536}
+  IsCoolDown: 0
 --- !u!4 &580301342
 Transform:
   m_ObjectHideFlags: 0
@@ -3223,6 +3223,7 @@ MonoBehaviour:
   CommandTime: 0
   _1P: {fileID: 580301341}
   ChangeNext: 0
+  IsCoolDown: 0
 --- !u!1 &1475424833
 GameObject:
   m_ObjectHideFlags: 0
@@ -4452,7 +4453,10 @@ MonoBehaviour:
   FirstPlayerRandomNum: 0
   SecondPhaseRandom: 0
   ClearSecond: 0
+  _1P: {fileID: 580301341}
+  _2P: {fileID: 1438424536}
   SwitchPlayer: 1
+  ChangeNext: 0
 --- !u!4 &1850516707
 Transform:
   m_ObjectHideFlags: 0

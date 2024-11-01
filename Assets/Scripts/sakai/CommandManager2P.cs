@@ -53,12 +53,7 @@ public class CommandManager2P : MonoBehaviour
     }
     private void Update()
     {
-        if (_gameManager.PhaseCount == 1 && !ChangeNext)
-        {
-            ResetCommands();
-            _1P.ResetCommands();
-            ChangeNext = true;
-        }
+
     }
     private IEnumerator GenerateCommands()
     {
@@ -134,6 +129,7 @@ public class CommandManager2P : MonoBehaviour
 
                 if (_gameManager.SecondPhaseRandom == 0)
                 {
+
                     if (_gameManager.FirstPlayerRandomNum == 0)
                     {
 
@@ -235,8 +231,10 @@ public class CommandManager2P : MonoBehaviour
 
                         if (_1P.CommandTime >= _commandTimeoutSecond) // 5秒経過した場合
                         {
+                        //_gameManager.SecondImagesActive(false);
 
-                        CommandTime = 0;
+                        //StartCoroutine(MissSecondCommand());
+                        StartCoroutine(_1P.MissCommand());
                         yield break; // コルーチンを終了
                         }
 
@@ -252,36 +250,33 @@ public class CommandManager2P : MonoBehaviour
         FirstImage.gameObject.SetActive(false);
         SecondImage.gameObject.SetActive(false);
         ThirdImage.gameObject.SetActive(false);
+        // クールダウンを開始
+        IsCoolDown = true;
 
         _gameManager.Miss2pCountMark();
         yield return new WaitForSeconds(2.0f);
-
+        IsCoolDown = false;
         ResetCommands();
     }
-    public IEnumerator MissSecondCommand()
-    {
-        _gameManager.SecondImagesActive(false);
-        _command1P.CommandTime = 0;
-        _gameManager.Miss2pCountMark();
-        yield return new WaitForSeconds(2.0f);
+    //public IEnumerator MissSecondCommand()
+    //{
+    //    _gameManager.SecondImagesActive(false);
 
-        ResetCommands();
-  
-    }
-  
-    public IEnumerator MissSecondCommandNolife()
-    {
-        CommandTime = 0;
-
-        yield return new WaitForSeconds(2.0f);
-
-        ResetCommands();
-    }
+    //    IsCoolDown = true;
+    //    CommandTime = 0;
+    //    _1P.CommandTime = 0;
+    //    _gameManager.Miss2pCountMark();
+    //    yield return new WaitForSeconds(2.0f);
+    //    IsCoolDown = false;
+    //    ResetCommands();
+    //    _1P.ResetCommands();
+    //}
+ 
 
     public void ResetCommands()
     {
-        if (Time.time - _lastResetTime < _resetCooldown)
-            return;
+        //if (Time.time - _lastResetTime < _resetCooldown)
+        //    return;
         CommandTime = 0f; // 経過時間リセット
         StopAllCoroutines();
         StartCoroutine(GenerateCommands());
@@ -308,51 +303,43 @@ public class CommandManager2P : MonoBehaviour
             }
             else if (IsCorrectCommand(controllerData, expectedCommand) && _gameManager.PhaseCount == 1)
             {
+                if (_gameManager.SwitchPlayer)
+                {
                     HandleSecondCommandInput();
+                    _gameManager.SwitchPlayer = false;
+                }
+                else if (!_gameManager.SwitchPlayer)
+                {
+                    HandleSecondCommandInput();
+                    _gameManager.SwitchPlayer = true;
+                }
 
             }
             else
             {
                 if (_gameManager.PhaseCount == 0 && !IsCoolDown)
                 {
-                    StartCoroutine(ExecutePhaseCount());
+                    ExecutePhaseCount();
                 }
                 if (_gameManager.PhaseCount == 1 && !IsCoolDown)
                 {
-                    StartCoroutine(ExecutePhaseCountSecond());
+
+                    StartCoroutine(_1P.MissCommand());
                 }
             }
         }
     }
-    private IEnumerator ExecutePhaseCount()
+    private void ExecutePhaseCount()
     {
-        // クールダウンを開始
-        IsCoolDown = true;
 
         StartCoroutine(MissCommand());
-
-        // 0.3秒間待機
-        yield return new WaitForSeconds(0.3f);
-
-        // クールダウン終了
-        IsCoolDown = false;
     }
-    private IEnumerator ExecutePhaseCountSecond()
-    {
-        // クールダウンを開始
-        IsCoolDown = true;
-        _1P.CommandTime = 0;
-        // 実際の処理を実行
-        CommandTime = 0;
-        StartCoroutine(MissSecondCommand());
-        StartCoroutine(_command1P.MissSecondCommandNoLife());
+    //private void ExecutePhaseCountSecond()
+    //{
 
-        // 0.3秒間待機
-        yield return new WaitForSeconds(0.3f);
+    //    StartCoroutine(MissSecondCommand());
 
-        // クールダウン終了
-        IsCoolDown = false;
-    }
+    //}
         private void HandleCommandInput()
     {
         if (_currentIndex == 0)

@@ -27,10 +27,12 @@ public class GameManager : MonoBehaviour
     public int FirstPlayerRandomNum = 0;//先行がどちらか決める値
     public int SecondPhaseRandom = 0; //第二フェーズの３～５個のランダムの個数
     public bool ClearSecond = false;
-
-
+    [SerializeField]
+    CommandManager1P _1P;
+    [SerializeField]
+    CommandManager2P _2P;
     public bool SwitchPlayer = false;
-    
+    public bool ChangeNext = false;
     void Start()
     {
         Set1pImagesActive(false);
@@ -41,6 +43,7 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
         if(MissCount == 5)
         {
             StartCoroutine(GameOver());
@@ -49,6 +52,14 @@ public class GameManager : MonoBehaviour
         {
             PhaseCount = 1;
             SecondBoxSprite.gameObject.SetActive(true);
+        }
+        if (PhaseCount == 1 && !ChangeNext)
+        {
+            _1P.ResetCommands();
+            _2P.ResetCommands();
+            _1P.IsCoolDown = false;
+            _2P.IsCoolDown = false;
+            ChangeNext = true;
         }
     }
     public void Miss1pCountMark()
