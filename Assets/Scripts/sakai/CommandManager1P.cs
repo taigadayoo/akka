@@ -25,12 +25,13 @@ public class CommandManager1P : MonoBehaviour
     CommandManager2P _command2p;
     public float CommandTime = 0f;
     private float _commandTimeout = 3f; // 3秒
-    private float _commandTimeoutSecond = 5f;
+    private float _commandTimeoutSecond = 7f;
     public bool ChangeNext = false;
     GameManager _gameManager;
     [SerializeField]
     CommandManager2P _2P;
     public bool IsCoolDown = false;
+    private bool _oneRandom = false;
     private void Start()
     {
 
@@ -55,9 +56,11 @@ public class CommandManager1P : MonoBehaviour
     }
     private void Update()
     {
+
         if (_gameManager.PhaseCount == 1 && !ChangeNext)
         {
             ResetCommands();
+            _2P.ResetCommands();
             ChangeNext = true;
         }
         if(_gameManager.ClearSecond)
@@ -74,7 +77,6 @@ public class CommandManager1P : MonoBehaviour
             _currentSequence = new List<string>();
             _currentIndex = 0;
             _gameManager.ClearSecond = false;
-
             if (_gameManager.PhaseCount == 0)
             {
 
@@ -120,6 +122,7 @@ public class CommandManager1P : MonoBehaviour
                _gameManager.RightHP.value -= 2.5f; //HP減少処理
 
                     CommandTime = 0f; // 経過時間リセット
+                _2P.CommandTime = 0;
 
                 yield return new WaitForSeconds(1.0f);
             }
@@ -129,8 +132,10 @@ public class CommandManager1P : MonoBehaviour
                 FirstImage.gameObject.SetActive(false);
                 SecondImage.gameObject.SetActive(false);
                 ThirdImage.gameObject.SetActive(false);
-                _gameManager.SecondPhaseRandom = Random.Range(0, 2);
-                _gameManager.FirstPlayerRandomNum = Random.Range(0, 1);
+
+                    _gameManager.SecondPhaseRandom = Random.Range(0, 3);
+                    _gameManager.FirstPlayerRandomNum = Random.Range(0, 2);
+
                 _gameManager.SecondImagesActive(true);
                 _gameManager.SecondBoxImage();
 
@@ -227,7 +232,7 @@ public class CommandManager1P : MonoBehaviour
                     }
                 }
                 
-                while (_currentIndex < _currentSequence.Count )
+                while (_currentIndex <= _currentSequence.Count )
                 {
                     CommandTime += Time.deltaTime; // 経過時間を加算
                     
@@ -236,6 +241,7 @@ public class CommandManager1P : MonoBehaviour
                         _gameManager.SecondImagesActive(false);
                         
                         StartCoroutine(MissSecondCommand());
+                        StartCoroutine(_command2p.MissSecondCommandNolife());
                         yield break; // コルーチンを終了
                     }
 
@@ -262,19 +268,14 @@ public class CommandManager1P : MonoBehaviour
     {
         _gameManager.SecondImagesActive(false);
         CommandTime = 0;
-        if (!_gameManager.SwitchPlayer)
-        {
+
             _gameManager.Miss1pCountMark();
-        }
-       else if (_gameManager.SwitchPlayer)
-        {
-            _gameManager.Miss2pCountMark();
-        }
+
+
         
         yield return new WaitForSeconds(2.0f);
 
         ResetCommands();
-        _command2p.ResetCommands();
     }
     public IEnumerator MissSecondCommandNoLife()
     {
@@ -358,7 +359,7 @@ public class CommandManager1P : MonoBehaviour
         // クールダウンを開始
         IsCoolDown = true;
 
-        StartCoroutine(MissSecondCommand());
+        StartCoroutine(MissCommand());
 
         // 0.3秒間待機
         yield return new WaitForSeconds(0.3f);
@@ -370,15 +371,16 @@ public class CommandManager1P : MonoBehaviour
     {
         // クールダウンを開始
         IsCoolDown = true;
-
+       
         // 実際の処理を実行
         CommandTime = 0;
+        _2P.CommandTime = 0;
         StartCoroutine(MissSecondCommand());
         StartCoroutine(_command2p.MissSecondCommandNolife());
-
+        
         // 0.3秒間待機
         yield return new WaitForSeconds(0.3f);
-
+     
         // クールダウン終了
         IsCoolDown = false;
     }

@@ -24,7 +24,7 @@ public class CommandManager2P : MonoBehaviour
     public GameObject FirstBox;
     public float CommandTime = 0f;
     private float _commandTimeout = 3f; // 3秒
-    private float _commandTimeoutSecond = 5f;
+    private float _commandTimeoutSecond = 7f;
     [SerializeField]
     CommandManager1P _1P;
     public bool ChangeNext = false;
@@ -56,6 +56,7 @@ public class CommandManager2P : MonoBehaviour
         if (_gameManager.PhaseCount == 1 && !ChangeNext)
         {
             ResetCommands();
+            _1P.ResetCommands();
             ChangeNext = true;
         }
     }
@@ -117,7 +118,7 @@ public class CommandManager2P : MonoBehaviour
                 _gameManager.LeftHP.value -= 2.5f;
                 _gameManager.RightHP.value -= 2.5f; //HP減少処理
                 CommandTime = 0f; // 経過時間リセット
-
+                _1P.CommandTime = 0;
 
                     yield return new WaitForSeconds(1.0f);
 
@@ -228,7 +229,7 @@ public class CommandManager2P : MonoBehaviour
                     }
                 }
 
-                    while (_currentIndex < _currentSequence.Count )
+                    while (_currentIndex <= _currentSequence.Count )
                     {
                         _1P.CommandTime += Time.deltaTime; // 経過時間を加算
 
@@ -265,7 +266,9 @@ public class CommandManager2P : MonoBehaviour
         yield return new WaitForSeconds(2.0f);
 
         ResetCommands();
+  
     }
+  
     public IEnumerator MissSecondCommandNolife()
     {
         CommandTime = 0;
@@ -326,7 +329,7 @@ public class CommandManager2P : MonoBehaviour
         // クールダウンを開始
         IsCoolDown = true;
 
-        StartCoroutine(MissSecondCommand());
+        StartCoroutine(MissCommand());
 
         // 0.3秒間待機
         yield return new WaitForSeconds(0.3f);
@@ -338,7 +341,7 @@ public class CommandManager2P : MonoBehaviour
     {
         // クールダウンを開始
         IsCoolDown = true;
-
+        _1P.CommandTime = 0;
         // 実際の処理を実行
         CommandTime = 0;
         StartCoroutine(MissSecondCommand());
