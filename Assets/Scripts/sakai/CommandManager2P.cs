@@ -30,6 +30,7 @@ public class CommandManager2P : MonoBehaviour
     public bool ChangeNext = false;
     GameManager _gameManager;
     public bool IsCoolDown = false;
+    private ControllerData _controllerData;
     private void Start()
     {
         _gameManager = FindObjectOfType<GameManager>();
@@ -113,7 +114,7 @@ public class CommandManager2P : MonoBehaviour
                 _gameManager.LeftHP.value -= 2.5f;
                 _gameManager.RightHP.value -= 2.5f; //HP減少処理
                 CommandTime = 0f; // 経過時間リセット
-                _1P.CommandTime = 0;
+
 
                     yield return new WaitForSeconds(1.0f);
 
@@ -227,15 +228,15 @@ public class CommandManager2P : MonoBehaviour
 
                     while (_currentIndex <= _currentSequence.Count )
                     {
-                        _1P.CommandTime += Time.deltaTime; // 経過時間を加算
+                    _gameManager.SecondCommandTime  += Time.deltaTime; // 経過時間を加算
 
-                        if (_1P.CommandTime >= _commandTimeoutSecond) // 5秒経過した場合
+                        if (_gameManager.SecondCommandTime  >= _commandTimeoutSecond) // 5秒経過した場合
                         {
-                        //_gameManager.SecondImagesActive(false);
-
-                        //StartCoroutine(MissSecondCommand());
-                        StartCoroutine(_1P.MissCommand());
-                        yield break; // コルーチンを終了
+                        if (_gameManager.FirstPlayerRandomNum == 0 && _gameManager.SwitchPlayer || _gameManager.FirstPlayerRandomNum == 1 && !_gameManager.SwitchPlayer)
+                        {
+                            StartCoroutine(_1P.MissSecond(_controllerData));
+                            yield break; // コルーチンを終了
+                        }
                         }
 
                         yield return null;
@@ -278,6 +279,7 @@ public class CommandManager2P : MonoBehaviour
         //if (Time.time - _lastResetTime < _resetCooldown)
         //    return;
         CommandTime = 0f; // 経過時間リセット
+        _gameManager.SecondCommandTime = 0;
         StopAllCoroutines();
         StartCoroutine(GenerateCommands());
         _lastResetTime = Time.time;
@@ -293,6 +295,7 @@ public class CommandManager2P : MonoBehaviour
 
         string expectedCommand = _currentSequence[_currentIndex];
 
+        _controllerData = controllerData;
 
         if (controllerData.ActionType == ActionType.Buttons)
         {
@@ -303,17 +306,20 @@ public class CommandManager2P : MonoBehaviour
             }
             else if (IsCorrectCommand(controllerData, expectedCommand) && _gameManager.PhaseCount == 1)
             {
-                if (_gameManager.SwitchPlayer)
+                if (_gameManager.SwitchPlayer &&  _gameManager.FirstPlayerRandomNum == 0)
                 {
                     HandleSecondCommandInput();
                     _gameManager.SwitchPlayer = false;
                 }
-                else if (!_gameManager.SwitchPlayer)
+                else if (!_gameManager.SwitchPlayer && _gameManager.FirstPlayerRandomNum == 1)
                 {
                     HandleSecondCommandInput();
                     _gameManager.SwitchPlayer = true;
                 }
-
+                else if(_gameManager.SwitchPlayer && _gameManager.FirstPlayerRandomNum == 1 || !_gameManager.SwitchPlayer && _gameManager.FirstPlayerRandomNum == 0 && !IsCoolDown)
+                {
+                    StartCoroutine(_1P.MissSecond(_controllerData));
+                }
             }
             else
             {
@@ -324,7 +330,7 @@ public class CommandManager2P : MonoBehaviour
                 if (_gameManager.PhaseCount == 1 && !IsCoolDown)
                 {
 
-                    StartCoroutine(_1P.MissCommand());
+                    StartCoroutine(_1P.MissSecond(_controllerData));
                 }
             }
         }

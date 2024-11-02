@@ -26,6 +26,7 @@ public class GameManager : MonoBehaviour
     public int PhaseCount = 0;
     public int FirstPlayerRandomNum = 0;//先行がどちらか決める値
     public int SecondPhaseRandom = 0; //第二フェーズの３～５個のランダムの個数
+    public float SecondCommandTime = 0f;
     public bool ClearSecond = false;
     [SerializeField]
     CommandManager1P _1P;
