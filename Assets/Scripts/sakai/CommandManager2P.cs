@@ -116,7 +116,7 @@ public class CommandManager2P : MonoBehaviour
                 CommandTime = 0f; // 経過時間リセット
 
 
-                    yield return new WaitForSeconds(1.0f);
+                yield return new WaitForSeconds(1.0f);
 
             }
             else if (_gameManager.PhaseCount == 1)
@@ -128,7 +128,7 @@ public class CommandManager2P : MonoBehaviour
 
 
 
-                if (_gameManager.SecondPhaseRandom == 0)
+                if (_gameManager.RandomCommandNum == 0)
                 {
 
                     if (_gameManager.FirstPlayerRandomNum == 0)
@@ -158,11 +158,11 @@ public class CommandManager2P : MonoBehaviour
                         }
                     }
                 }
-                if (_gameManager.SecondPhaseRandom == 1)
+                if (_gameManager.RandomCommandNum == 1)
                 {
 
-                   if (_gameManager.FirstPlayerRandomNum == 0)
-                   {
+                    if (_gameManager.FirstPlayerRandomNum == 0)
+                    {
 
                         for (int i = 0; i < 2; i++)
                         {
@@ -176,8 +176,8 @@ public class CommandManager2P : MonoBehaviour
                                 _gameManager.FourCommand[3].sprite = commandSprite;
                         }
                     }
-                     else if (_gameManager.FirstPlayerRandomNum == 1)
-                        {
+                    else if (_gameManager.FirstPlayerRandomNum == 1)
+                    {
                         for (int i = 0; i < 2; i++)
                         {
                             string randomCommand = _commands[UnityEngine.Random.Range(0, _commands.Count)];
@@ -191,7 +191,7 @@ public class CommandManager2P : MonoBehaviour
                         }
                     }
                 }
-                if (_gameManager.SecondPhaseRandom == 2)
+                if (_gameManager.RandomCommandNum == 2)
                 {
                     if (_gameManager.FirstPlayerRandomNum == 0)
                     {
@@ -226,24 +226,161 @@ public class CommandManager2P : MonoBehaviour
                     }
                 }
 
-                    while (_currentIndex <= _currentSequence.Count )
-                    {
-                    _gameManager.SecondCommandTime  += Time.deltaTime; // 経過時間を加算
+                while (_currentIndex <= _currentSequence.Count)
+                {
+                    _gameManager.SecondCommandTime += Time.deltaTime; // 経過時間を加算
 
-                        if (_gameManager.SecondCommandTime  >= _commandTimeoutSecond) // 5秒経過した場合
-                        {
+                    if (_gameManager.SecondCommandTime >= _commandTimeoutSecond) // 5秒経過した場合
+                    {
                         if (_gameManager.FirstPlayerRandomNum == 0 && _gameManager.SwitchPlayer || _gameManager.FirstPlayerRandomNum == 1 && !_gameManager.SwitchPlayer)
                         {
                             StartCoroutine(_1P.MissSecond(_controllerData));
                             yield break; // コルーチンを終了
                         }
-                        }
-
-                        yield return null;
                     }
 
+                    yield return null;
+                }
+
             }
-      
+            else if (_gameManager.PhaseCount == 2)
+            {
+                _gameManager.SecondBoxSprite.gameObject.SetActive(false);
+
+                FirstBox.SetActive(false);
+                FirstImage.gameObject.SetActive(false);
+                SecondImage.gameObject.SetActive(false);
+                ThirdImage.gameObject.SetActive(false);
+                _gameManager.StartThard = true;
+                _gameManager.ThardImagesActive(true);
+
+                if (_gameManager.RandomCommandNum == 0)
+                {
+                    if (_gameManager.FirstPlayerRandomNum == 1)
+                    {
+
+                        for (int i = 0; i < 3; i++)
+                        {
+                            string randomCommand = _commands[UnityEngine.Random.Range(0, _commands.Count)];
+                            _currentSequence.Add(randomCommand);
+
+                            Sprite commandSprite = _commandSprites[randomCommand];
+                            if (i == 0)
+                                _gameManager.FiveCommandThard[0].sprite = commandSprite;
+                            else if (i == 1)
+                                _gameManager.FiveCommandThard[2].sprite = commandSprite;
+                            else if (i == 2)
+                                _gameManager.FiveCommandThard[4].sprite = commandSprite;
+                        }
+                    }
+                    else if (_gameManager.FirstPlayerRandomNum == 0)
+                    {
+                        for (int i = 0; i < 2; i++)
+                        {
+                            string randomCommand = _commands[UnityEngine.Random.Range(0, _commands.Count)];
+                            _currentSequence.Add(randomCommand);
+
+                            Sprite commandSprite = _commandSprites[randomCommand];
+                            if (i == 0)
+                                _gameManager.FiveCommandThard[1].sprite = commandSprite;
+                            else if (i == 1)
+                                _gameManager.FiveCommandThard[3].sprite = commandSprite;
+
+
+                        }
+                    }
+                }
+                if (_gameManager.RandomCommandNum == 1)
+                {
+                    if (_gameManager.FirstPlayerRandomNum == 1)
+                    {
+
+                        for (int i = 0; i < 3; i++)
+                        {
+                            string randomCommand = _commands[UnityEngine.Random.Range(0, _commands.Count)];
+                            _currentSequence.Add(randomCommand);
+
+                            Sprite commandSprite = _commandSprites[randomCommand];
+                            if (i == 0)
+                                _gameManager.SixCommand[0].sprite = commandSprite;
+                            else if (i == 1)
+                                _gameManager.SixCommand[2].sprite = commandSprite;
+                            else if (i == 2)
+                                _gameManager.SixCommand[4].sprite = commandSprite;
+                        }
+                    }
+                    else if (_gameManager.FirstPlayerRandomNum == 0)
+                    {
+
+                        for (int i = 0; i < 3; i++)
+                        {
+                            string randomCommand = _commands[UnityEngine.Random.Range(0, _commands.Count)];
+                            _currentSequence.Add(randomCommand);
+
+                            Sprite commandSprite = _commandSprites[randomCommand];
+                            if (i == 0)
+                                _gameManager.SixCommand[1].sprite = commandSprite;
+                            else if (i == 1)
+                                _gameManager.SixCommand[3].sprite = commandSprite;
+                            else if (i == 2)
+                                _gameManager.SixCommand[5].sprite = commandSprite;
+                        }
+                    }
+                }
+                if (_gameManager.RandomCommandNum == 2)
+                {
+                    if (_gameManager.FirstPlayerRandomNum == 1)
+                    {
+
+                        for (int i = 0; i < 4; i++)
+                        {
+                            string randomCommand = _commands[UnityEngine.Random.Range(0, _commands.Count)];
+                            _currentSequence.Add(randomCommand);
+
+                            Sprite commandSprite = _commandSprites[randomCommand];
+                            if (i == 0)
+                                _gameManager.SevenCommand[0].sprite = commandSprite;
+                            else if (i == 1)
+                                _gameManager.SevenCommand[2].sprite = commandSprite;
+                            else if (i == 2)
+                                _gameManager.SevenCommand[4].sprite = commandSprite;
+                            else if (i == 3)
+                                _gameManager.SevenCommand[6].sprite = commandSprite;
+                        }
+                    }
+                    else if (_gameManager.FirstPlayerRandomNum == 0)
+                    {
+
+                        for (int i = 0; i < 3; i++)
+                        {
+                            string randomCommand = _commands[UnityEngine.Random.Range(0, _commands.Count)];
+                            _currentSequence.Add(randomCommand);
+
+                            Sprite commandSprite = _commandSprites[randomCommand];
+                            if (i == 0)
+                                _gameManager.SevenCommand[1].sprite = commandSprite;
+                            else if (i == 1)
+                                _gameManager.SevenCommand[3].sprite = commandSprite;
+                            else if (i == 2)
+                                _gameManager.SevenCommand[5].sprite = commandSprite;
+                        }
+                    }
+                }
+                while (_currentIndex <= _currentSequence.Count)
+                {
+                    _gameManager.SecondCommandTime += Time.deltaTime; // 経過時間を加算
+
+                    if (_gameManager.ThardTimeUp) // 5秒経過した場合
+                    {
+                        _gameManager.ThardImagesActive(false);
+
+                        StartCoroutine(_1P.MissThard(_controllerData));
+                        yield break; // コルーチンを終了
+                    }
+
+                    yield return null;
+                }
+            }
         }
     }
    public IEnumerator MissCommand()
@@ -320,6 +457,11 @@ public class CommandManager2P : MonoBehaviour
                 {
                     StartCoroutine(_1P.MissSecond(_controllerData));
                 }
+
+            }
+            else if (IsCorrectCommand(controllerData, expectedCommand) && _gameManager.PhaseCount == 2)
+            {
+                HandleThardCommandInput();
             }
             else
             {
@@ -331,6 +473,11 @@ public class CommandManager2P : MonoBehaviour
                 {
 
                     StartCoroutine(_1P.MissSecond(_controllerData));
+                }
+                if (_gameManager.PhaseCount == 2 && !IsCoolDown)
+                {
+
+                    StartCoroutine(_1P.MissThard(_controllerData));
                 }
             }
         }
@@ -367,7 +514,7 @@ public class CommandManager2P : MonoBehaviour
         if (_gameManager.FirstPlayerRandomNum == 0)
         {
 
-            if (_gameManager.SecondPhaseRandom == 0)
+            if (_gameManager.RandomCommandNum == 0)
             {
                 if (_currentIndex == 0 && _gameManager.SwitchPlayer)
                 {
@@ -379,7 +526,7 @@ public class CommandManager2P : MonoBehaviour
                 }
 
             }
-            if (_gameManager.SecondPhaseRandom == 1)
+            if (_gameManager.RandomCommandNum == 1)
             {
                 if (_currentIndex == 0 && _gameManager.SwitchPlayer)
                 {
@@ -396,7 +543,7 @@ public class CommandManager2P : MonoBehaviour
                     _currentIndex++;
                 }
             }
-            if (_gameManager.SecondPhaseRandom == 2)
+            if (_gameManager.RandomCommandNum == 2)
             {
                 if (_currentIndex == 0 && _gameManager.SwitchPlayer)
                 {
@@ -418,7 +565,7 @@ public class CommandManager2P : MonoBehaviour
         }
         if (_gameManager.FirstPlayerRandomNum == 1)
         {
-            if (_gameManager.SecondPhaseRandom == 0)
+            if (_gameManager.RandomCommandNum == 0)
             {
                 if (_currentIndex == 0 && !_gameManager.SwitchPlayer)
                 {
@@ -435,7 +582,7 @@ public class CommandManager2P : MonoBehaviour
                 }
 
             }
-            if (_gameManager.SecondPhaseRandom == 1)
+            if (_gameManager.RandomCommandNum == 1)
             {
                 if (_currentIndex == 0 && !_gameManager.SwitchPlayer)
                 {
@@ -452,7 +599,7 @@ public class CommandManager2P : MonoBehaviour
                     _currentIndex++;
                 }
             }
-            if (_gameManager.SecondPhaseRandom == 2)
+            if (_gameManager.RandomCommandNum == 2)
             {
                 if (_currentIndex == 0 && !_gameManager.SwitchPlayer)
                 {
@@ -475,6 +622,150 @@ public class CommandManager2P : MonoBehaviour
                 }
 
             }
+        }
+    }
+    private void HandleThardCommandInput()
+    {
+        if (_gameManager.FirstPlayerRandomNum == 1)
+        {
+            if (_gameManager.RandomCommandNum == 0)
+            {
+                if (_currentIndex == 0)
+                {
+                    _gameManager.FiveCommandThard[0].gameObject.SetActive(false);
+
+                    _currentIndex++;
+                }
+                else if (_currentIndex == 1)
+                {
+                    _gameManager.FiveCommandThard[2].gameObject.SetActive(false);
+                    _currentIndex++;
+                }
+                else if (_currentIndex == 2)
+                {
+                    _gameManager.FiveCommandThard[4].gameObject.SetActive(false);
+                    _currentIndex++;
+                    _gameManager.ClearThard = true;
+                }
+
+            }
+            if (_gameManager.RandomCommandNum == 1)
+            {
+                if (_currentIndex == 0)
+                {
+                    _gameManager.SixCommand[0].gameObject.SetActive(false);
+
+                    _currentIndex++;
+                }
+                else if (_currentIndex == 1)
+                {
+                    _gameManager.SixCommand[2].gameObject.SetActive(false);
+
+                    _currentIndex++;
+                }
+                else if (_currentIndex == 2)
+                {
+                    _gameManager.SixCommand[4].gameObject.SetActive(false);
+
+                    _currentIndex++;
+                }
+            }
+            if (_gameManager.RandomCommandNum == 2)
+            {
+                if (_currentIndex == 0)
+                {
+                    _gameManager.SevenCommand[0].gameObject.SetActive(false);
+
+                    _currentIndex++;
+                }
+                else if (_currentIndex == 1)
+                {
+                    _gameManager.SevenCommand[2].gameObject.SetActive(false);
+
+                    _currentIndex++;
+                }
+                else if (_currentIndex == 2)
+                {
+                    _gameManager.SevenCommand[4].gameObject.SetActive(false);
+
+                    _currentIndex++;
+                }
+                else if (_currentIndex == 3)
+                {
+                    _gameManager.SevenCommand[6].gameObject.SetActive(false);
+
+                    _currentIndex++;
+                    _gameManager.ClearThard = true;
+                }
+
+            }
+        }
+        if (_gameManager.FirstPlayerRandomNum == 0)
+        {
+            if (_gameManager.RandomCommandNum == 0)
+            {
+
+                if (_currentIndex == 0)
+                {
+                    _gameManager.FiveCommandThard[1].gameObject.SetActive(false);
+
+                    _currentIndex++;
+                }
+                else if (_currentIndex == 1)
+                {
+                    _gameManager.FiveCommandThard[3].gameObject.SetActive(false);
+                    _currentIndex++;
+                }
+
+
+            }
+            if (_gameManager.RandomCommandNum == 1)
+            {
+                if (_currentIndex == 0)
+                {
+                    _gameManager.SixCommand[1].gameObject.SetActive(false);
+
+                    _currentIndex++;
+                }
+                else if (_currentIndex == 1)
+                {
+                    _gameManager.SixCommand[3].gameObject.SetActive(false);
+
+                    _currentIndex++;
+                }
+                else if (_currentIndex == 2)
+                {
+                    _gameManager.SixCommand[5].gameObject.SetActive(false);
+
+                    _currentIndex++;
+                    _gameManager.ClearThard = true;
+                }
+            }
+            if (_gameManager.RandomCommandNum == 2)
+            {
+                if (_currentIndex == 0)
+                {
+                    _gameManager.SevenCommand[1].gameObject.SetActive(false);
+
+                    _currentIndex++;
+                }
+                else if (_currentIndex == 1)
+                {
+                    _gameManager.SevenCommand[3].gameObject.SetActive(false);
+
+                    _currentIndex++;
+                }
+                else if (_currentIndex == 2)
+                {
+                    _gameManager.SevenCommand[5].gameObject.SetActive(false);
+
+                    _currentIndex++;
+                }
+
+
+            }
+
+
         }
     }
     private bool IsCorrectCommand(ControllerData controllerData, string expectedCommand)

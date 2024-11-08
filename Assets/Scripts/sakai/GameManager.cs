@@ -18,6 +18,12 @@ public class GameManager : MonoBehaviour
     public SpriteRenderer[] FourCommand;
     [SerializeField]
     public SpriteRenderer[] FiveCommand;
+    [SerializeField]
+    public SpriteRenderer[] FiveCommandThard;
+    [SerializeField]
+    public SpriteRenderer[] SixCommand;
+    [SerializeField]
+    public SpriteRenderer[] SevenCommand;
     public int MissCount = 0;
     public SpriteRenderer SecondBoxSprite;
     public bool OnGameOver = false;
@@ -25,15 +31,21 @@ public class GameManager : MonoBehaviour
     public Slider RightHP;
     public int PhaseCount = 0;
     public int FirstPlayerRandomNum = 0;//先行がどちらか決める値
-    public int SecondPhaseRandom = 0; //第二フェーズの３～５個のランダムの個数
+    public int RandomCommandNum = 2; //第二フェーズの３～５個のランダムの個数
     public float SecondCommandTime = 0f;
     public bool ClearSecond = false;
+    public bool ClearThard = false;
+    public GameObject LaneRing;
+    public GameObject JudgementRing;
     [SerializeField]
     CommandManager1P _1P;
     [SerializeField]
     CommandManager2P _2P;
     public bool SwitchPlayer = false;
     public bool ChangeNext = false;
+    public bool ChangeLast = false;
+    public bool ThardTimeUp = false;
+    public bool StartThard = false;
     void Start()
     {
         Set1pImagesActive(false);
@@ -54,6 +66,12 @@ public class GameManager : MonoBehaviour
             PhaseCount = 1;
             SecondBoxSprite.gameObject.SetActive(true);
         }
+       else if(LeftHP.value <= 20)
+        {
+            PhaseCount = 2;
+            JudgementRing.gameObject.SetActive(true);
+            LaneRing.gameObject.SetActive(true);
+        }
         if (PhaseCount == 1 && !ChangeNext)
         {
             _1P.ResetCommands();
@@ -61,6 +79,15 @@ public class GameManager : MonoBehaviour
             _1P.IsCoolDown = false;
             _2P.IsCoolDown = false;
             ChangeNext = true;
+        }
+        else if (PhaseCount == 2 && !ChangeLast)
+        {
+            ClearSecond = false;    
+            _1P.ResetCommands();
+            _2P.ResetCommands();
+            _1P.IsCoolDown = false;
+            _2P.IsCoolDown = false;
+            ChangeLast = true;
         }
     }
     public void Miss1pCountMark()
@@ -90,36 +117,36 @@ public class GameManager : MonoBehaviour
     }
     public void SecondBoxImage()
     {
-        if (SecondPhaseRandom == 0)
+        if (RandomCommandNum == 0)
         {
             SecondPhaseSprite[0] = SecondBoxSprite.sprite;
         }
-        if (SecondPhaseRandom == 1)
+        if (RandomCommandNum == 1)
         {
             SecondPhaseSprite[1] = SecondBoxSprite.sprite;
         }
-        if (SecondPhaseRandom == 2)
+        if (RandomCommandNum == 2)
         {
             SecondPhaseSprite[2] = SecondBoxSprite.sprite;
         }
     }
     public void SecondImagesActive(bool isActive)
     {
-        if (SecondPhaseRandom == 0)
+        if (RandomCommandNum == 0)
         {
             foreach (SpriteRenderer sp in ThreeCommand)
             {
                 sp.gameObject.SetActive(isActive);
             }
         }
-        if (SecondPhaseRandom == 1)
+        if (RandomCommandNum == 1)
         {
             foreach (SpriteRenderer sp in FourCommand)
             {
                 sp.gameObject.SetActive(isActive);
             }
         }
-        if (SecondPhaseRandom == 2)
+        if (RandomCommandNum == 2)
         {
             foreach (SpriteRenderer sp in FiveCommand)
             {
@@ -127,6 +154,31 @@ public class GameManager : MonoBehaviour
             }
         }
         
+    }
+    public void ThardImagesActive(bool isActive)
+    {
+        if (RandomCommandNum == 0)
+        {
+            foreach (SpriteRenderer sp in FiveCommandThard)
+            {
+                sp.gameObject.SetActive(isActive);
+            }
+        }
+        if (RandomCommandNum == 1)
+        {
+            foreach (SpriteRenderer sp in SixCommand)
+            {
+                sp.gameObject.SetActive(isActive);
+            }
+        }
+        if (RandomCommandNum == 2)
+        {
+            foreach (SpriteRenderer sp in SevenCommand)
+            {
+                sp.gameObject.SetActive(isActive);
+            }
+        }
+
     }
     IEnumerator GameOver()
     {
