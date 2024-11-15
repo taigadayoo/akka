@@ -26,7 +26,8 @@ public class CommandManager1P : MonoBehaviour
     public float CommandTime = 0f;
     private float _commandTimeout = 3f; // 3秒
     private float _commandTimeoutSecond = 7f;
-
+    [SerializeField]
+    CircularMovementWithBackground _circular;
     GameManager _gameManager;
     [SerializeField]
     CommandManager2P _2P;
@@ -585,7 +586,9 @@ public class CommandManager1P : MonoBehaviour
                 }
                 if (_gameManager.PhaseCount == 2 && !IsCoolDown)
                 {
+                
                     StartCoroutine(MissThard(_controllerData));
+                   
                 }
             }
         }

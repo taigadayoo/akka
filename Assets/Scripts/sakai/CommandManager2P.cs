@@ -10,7 +10,8 @@ public class CommandManager2P : MonoBehaviour
     public SpriteRenderer SecondImage;
     public SpriteRenderer ThirdImage;
     public Sprite ASprite, BSprite, XSprite, YSprite, RightSprite, LeftSprite, UpSprite, DownSprite;
-
+    [SerializeField]
+    CircularMovementWithBackground _circular;
     private List<string> _commands;
     private List<string> _currentSequence= new List<string>();
     private int _currentIndex;
@@ -476,8 +477,9 @@ public class CommandManager2P : MonoBehaviour
                 }
                 if (_gameManager.PhaseCount == 2 && !IsCoolDown)
                 {
-
+               
                     StartCoroutine(_1P.MissThard(_controllerData));
+                   
                 }
             }
         }
