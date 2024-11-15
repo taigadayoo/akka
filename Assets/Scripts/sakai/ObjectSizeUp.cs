@@ -12,10 +12,19 @@ public class ObjectSizeUp : MonoBehaviour
     public float ResizeDuration = 1f;  // 2秒かけて元の大きさに戻す
     [SerializeField]
     GameManager _gameManager;
+    CommandManager1P _1P;
+    CommandManager2P _2P;
+    ThardObjectController _thardObjectController;
     public enum Player
     {
         player1,
         player2
+    }
+    private void Start()
+    {
+        _1P = FindFirstObjectByType<CommandManager1P>();
+        _2P = FindFirstObjectByType<CommandManager2P>();
+        _thardObjectController = FindFirstObjectByType<ThardObjectController>();
     }
     public Player PlayerNum;
     private void OnEnable()
@@ -44,6 +53,20 @@ public class ObjectSizeUp : MonoBehaviour
                 _gameManager.OkPlayer2Thard = true;
             }
         }
+        if(collision.gameObject.tag == "TimeUp" && !_gameManager.OneTimeUp)
+        {
+            if (PlayerNum == Player.player1)
+            {
+                _gameManager.OneTimeUp = true;
+                _gameManager.TimeUpThard1P = true;   
+            }
+            else if (PlayerNum == Player.player2)
+            {
+                _gameManager.OneTimeUp = true;
+                _gameManager.TimeUpThard2P = true;
+            }
+            _thardObjectController.StartAnimationsSequentially();
+        }
         // サイズを徐々に大きくしてから元に戻す処理     
     }
     private void OnTriggerExit2D(Collider2D collision)
@@ -52,12 +75,15 @@ public class ObjectSizeUp : MonoBehaviour
         {
             if (PlayerNum == Player.player1)
             {
+ 
                 _gameManager.OkPlayer1Thard = false;
             }
             else if (PlayerNum == Player.player2)
             {
+             
                 _gameManager.OkPlayer2Thard = false;
             }
+           
         }
     }
     void EnlargeAndResize()
