@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using DG.Tweening;
 
 public class CircularMovementWithBackground : MonoBehaviour
 {
@@ -11,13 +10,15 @@ public class CircularMovementWithBackground : MonoBehaviour
     [SerializeField]
     GameManager _gameManager;
 
-    private Vector3[] initialPositions;  // 各オブジェクトの初期位置
-    private Tween[] objectTweens;  // 各オブジェクトのTweenを保持する配列
+    private Vector3[] _initialPositions;  // 各オブジェクトの初期位置
+    private float[] _angles;  // 各オブジェクトの現在の角度
+    private float[] _speeds;  // 各オブジェクトの回転速度
 
     void Start()
     {
-        initialPositions = new Vector3[Objects.Length];
-        objectTweens = new Tween[Objects.Length];
+        _initialPositions = new Vector3[Objects.Length];
+        _angles = new float[Objects.Length];
+        _speeds = new float[Objects.Length];
         PositionObjectsOnCircle();  // オブジェクトを円周上に配置
         AddCollidersAndRigidbodyToChildren(); // 子オブジェクトにColliderとRigidbodyを追加
     }
@@ -29,6 +30,8 @@ public class CircularMovementWithBackground : MonoBehaviour
             StartCircularMovement();  // 円運動を開始
             _gameManager.StartThard = false;  // 一度だけ呼ばれるようにフラグをリセット
         }
+
+        UpdateCircularMovement();  // 各オブジェクトの円運動を更新
     }
 
     void PositionObjectsOnCircle()
@@ -41,12 +44,11 @@ public class CircularMovementWithBackground : MonoBehaviour
         for (int i = 0; i < objectCount; i++)
         {
             float angle = startAngle + i * angleStep;
-            initialPositions[i] = new Vector3(Mathf.Cos(angle) * Radius, Mathf.Sin(angle) * Radius, 0) + CircleBackground.position;
-            Objects[i].transform.position = initialPositions[i];
+            _initialPositions[i] = new Vector3(Mathf.Cos(angle) * Radius, Mathf.Sin(angle) * Radius, 0) + CircleBackground.position;
+            Objects[i].transform.position = _initialPositions[i];
         }
     }
 
-    // 子オブジェクトにColliderとRigidbodyを追加するメソッド
     void AddCollidersAndRigidbodyToChildren()
     {
         foreach (var obj in Objects)
@@ -71,32 +73,21 @@ public class CircularMovementWithBackground : MonoBehaviour
         int objectCount = Objects.Length;
         for (int i = 0; i < objectCount; i++)
         {
-            Vector3[] path = CreateCircularPath(initialPositions[i]);
-
-            // 一周後に初期位置に戻す
-            objectTweens[i] = Objects[i].transform.DOPath(path, Duration, PathType.CatmullRom)
-                .SetEase(Ease.Linear)
-                .SetLoops(Loop ? -1 : 1, LoopType.Restart)  // Loopがtrueなら無限ループ
-                .OnComplete(() => ResetObjectToStart(i));
+            _angles[i] = Mathf.Atan2(_initialPositions[i].y - CircleBackground.position.y, _initialPositions[i].x - CircleBackground.position.x);
+            _speeds[i] = -2 * Mathf.PI / Duration;  // 一周する時間に基づいて回転速度を設定
         }
     }
 
-    Vector3[] CreateCircularPath(Vector3 startPosition)
+    void UpdateCircularMovement()
     {
-        int points = 36;  // 円周上の分割数
-        Vector3[] path = new Vector3[points];
-        float startAngle = Mathf.Atan2(startPosition.y - CircleBackground.position.y, startPosition.x - CircleBackground.position.x);
-
-        for (int i = 0; i < points; i++)
+        for (int i = 0; i < Objects.Length; i++)
         {
-            float angle = startAngle - 2 * Mathf.PI * i / points;
-            path[i] = new Vector3(Mathf.Cos(angle) * Radius, Mathf.Sin(angle) * Radius, 0) + CircleBackground.position;
+            _angles[i] += _speeds[i] * Time.deltaTime;  // 角度を更新
+            Vector3 newPosition = new Vector3(Mathf.Cos(_angles[i]) * Radius, Mathf.Sin(_angles[i]) * Radius, 0) + CircleBackground.position;
+            Objects[i].transform.position = newPosition;  // 新しい位置にオブジェクトを移動
         }
-
-        return path;
     }
 
-    // 他のスクリプトから呼び出せるようにpublicに変更
     public void ResetObjectToStart(int index)
     {
         if (index < 0 || index >= Objects.Length)
@@ -105,14 +96,12 @@ public class CircularMovementWithBackground : MonoBehaviour
             return;
         }
 
-        Objects[index].transform.position = initialPositions[index];  // 初期位置に戻す
+        // 初期位置に瞬時に戻す
+        Objects[index].transform.position = _initialPositions[index];
 
-        // 再度円運動を開始
-        Vector3[] path = CreateCircularPath(initialPositions[index]);
-        objectTweens[index] = Objects[index].transform.DOPath(path, Duration, PathType.CatmullRom)
-            .SetEase(Ease.Linear)
-            .SetLoops(1, LoopType.Restart)
-            .OnComplete(() => ResetObjectToStart(index));  // 一周したら再度リセット
+        // 角度と回転速度をリセット
+        _angles[index] = Mathf.Atan2(_initialPositions[index].y - CircleBackground.position.y, _initialPositions[index].x - CircleBackground.position.x);
+        _speeds[index] = 2 * Mathf.PI / Duration;
     }
 
     // 他のスクリプトから全オブジェクトをリセットできるメソッド
@@ -123,5 +112,4 @@ public class CircularMovementWithBackground : MonoBehaviour
             ResetObjectToStart(i);
         }
     }
-
 }

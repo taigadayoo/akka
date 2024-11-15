@@ -264,7 +264,12 @@ public class CommandManager2P : MonoBehaviour
                         {
                             string randomCommand = _commands[UnityEngine.Random.Range(0, _commands.Count)];
                             _currentSequence.Add(randomCommand);
-
+                            ObjectSizeUp objectSize0 = _gameManager.FiveCommandThard[0].GetComponent<ObjectSizeUp>();
+                            ObjectSizeUp objectSize2 = _gameManager.FiveCommandThard[2].GetComponent<ObjectSizeUp>();
+                            ObjectSizeUp objectSize4 = _gameManager.FiveCommandThard[4].GetComponent<ObjectSizeUp>();
+                            objectSize0.PlayerNum = ObjectSizeUp.Player.player2;
+                            objectSize2.PlayerNum = ObjectSizeUp.Player.player2;
+                            objectSize4.PlayerNum = ObjectSizeUp.Player.player2;
                             Sprite commandSprite = _commandSprites[randomCommand];
                             if (i == 0)
                                 _gameManager.FiveCommandThard[0].sprite = commandSprite;
@@ -280,7 +285,10 @@ public class CommandManager2P : MonoBehaviour
                         {
                             string randomCommand = _commands[UnityEngine.Random.Range(0, _commands.Count)];
                             _currentSequence.Add(randomCommand);
-
+                            ObjectSizeUp objectSize1 = _gameManager.FiveCommandThard[1].GetComponent<ObjectSizeUp>();
+                            ObjectSizeUp objectSize3 = _gameManager.FiveCommandThard[3].GetComponent<ObjectSizeUp>();
+                            objectSize1.PlayerNum = ObjectSizeUp.Player.player2;
+                            objectSize3.PlayerNum = ObjectSizeUp.Player.player2;
                             Sprite commandSprite = _commandSprites[randomCommand];
                             if (i == 0)
                                 _gameManager.FiveCommandThard[1].sprite = commandSprite;
@@ -300,7 +308,12 @@ public class CommandManager2P : MonoBehaviour
                         {
                             string randomCommand = _commands[UnityEngine.Random.Range(0, _commands.Count)];
                             _currentSequence.Add(randomCommand);
-
+                            ObjectSizeUp objectSize0 = _gameManager.SixCommand[0].GetComponent<ObjectSizeUp>();
+                            ObjectSizeUp objectSize2 = _gameManager.SixCommand[2].GetComponent<ObjectSizeUp>();
+                            ObjectSizeUp objectSize4 = _gameManager.SixCommand[4].GetComponent<ObjectSizeUp>();
+                            objectSize0.PlayerNum = ObjectSizeUp.Player.player2;
+                            objectSize2.PlayerNum = ObjectSizeUp.Player.player2;
+                            objectSize4.PlayerNum = ObjectSizeUp.Player.player2;
                             Sprite commandSprite = _commandSprites[randomCommand];
                             if (i == 0)
                                 _gameManager.SixCommand[0].sprite = commandSprite;
@@ -317,7 +330,12 @@ public class CommandManager2P : MonoBehaviour
                         {
                             string randomCommand = _commands[UnityEngine.Random.Range(0, _commands.Count)];
                             _currentSequence.Add(randomCommand);
-
+                            ObjectSizeUp objectSize1 = _gameManager.SixCommand[1].GetComponent<ObjectSizeUp>();
+                            ObjectSizeUp objectSize3 = _gameManager.SixCommand[3].GetComponent<ObjectSizeUp>();
+                            ObjectSizeUp objectSize5 = _gameManager.SixCommand[5].GetComponent<ObjectSizeUp>();
+                            objectSize1.PlayerNum = ObjectSizeUp.Player.player2;
+                            objectSize3.PlayerNum = ObjectSizeUp.Player.player2;
+                            objectSize5.PlayerNum = ObjectSizeUp.Player.player2;
                             Sprite commandSprite = _commandSprites[randomCommand];
                             if (i == 0)
                                 _gameManager.SixCommand[1].sprite = commandSprite;
@@ -337,7 +355,14 @@ public class CommandManager2P : MonoBehaviour
                         {
                             string randomCommand = _commands[UnityEngine.Random.Range(0, _commands.Count)];
                             _currentSequence.Add(randomCommand);
-
+                            ObjectSizeUp objectSize0 = _gameManager.SevenCommand[0].GetComponent<ObjectSizeUp>();
+                            ObjectSizeUp objectSize2 = _gameManager.SevenCommand[2].GetComponent<ObjectSizeUp>();
+                            ObjectSizeUp objectSize4 = _gameManager.SevenCommand[4].GetComponent<ObjectSizeUp>();
+                            ObjectSizeUp objectSize6 = _gameManager.SevenCommand[6].GetComponent<ObjectSizeUp>();
+                            objectSize0.PlayerNum = ObjectSizeUp.Player.player2;
+                            objectSize2.PlayerNum = ObjectSizeUp.Player.player2;
+                            objectSize4.PlayerNum = ObjectSizeUp.Player.player2;
+                            objectSize6.PlayerNum = ObjectSizeUp.Player.player2;
                             Sprite commandSprite = _commandSprites[randomCommand];
                             if (i == 0)
                                 _gameManager.SevenCommand[0].sprite = commandSprite;
@@ -356,7 +381,12 @@ public class CommandManager2P : MonoBehaviour
                         {
                             string randomCommand = _commands[UnityEngine.Random.Range(0, _commands.Count)];
                             _currentSequence.Add(randomCommand);
-
+                            ObjectSizeUp objectSize1 = _gameManager.SevenCommand[1].GetComponent<ObjectSizeUp>();
+                            ObjectSizeUp objectSize3 = _gameManager.SevenCommand[3].GetComponent<ObjectSizeUp>();
+                            ObjectSizeUp objectSize5 = _gameManager.SevenCommand[5].GetComponent<ObjectSizeUp>();
+                            objectSize1.PlayerNum = ObjectSizeUp.Player.player2;
+                            objectSize3.PlayerNum = ObjectSizeUp.Player.player2;
+                            objectSize5.PlayerNum = ObjectSizeUp.Player.player2;
                             Sprite commandSprite = _commandSprites[randomCommand];
                             if (i == 0)
                                 _gameManager.SevenCommand[1].sprite = commandSprite;
@@ -460,7 +490,7 @@ public class CommandManager2P : MonoBehaviour
                 }
 
             }
-            else if (IsCorrectCommand(controllerData, expectedCommand) && _gameManager.PhaseCount == 2)
+            else if (IsCorrectCommand(controllerData, expectedCommand) && _gameManager.PhaseCount == 2 && _gameManager.OkPlayer2Thard)
             {
                 HandleThardCommandInput();
             }

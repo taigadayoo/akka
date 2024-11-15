@@ -3,20 +3,20 @@
 public class ObjectResetter : MonoBehaviour
 {
     public int ObjectIndex;  // リスト内のオブジェクトのインデックス
-    private CircularMovementWithBackground circularMovement;
+    private CircularMovementWithBackground _circularMovement;
 
     void Awake()
     {
         // CircularMovementWithBackground スクリプトを取得
-        circularMovement = FindObjectOfType<CircularMovementWithBackground>();
+        _circularMovement = FindObjectOfType<CircularMovementWithBackground>();
     }
 
     void OnEnable()
     {
         // アクティブになった際にリセットを実行
-        if (circularMovement != null)
+        if (_circularMovement != null)
         {
-            circularMovement.ResetObjectToStart(ObjectIndex);
+            _circularMovement.ResetObjectToStart(ObjectIndex);
         }
     }
 }

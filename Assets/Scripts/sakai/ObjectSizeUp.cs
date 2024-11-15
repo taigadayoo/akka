@@ -10,20 +10,56 @@ public class ObjectSizeUp : MonoBehaviour
     public float EnlargeDuration = 1f;  // 2秒かけて大きくする
     public float DelayBeforeShrinking = 1.3f;  // 大きくなった後、縮小を開始するまでの遅延時間（秒）
     public float ResizeDuration = 1f;  // 2秒かけて元の大きさに戻す
-
+    [SerializeField]
+    GameManager _gameManager;
+    public enum Player
+    {
+        player1,
+        player2
+    }
+    public Player PlayerNum;
     private void OnEnable()
     {
         ResetSize();
     }
+    void ResetSize()
+    {
+        transform.localScale = DefaultScale;  // デフォルトのサイズにリセット
+    }
     private void OnTriggerEnter2D(Collider2D collision)
     {
         // オブジェクトがアクティブになったときに、まずサイズを大きくする
-        if (gameObject.activeSelf)
+        if (gameObject.activeSelf && collision.gameObject.tag == "SizeUp")
         {
             EnlargeAndResize();
         }
+        if (collision.gameObject.tag == "Judge")
+        {
+            if (PlayerNum == Player.player1)
+            {
+                _gameManager.OkPlayer1Thard = true;
+            }
+            else if (PlayerNum == Player.player2)
+            {
+                _gameManager.OkPlayer2Thard = true;
+            }
+        }
+        // サイズを徐々に大きくしてから元に戻す処理     
     }
-    // サイズを徐々に大きくしてから元に戻す処理
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.gameObject.tag == "Judge")
+        {
+            if (PlayerNum == Player.player1)
+            {
+                _gameManager.OkPlayer1Thard = false;
+            }
+            else if (PlayerNum == Player.player2)
+            {
+                _gameManager.OkPlayer2Thard = false;
+            }
+        }
+    }
     void EnlargeAndResize()
     {
         // 最初は元のサイズにセット
@@ -43,9 +79,5 @@ public class ObjectSizeUp : MonoBehaviour
     {
         // 2秒間かけて元の大きさに戻す
         transform.DOScale(DefaultScale, ResizeDuration).SetEase(Ease.OutQuad);
-    }
-    void ResetSize()
-    {
-        transform.localScale = DefaultScale;  // デフォルトのサイズにリセット
     }
 }

@@ -46,6 +46,8 @@ public class GameManager : MonoBehaviour
     public bool ChangeLast = false;
     public bool ThardTimeUp = false;
     public bool StartThard = false;
+    public bool OkPlayer1Thard = false;
+    public bool OkPlayer2Thard = false;
     void Start()
     {
         Set1pImagesActive(false);

@@ -72,6 +72,7 @@ public class CommandManager1P : MonoBehaviour
         else if (_gameManager.ClearThard)
         {
             StartCoroutine(ClearThard());
+            _gameManager.ClearThard = false;
         }
     }
     private IEnumerator GenerateCommands()
@@ -124,8 +125,8 @@ public class CommandManager1P : MonoBehaviour
                 SecondImage.gameObject.SetActive(false);
                 ThirdImage.gameObject.SetActive(false);
 
-               _gameManager.LeftHP.value -= 30f;
-               _gameManager.RightHP.value -= 30f; //HP減少処理
+               _gameManager.LeftHP.value -= 2.5f;
+               _gameManager.RightHP.value -= 2.5f; //HP減少処理
 
                     CommandTime = 0f; // 経過時間リセット
               
@@ -285,8 +286,13 @@ public class CommandManager1P : MonoBehaviour
                             {
                                 string randomCommand = _commands[UnityEngine.Random.Range(0, _commands.Count)];
                                 _currentSequence.Add(randomCommand);
-
-                                Sprite commandSprite = _commandSprites[randomCommand];
+                                ObjectSizeUp objectSize0 = _gameManager.FiveCommandThard[0].GetComponent<ObjectSizeUp>();
+                                ObjectSizeUp objectSize2 = _gameManager.FiveCommandThard[2].GetComponent<ObjectSizeUp>();
+                                ObjectSizeUp objectSize4 = _gameManager.FiveCommandThard[4].GetComponent<ObjectSizeUp>();
+                                objectSize0.PlayerNum = ObjectSizeUp.Player.player1;
+                                objectSize2.PlayerNum = ObjectSizeUp.Player.player1;
+                                objectSize4.PlayerNum = ObjectSizeUp.Player.player1;
+                            Sprite commandSprite = _commandSprites[randomCommand];
                                 if (i == 0)
                                     _gameManager.FiveCommandThard[0].sprite = commandSprite;
                                 else if (i == 1)
@@ -301,15 +307,18 @@ public class CommandManager1P : MonoBehaviour
                              {
                                     string randomCommand = _commands[UnityEngine.Random.Range(0, _commands.Count)];
                                     _currentSequence.Add(randomCommand);
-
-                                    Sprite commandSprite = _commandSprites[randomCommand];
+                                ObjectSizeUp objectSize1 = _gameManager.FiveCommandThard[1].GetComponent<ObjectSizeUp>();
+                                ObjectSizeUp objectSize3 = _gameManager.FiveCommandThard[3].GetComponent<ObjectSizeUp>();
+                                objectSize1.PlayerNum = ObjectSizeUp.Player.player1;
+                                objectSize3.PlayerNum = ObjectSizeUp.Player.player1;
+                            Sprite commandSprite = _commandSprites[randomCommand];
                                     if (i == 0)
                                         _gameManager.FiveCommandThard[1].sprite = commandSprite;
                                     else if (i == 1)
                                         _gameManager.FiveCommandThard[3].sprite = commandSprite;
 
 
-                               }
+                             }
                          }
                     }
                     if (_gameManager.RandomCommandNum == 1)
@@ -321,8 +330,13 @@ public class CommandManager1P : MonoBehaviour
                             {
                                 string randomCommand = _commands[UnityEngine.Random.Range(0, _commands.Count)];
                                 _currentSequence.Add(randomCommand);
-
-                                Sprite commandSprite = _commandSprites[randomCommand];
+                            ObjectSizeUp objectSize0 = _gameManager.SixCommand[0].GetComponent<ObjectSizeUp>();
+                            ObjectSizeUp objectSize2 = _gameManager.SixCommand[2].GetComponent<ObjectSizeUp>();
+                            ObjectSizeUp objectSize4 = _gameManager.SixCommand[4].GetComponent<ObjectSizeUp>();
+                            objectSize0.PlayerNum = ObjectSizeUp.Player.player1;
+                            objectSize2.PlayerNum = ObjectSizeUp.Player.player1;
+                            objectSize4.PlayerNum = ObjectSizeUp.Player.player1;
+                            Sprite commandSprite = _commandSprites[randomCommand];
                                 if (i == 0)
                                     _gameManager.SixCommand[0].sprite = commandSprite;
                                 else if (i == 1)
@@ -338,8 +352,13 @@ public class CommandManager1P : MonoBehaviour
                             {
                                 string randomCommand = _commands[UnityEngine.Random.Range(0, _commands.Count)];
                                 _currentSequence.Add(randomCommand);
-
-                                Sprite commandSprite = _commandSprites[randomCommand];
+                            ObjectSizeUp objectSize1 = _gameManager.SixCommand[1].GetComponent<ObjectSizeUp>();
+                            ObjectSizeUp objectSize3 = _gameManager.SixCommand[3].GetComponent<ObjectSizeUp>();
+                            ObjectSizeUp objectSize5 = _gameManager.SixCommand[5].GetComponent<ObjectSizeUp>();
+                            objectSize1.PlayerNum = ObjectSizeUp.Player.player1;
+                            objectSize3.PlayerNum = ObjectSizeUp.Player.player1;
+                            objectSize5.PlayerNum = ObjectSizeUp.Player.player1;
+                            Sprite commandSprite = _commandSprites[randomCommand];
                             if (i == 0)
                                 _gameManager.SixCommand[1].sprite = commandSprite;
                             else if (i == 1)
@@ -358,8 +377,15 @@ public class CommandManager1P : MonoBehaviour
                             {
                                 string randomCommand = _commands[UnityEngine.Random.Range(0, _commands.Count)];
                                 _currentSequence.Add(randomCommand);
-
-                                Sprite commandSprite = _commandSprites[randomCommand];
+                            ObjectSizeUp objectSize0 = _gameManager.SevenCommand[0].GetComponent<ObjectSizeUp>();
+                            ObjectSizeUp objectSize2 = _gameManager.SevenCommand[2].GetComponent<ObjectSizeUp>();
+                            ObjectSizeUp objectSize4 = _gameManager.SevenCommand[4].GetComponent<ObjectSizeUp>();
+                            ObjectSizeUp objectSize6 = _gameManager.SevenCommand[6].GetComponent<ObjectSizeUp>();
+                            objectSize0.PlayerNum = ObjectSizeUp.Player.player1;
+                            objectSize2.PlayerNum = ObjectSizeUp.Player.player1;
+                            objectSize4.PlayerNum = ObjectSizeUp.Player.player1;
+                            objectSize6.PlayerNum = ObjectSizeUp.Player.player1;
+                            Sprite commandSprite = _commandSprites[randomCommand];
                                 if (i == 0)
                                     _gameManager.SevenCommand[0].sprite = commandSprite;
                                 else if (i == 1)
@@ -377,8 +403,13 @@ public class CommandManager1P : MonoBehaviour
                             {
                                 string randomCommand = _commands[UnityEngine.Random.Range(0, _commands.Count)];
                                 _currentSequence.Add(randomCommand);
-
-                                Sprite commandSprite = _commandSprites[randomCommand];
+                            ObjectSizeUp objectSize1 = _gameManager.SevenCommand[1].GetComponent<ObjectSizeUp>();
+                            ObjectSizeUp objectSize3 = _gameManager.SevenCommand[3].GetComponent<ObjectSizeUp>();
+                            ObjectSizeUp objectSize5 = _gameManager.SevenCommand[5].GetComponent<ObjectSizeUp>();
+                            objectSize1.PlayerNum = ObjectSizeUp.Player.player1;
+                            objectSize3.PlayerNum = ObjectSizeUp.Player.player1;
+                            objectSize5.PlayerNum = ObjectSizeUp.Player.player1;
+                            Sprite commandSprite = _commandSprites[randomCommand];
                             if (i == 0)
                                 _gameManager.SevenCommand[1].sprite = commandSprite;
                             else if (i == 1)
@@ -472,8 +503,8 @@ public class CommandManager1P : MonoBehaviour
 
         _gameManager.ThardImagesActive(false);
 
-        _gameManager.LeftHP.value -= 5f;
-        _gameManager.RightHP.value -= 5f; //HP減少処理
+        _gameManager.LeftHP.value -= 10f;
+        _gameManager.RightHP.value -= 10f; //HP減少処理
 
         _gameManager.ClearSecond = false;
         yield return new WaitForSeconds(1.0f);
@@ -511,7 +542,7 @@ public class CommandManager1P : MonoBehaviour
     }
     public IEnumerator MissThard(ControllerData controllerData)
     {
-
+        _circular.ResetAllObjects();
         _gameManager.ThardImagesActive(false);
         if (controllerData.PlayerType == PlayerType.Player1)
         {
@@ -570,7 +601,7 @@ public class CommandManager1P : MonoBehaviour
                     StartCoroutine(MissSecond(_controllerData));
                 }
             }
-            else if (IsCorrectCommand(controllerData, expectedCommand) && _gameManager.PhaseCount == 2)
+            else if (IsCorrectCommand(controllerData, expectedCommand) && _gameManager.PhaseCount == 2 && _gameManager.OkPlayer1Thard)
             {
                 HandleThardCommandInput();
             }
@@ -586,7 +617,7 @@ public class CommandManager1P : MonoBehaviour
                 }
                 if (_gameManager.PhaseCount == 2 && !IsCoolDown)
                 {
-                
+                  
                     StartCoroutine(MissThard(_controllerData));
                    
                 }
