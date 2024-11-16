@@ -73,11 +73,15 @@ public class GameManager : MonoBehaviour
             PhaseCount = 1;
             SecondBoxSprite.gameObject.SetActive(true);
         }
-       else if(LeftHP.value <= 20)
+       else if(LeftHP.value <= 20 && LeftHP.value > 0)
         {
             PhaseCount = 2;
             JudgementRing.gameObject.SetActive(true);
             LaneRing.gameObject.SetActive(true);
+        }
+       else if(LeftHP.value == 0)
+        {
+            StartCoroutine(GameOver());
         }
         if (PhaseCount == 1 && !ChangeNext)
         {

@@ -111,11 +111,5 @@ public class ObjectSizeUp : MonoBehaviour
         transform.DOScale(EnlargedScale, EnlargeDuration).SetEase(Ease.OutQuad);
     
     }
-   
-    // 大きくした後、元の大きさに戻す処理
-    void ShrinkBackToDefault()
-    {
-        // 2秒間かけて元の大きさに戻す
-        transform.DOScale(DefaultScale, ResizeDuration).SetEase(Ease.OutQuad);
-    }
+
 }

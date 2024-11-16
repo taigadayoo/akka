@@ -19,7 +19,6 @@ public class CommandManager1P : MonoBehaviour
 
     public GameObject FirstBox;
     private float _lastResetTime;
-    private float _resetCooldown = 0.2f;
 
     [SerializeField]
     CommandManager2P _command2p;
@@ -66,7 +65,7 @@ public class CommandManager1P : MonoBehaviour
 
         if(_gameManager.TimeUpThard1P)
         {
-            StartCoroutine(MissThard(ControllerData));
+            StartCoroutine(MissTimeUp(ControllerData));
             _gameManager.TimeUpThard1P = false;
         }
       
@@ -120,7 +119,7 @@ public class CommandManager1P : MonoBehaviour
 
                     if (CommandTime >= _commandTimeout) // 3秒経過した場合
                     {
-                        ResetCommands();
+                        StartCoroutine(MissCommand());
                         yield break; // コルーチンを終了
                     }
 
@@ -463,7 +462,7 @@ public class CommandManager1P : MonoBehaviour
         ThirdImage.gameObject.SetActive(false);
         // クールダウンを開始
         IsCoolDown = true;
-
+        CommandTime = 0;
         _gameManager.Miss1pCountMark();
         yield return new WaitForSeconds(2.0f);
         IsCoolDown = false;
@@ -556,9 +555,9 @@ public class CommandManager1P : MonoBehaviour
     }
     public IEnumerator MissThard(ControllerData controllerData)
     {
-        
-        _circular.ResetAllObjects();
         _gameManager.ThardImagesActive(false);
+        _circular.ResetAllObjects();
+      
         if (controllerData.PlayerType == PlayerType.Player1)
         {
             _gameManager.Miss1pCountMark();
@@ -574,6 +573,7 @@ public class CommandManager1P : MonoBehaviour
         IsCoolDown = true;
         _2P.IsCoolDown = true;
         yield return new WaitForSeconds(2.0f);
+       
         _gameManager.AllObjectSizeReset = true;
         IsCoolDown = false;
         _2P.IsCoolDown = false;
@@ -584,8 +584,7 @@ public class CommandManager1P : MonoBehaviour
     public IEnumerator MissTimeUp(ControllerData controllerData)
     {
 
-        _circular.ResetAllObjects();
-        _gameManager.ThardImagesActive(false);
+      
         if (controllerData.PlayerType == PlayerType.Player1)
         {
             _gameManager.Miss1pCountMark();
@@ -601,11 +600,13 @@ public class CommandManager1P : MonoBehaviour
         IsCoolDown = true;
         _2P.IsCoolDown = true;
         yield return new WaitForSeconds(3.0f);
+        _circular.ResetAllObjects();
+        _gameManager.ThardImagesActive(false);
         IsCoolDown = false;
         _2P.IsCoolDown = false;
         ResetCommands();
         _2P.ResetCommands();
-        
+        _gameManager.OneTimeUp = false;
     }
     private void OnControllerDataReceived(ControllerData controllerData)
     {
@@ -643,7 +644,7 @@ public class CommandManager1P : MonoBehaviour
                     StartCoroutine(MissSecond(ControllerData));
                 }
             }
-            else if (IsCorrectCommand(controllerData, expectedCommand) && _gameManager.PhaseCount == 2 && _gameManager.OkPlayer1Thard)
+            else if (IsCorrectCommand(controllerData, expectedCommand) && _gameManager.PhaseCount == 2 && _gameManager.OkPlayer1Thard && !_gameManager.OneTimeUp)
             {
                 HandleThardCommandInput();
             }

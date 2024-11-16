@@ -4,24 +4,24 @@ using UnityEngine;
 
 public class ThardObjectController : MonoBehaviour
 {
-    public List<GameObject> objects; // インスペクターで指定するオブジェクトのリスト
-    private List<GameObject> initialObjectsState; // 初期のオブジェクトリストを保持
-    public float delayBetweenActivations = 0.1f; // 各アニメーション開始の遅延
+    public List<GameObject> Objects; // インスペクターで指定するオブジェクトのリスト
+    private List<GameObject> _initialObjectsState; // 初期のオブジェクトリストを保持
+    public float DelayBetweenActivations = 0.1f; // 各アニメーション開始の遅延
 
     void Start()
     {
         // 初期状態のオブジェクトリストをコピーして保存
-        initialObjectsState = new List<GameObject>(objects);
+        _initialObjectsState = new List<GameObject>(Objects);
     }
 
     void Update()
     {
         // オブジェクトが非アクティブになった場合にリストから削除
-        for (int i = objects.Count - 1; i >= 0; i--)
+        for (int i = Objects.Count - 1; i >= 0; i--)
         {
-            if (objects[i] != null && !objects[i].activeSelf)
+            if (Objects[i] != null && !Objects[i].activeSelf)
             {
-                objects.RemoveAt(i); // 非アクティブなオブジェクトをリストから削除
+                Objects.RemoveAt(i); // 非アクティブなオブジェクトをリストから削除
             }
         }
     }
@@ -34,9 +34,9 @@ public class ThardObjectController : MonoBehaviour
 
     private IEnumerator ActivateObjectsWithAnimation()
     {
-        for (int i = 0; i < objects.Count; i++)
+        for (int i = 0; i < Objects.Count; i++)
         {
-            GameObject obj = objects[i];
+            GameObject obj = Objects[i];
             obj.SetActive(true);
 
             if (obj.TryGetComponent(out Animator animator))
@@ -45,7 +45,7 @@ public class ThardObjectController : MonoBehaviour
                
             }
             animator.SetTrigger("SizeUp");
-            yield return new WaitForSeconds(delayBetweenActivations);
+            yield return new WaitForSeconds(DelayBetweenActivations);
         }
     }
 
@@ -56,11 +56,11 @@ public class ThardObjectController : MonoBehaviour
 
         // 現在のリストを初期の状態に戻す
 
-            objects = new List<GameObject>(initialObjectsState);
+            Objects = new List<GameObject>(_initialObjectsState);
 
 
         // オブジェクトを非表示にしてAnimatorを無効化
-        foreach (var obj in objects)
+        foreach (var obj in Objects)
         {
             obj.SetActive(false);
             if (obj.TryGetComponent(out Animator animator))

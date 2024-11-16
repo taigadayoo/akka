@@ -21,7 +21,7 @@ public class CommandManager2P : MonoBehaviour
     private Dictionary<string, Sprite> _commandSprites;
 
     private float _lastResetTime;
-    private float _resetCooldown = 0.2f;
+ 
     public GameObject FirstBox;
     public float CommandTime = 0f;
     private float _commandTimeout = 3f; // 3秒
@@ -32,12 +32,14 @@ public class CommandManager2P : MonoBehaviour
     GameManager _gameManager;
     public bool IsCoolDown = false;
     public ControllerData ControllerData;
+    [SerializeField]
+    ThardObjectController _thardObjectController;
     private void Start()
     {
         _gameManager = FindObjectOfType<GameManager>();
 
         _commands = new List<string> { "A", "B", "X", "Y", "Right", "Left", "Up", "Down" };
-
+       
         _commandSprites = new Dictionary<string, Sprite>
         {
             { "A", ASprite },
@@ -49,15 +51,16 @@ public class CommandManager2P : MonoBehaviour
             { "Up", UpSprite },
             { "Down", DownSprite }
         };
-
+        
         StartCoroutine(GenerateCommands());
         ControllerManager.Instance.OnControllerData.Subscribe(OnControllerDataReceived).AddTo(this);
     }
     private void Update()
     {
+        
         if (_gameManager.TimeUpThard2P)
         {
-            _1P.MissTimeUp(ControllerData);
+            StartCoroutine(_1P.MissTimeUp(ControllerData));
             _gameManager.TimeUpThard2P = false;
         }
     }
@@ -104,7 +107,7 @@ public class CommandManager2P : MonoBehaviour
 
                     if (CommandTime >= _commandTimeout) // 3秒経過した場合
                     {
-                        ResetCommands();
+                        StartCoroutine(MissCommand());
                         yield break; // コルーチンを終了
                     }
 
@@ -425,7 +428,7 @@ public class CommandManager2P : MonoBehaviour
         ThirdImage.gameObject.SetActive(false);
         // クールダウンを開始
         IsCoolDown = true;
-
+        CommandTime = 0;
         _gameManager.Miss2pCountMark();
         yield return new WaitForSeconds(2.0f);
         IsCoolDown = false;
@@ -494,7 +497,7 @@ public class CommandManager2P : MonoBehaviour
                 }
 
             }
-            else if (IsCorrectCommand(controllerData, expectedCommand) && _gameManager.PhaseCount == 2 && _gameManager.OkPlayer2Thard)
+            else if (IsCorrectCommand(controllerData, expectedCommand) && _gameManager.PhaseCount == 2 && _gameManager.OkPlayer2Thard && !_gameManager.OneTimeUp)
             {
                 HandleThardCommandInput();
             }
