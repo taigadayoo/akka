@@ -41,6 +41,7 @@ public class GameManager : MonoBehaviour
     CommandManager1P _1P;
     [SerializeField]
     CommandManager2P _2P;
+    public GameObject StartPanel;
     public bool SwitchPlayer = false;
     public bool ChangeNext = false;
     public bool ChangeLast = false;
@@ -53,6 +54,7 @@ public class GameManager : MonoBehaviour
     public bool OneTimeUp = false;
     public bool AllObjectSizeReset = false;
     public Collider2D OnTimeUpCol;
+    public bool GameStart = false;
     void Start()
     {
         Set1pImagesActive(false);
@@ -63,7 +65,10 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        if(GameStart)
+        {
+            StartPanel.SetActive(false);
+        }
         if(MissCount == 5)
         {
             StartCoroutine(GameOver());

@@ -35,6 +35,7 @@ public class CommandManager1P : MonoBehaviour
     public ControllerData ControllerData;
     [SerializeField]
     ThardObjectController _thardObjectController;
+    private bool _oneStart = false;
 
     private void Start()
     {
@@ -57,12 +58,12 @@ public class CommandManager1P : MonoBehaviour
         _gameManager.ThardImagesActive(false);
         _gameManager.JudgementRing.SetActive(false);
         _gameManager.LaneRing.SetActive(false);
-        StartCoroutine(GenerateCommands());
+      
         ControllerManager.Instance.OnControllerData.Subscribe(OnControllerDataReceived).AddTo(this);
     }
     private void Update()
     {
-
+        StartCommand();
         if(_gameManager.TimeUpThard1P)
         {
             StartCoroutine(MissTimeUp(ControllerData));
@@ -79,6 +80,18 @@ public class CommandManager1P : MonoBehaviour
         {
             StartCoroutine(ClearThard());
             _gameManager.ClearThard = false;
+        }
+    }
+    private void  StartCommand()
+    {
+        if(_gameManager.GameStart && !_oneStart)
+        {
+            FirstBox.SetActive(true);
+            FirstImage.gameObject.SetActive(true);
+            SecondImage.gameObject.SetActive(true);
+            ThirdImage.gameObject.SetActive(true);
+            _oneStart = true;
+            StartCoroutine(GenerateCommands());
         }
     }
     private IEnumerator GenerateCommands()
@@ -620,7 +633,7 @@ public class CommandManager1P : MonoBehaviour
         string expectedCommand = _currentSequence[_currentIndex];
 
 
-         if (controllerData.ActionType == ActionType.Buttons)
+         if (controllerData.ActionType == ActionType.Buttons && _oneStart)
         {
             if (IsCorrectCommand(controllerData, expectedCommand) && _gameManager.PhaseCount == 0)
             {
@@ -658,7 +671,7 @@ public class CommandManager1P : MonoBehaviour
                 {
                     StartCoroutine(MissSecond(ControllerData));
                 }
-                if (_gameManager.PhaseCount == 2 && !IsCoolDown)
+                if (_gameManager.PhaseCount == 2 && !IsCoolDown && !_gameManager.OneTimeUp)
                 {
                   
                     StartCoroutine(MissThard(ControllerData));
