@@ -37,17 +37,31 @@ public class CircularMovementWithBackground : MonoBehaviour
     void PositionObjectsOnCircle()
     {
         int objectCount = Objects.Length;
-        float startAngle = 2 * Mathf.PI / 3;
-        float endAngle = 11 * Mathf.PI / 6;
+
+        // 90度 = π/2, 270度 = 3π/2
+        float startAngle = Mathf.PI / 2;  // 90度
+        float endAngle = 3 * Mathf.PI / 2;  // 270度
+
+        // オブジェクト間の角度ステップを計算
         float angleStep = (endAngle - startAngle) / (objectCount - 1);
 
         for (int i = 0; i < objectCount; i++)
         {
+            // 各オブジェクトの配置角度を計算
             float angle = startAngle + i * angleStep;
-            _initialPositions[i] = new Vector3(Mathf.Cos(angle) * Radius, Mathf.Sin(angle) * Radius, 0) + CircleBackground.position;
+
+            // 円周上の座標を計算
+            _initialPositions[i] = new Vector3(
+                Mathf.Cos(angle) * Radius,  // X座標
+                Mathf.Sin(angle) * Radius,  // Y座標
+                0                           // Z座標
+            ) + CircleBackground.position;  // 円の中心をオフセット
+
+            // オブジェクトの位置を設定
             Objects[i].transform.position = _initialPositions[i];
         }
     }
+
 
     void AddCollidersAndRigidbodyToChildren()
     {

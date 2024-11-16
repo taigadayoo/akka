@@ -4129,7 +4129,7 @@ BoxCollider2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1276943829}
-  m_Enabled: 1
+  m_Enabled: 0
   m_Density: 1
   m_Material: {fileID: 0}
   m_IncludeLayers:
@@ -4461,7 +4461,6 @@ MonoBehaviour:
   UpSprite: {fileID: 21300000, guid: 2d39a9ebc684c684eb54a32067e53376, type: 3}
   DownSprite: {fileID: 21300000, guid: 05c2664361db8c745a55cb3d9c1f7818, type: 3}
   _circular: {fileID: 89473861}
-  _thardObjectController: {fileID: 89473862}
   _command1P: {fileID: 580301341}
   FirstBox: {fileID: 1584904190}
   CommandTime: 0
@@ -6114,6 +6113,7 @@ MonoBehaviour:
   TimeUpThard1P: 0
   TimeUpThard2P: 0
   OneTimeUp: 0
+  OnTimeUpCol: {fileID: 1276943831}
 --- !u!4 &1850516707
 Transform:
   m_ObjectHideFlags: 0

@@ -15,6 +15,7 @@ public class ObjectSizeUp : MonoBehaviour
     CommandManager1P _1P;
     CommandManager2P _2P;
     ThardObjectController _thardObjectController;
+  
     public enum Player
     {
         player1,
@@ -22,6 +23,7 @@ public class ObjectSizeUp : MonoBehaviour
     }
     private void Start()
     {
+      
         _1P = FindFirstObjectByType<CommandManager1P>();
         _2P = FindFirstObjectByType<CommandManager2P>();
         _thardObjectController = FindFirstObjectByType<ThardObjectController>();
@@ -30,6 +32,14 @@ public class ObjectSizeUp : MonoBehaviour
     private void OnEnable()
     {
         ResetSize();
+    }
+    private void Update()
+    {
+        if(_gameManager.AllObjectSizeReset)
+        {
+            ResetSize();
+            _gameManager.AllObjectSizeReset = false;
+        }
     }
     void ResetSize()
     {
@@ -47,10 +57,12 @@ public class ObjectSizeUp : MonoBehaviour
             if (PlayerNum == Player.player1)
             {
                 _gameManager.OkPlayer1Thard = true;
+            
             }
             else if (PlayerNum == Player.player2)
             {
                 _gameManager.OkPlayer2Thard = true;
+             
             }
         }
         if(collision.gameObject.tag == "TimeUp" && !_gameManager.OneTimeUp)
@@ -65,7 +77,10 @@ public class ObjectSizeUp : MonoBehaviour
                 _gameManager.OneTimeUp = true;
                 _gameManager.TimeUpThard2P = true;
             }
-            _thardObjectController.StartAnimationsSequentially();
+
+                _thardObjectController.StartAnimationsSequentially();
+
+
         }
         // サイズを徐々に大きくしてから元に戻す処理     
     }
@@ -86,20 +101,17 @@ public class ObjectSizeUp : MonoBehaviour
            
         }
     }
+
     void EnlargeAndResize()
     {
         // 最初は元のサイズにセット
         transform.localScale = DefaultScale;
 
         // 2秒間かけて大きくする
-        transform.DOScale(EnlargedScale, EnlargeDuration).SetEase(Ease.OutQuad)
-            .OnComplete(() => StartShrinkAfterDelay());
+        transform.DOScale(EnlargedScale, EnlargeDuration).SetEase(Ease.OutQuad);
+    
     }
-    void StartShrinkAfterDelay()
-    {
-        // delayBeforeShrinking（遅延）秒後に縮小を開始
-        DOVirtual.DelayedCall(DelayBeforeShrinking, ShrinkBackToDefault);
-    }
+   
     // 大きくした後、元の大きさに戻す処理
     void ShrinkBackToDefault()
     {

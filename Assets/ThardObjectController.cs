@@ -42,9 +42,9 @@ public class ThardObjectController : MonoBehaviour
             if (obj.TryGetComponent(out Animator animator))
             {
                 animator.enabled = true;
-                animator.SetTrigger("SizeUp");
+               
             }
-
+            animator.SetTrigger("SizeUp");
             yield return new WaitForSeconds(delayBetweenActivations);
         }
     }
@@ -55,7 +55,9 @@ public class ThardObjectController : MonoBehaviour
         StopAllCoroutines(); // アニメーション再生を停止
 
         // 現在のリストを初期の状態に戻す
-        objects = new List<GameObject>(initialObjectsState);
+
+            objects = new List<GameObject>(initialObjectsState);
+
 
         // オブジェクトを非表示にしてAnimatorを無効化
         foreach (var obj in objects)

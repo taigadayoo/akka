@@ -32,14 +32,14 @@ public class CommandManager1P : MonoBehaviour
     [SerializeField]
     CommandManager2P _2P;
     public bool IsCoolDown = false;
-
+    private bool _oneResetThard = false;
     public ControllerData ControllerData;
     [SerializeField]
     ThardObjectController _thardObjectController;
 
     private void Start()
     {
-        _thardObjectController = FindFirstObjectByType<ThardObjectController>();
+       
         _gameManager = FindObjectOfType<GameManager>();
 
         _commands = new List<string> { "A", "B", "X", "Y", "Right", "Left", "Up", "Down" };
@@ -63,9 +63,10 @@ public class CommandManager1P : MonoBehaviour
     }
     private void Update()
     {
+
         if(_gameManager.TimeUpThard1P)
         {
-            MissTimeUp(ControllerData);
+            StartCoroutine(MissThard(ControllerData));
             _gameManager.TimeUpThard1P = false;
         }
       
@@ -273,7 +274,11 @@ public class CommandManager1P : MonoBehaviour
             else if(_gameManager.PhaseCount == 2)
             {
                 _thardObjectController.enabled = true;
-                _thardObjectController.ResetObjects();
+                if (_oneResetThard)
+                {
+                    _thardObjectController.ResetObjects();
+                }
+                _oneResetThard = true;
                 _gameManager.SecondBoxSprite.gameObject.SetActive(false);
                 FirstBox.SetActive(false);
                 FirstImage.gameObject.SetActive(false);
@@ -551,7 +556,7 @@ public class CommandManager1P : MonoBehaviour
     }
     public IEnumerator MissThard(ControllerData controllerData)
     {
-     
+        
         _circular.ResetAllObjects();
         _gameManager.ThardImagesActive(false);
         if (controllerData.PlayerType == PlayerType.Player1)
@@ -569,6 +574,7 @@ public class CommandManager1P : MonoBehaviour
         IsCoolDown = true;
         _2P.IsCoolDown = true;
         yield return new WaitForSeconds(2.0f);
+        _gameManager.AllObjectSizeReset = true;
         IsCoolDown = false;
         _2P.IsCoolDown = false;
         ResetCommands();

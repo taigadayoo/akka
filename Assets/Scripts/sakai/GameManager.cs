@@ -51,6 +51,8 @@ public class GameManager : MonoBehaviour
     public bool TimeUpThard1P = false;
     public bool TimeUpThard2P = false;
     public bool OneTimeUp = false;
+    public bool AllObjectSizeReset = false;
+    public Collider2D OnTimeUpCol;
     void Start()
     {
         Set1pImagesActive(false);
@@ -87,6 +89,7 @@ public class GameManager : MonoBehaviour
         }
         else if (PhaseCount == 2 && !ChangeLast)
         {
+            StartCoroutine(DelayCol());
             ClearSecond = false;    
             _1P.ResetCommands();
             _2P.ResetCommands();
@@ -99,6 +102,12 @@ public class GameManager : MonoBehaviour
     {
         Miss1P[MissCount].gameObject.SetActive(true);
         MissCount += 1;
+    }
+    IEnumerator DelayCol()
+    {
+        yield return new WaitForSeconds(2f);
+
+        OnTimeUpCol.enabled = true;
     }
     public void Miss2pCountMark()
     {
