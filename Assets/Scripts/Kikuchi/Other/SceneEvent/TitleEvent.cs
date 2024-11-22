@@ -1,6 +1,6 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UniRx;
-using UnityEditor.SearchService;
+
 
 /// <summary>
 /// タイトル画面のボタンイベントを処理するクラス
@@ -12,6 +12,7 @@ public class TitleEvent : MonoBehaviour
     /// </summary>
     void Start()
     {
+        SampleSoundManager.Instance.PlayBgm(BgmType.BGM1);
         // ControllerManager からの ControllerData を購読
         ControllerManager.Instance.OnControllerData
         .Where(_ => !SceneManager.Instance.IsFading)
@@ -48,6 +49,7 @@ public class TitleEvent : MonoBehaviour
         {
             Debug.Log("FadeStart");
             SceneManager.Instance.LoadScene(SceneName.Setting);
+            SampleSoundManager.Instance.StopBgm();
         }
     }
 

@@ -57,6 +57,7 @@ public class GameManager : MonoBehaviour
     public bool GameStart = false;
     void Start()
     {
+        SampleSoundManager.Instance.PlayBgm(BgmType.BGM3);
         Set1pImagesActive(false);
         Set2pImagesActive(false);//配列内のミスマークは非表示に
         SecondBoxSprite.gameObject.SetActive(false);
@@ -87,6 +88,7 @@ public class GameManager : MonoBehaviour
        else if(LeftHP.value == 0)
         {
             StartCoroutine(GameOver());
+            SampleSoundManager.Instance.StopBgm();
         }
         if (PhaseCount == 1 && !ChangeNext)
         {

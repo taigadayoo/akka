@@ -144,8 +144,8 @@ public class CommandManager1P : MonoBehaviour
                 SecondImage.gameObject.SetActive(false);
                 ThirdImage.gameObject.SetActive(false);
 
-               _gameManager.LeftHP.value -= 30f;
-               _gameManager.RightHP.value -= 30f; //HP減少処理
+               _gameManager.LeftHP.value -= 2.5f;
+               _gameManager.RightHP.value -= 2.5f; //HP減少処理
 
                     CommandTime = 0f; // 経過時間リセット
               

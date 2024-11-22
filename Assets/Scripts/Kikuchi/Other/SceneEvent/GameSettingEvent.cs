@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UniRx;
 
 /// <summary>
@@ -19,6 +19,7 @@ public class GameSettingEvent : MonoBehaviour
     /// </summary>
     private void Start()
     {
+        SampleSoundManager.Instance.PlayBgm(BgmType.BGM2);
         // プレイヤー1およびプレイヤー2のパネルを非アクティブに設定
         _player1Panel.SetActive(false);
         _player2Panel.SetActive(false);
@@ -37,6 +38,7 @@ public class GameSettingEvent : MonoBehaviour
                     {
                         Debug.Log("FadeStart");
                         SceneManager.Instance.LoadScene(SceneName.Game);
+                        SampleSoundManager.Instance.StopBgm();
                     }
                     break;
                 // case ActionType.Sticks:
