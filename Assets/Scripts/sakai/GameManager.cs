@@ -41,6 +41,11 @@ public class GameManager : MonoBehaviour
     CommandManager1P _1P;
     [SerializeField]
     CommandManager2P _2P;
+   public Animator[] First1PAnim;
+    public Animator[] First2PAnim;
+    public Animator[] SecondThreeAnim;
+    public Animator[] SecondFourAnim;
+    public Animator[] SecondFiveAnim;
     public GameObject StartPanel;
     public bool SwitchPlayer = false;
     public bool ChangeNext = false;
@@ -212,5 +217,63 @@ public class GameManager : MonoBehaviour
 
         SceneManager.Instance.LoadScene(SceneName.Result);
         //ゲームオーバー処理
+    }
+   public void EnableAllAnimators(int num)
+    {
+        if (num == 0)
+        {
+            foreach (Animator animator in First1PAnim)
+            {
+                if (animator != null) // Nullチェック
+                {
+                    animator.SetTrigger("Zoom");
+                }
+
+            }
+        }
+        else if (num == 1)
+        {
+            foreach (Animator animator in First2PAnim)
+            {
+                if (animator != null) // Nullチェック
+                {
+                    animator.SetTrigger("Zoom");
+                }
+
+            }
+        }
+        else if (num == 2)
+        {
+            foreach (Animator animator in SecondThreeAnim)
+            {
+                if (animator != null) // Nullチェック
+                {
+                    animator.SetTrigger("Zoom");
+                }
+
+            }
+        }
+        else if (num == 3)
+        {
+            foreach (Animator animator in SecondFourAnim)
+            {
+                if (animator != null) // Nullチェック
+                {
+                    animator.SetTrigger("Zoom");
+                }
+
+            }
+        }
+        else if (num == 4)
+        {
+            foreach (Animator animator in SecondFiveAnim)
+            {
+                if (animator != null) // Nullチェック
+                {
+                    animator.SetTrigger("Zoom");
+                }
+
+            }
+        }
     }
 }

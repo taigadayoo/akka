@@ -109,7 +109,7 @@ public class CommandManager1P : MonoBehaviour
                 FirstImage.gameObject.SetActive(true);
                 SecondImage.gameObject.SetActive(true);
                 ThirdImage.gameObject.SetActive(true);
-
+                _gameManager.EnableAllAnimators(0);
                 for (int i = 0; i < 3; i++)
                 {
                     string randomCommand = _commands[UnityEngine.Random.Range(0, _commands.Count)];
@@ -167,6 +167,7 @@ public class CommandManager1P : MonoBehaviour
 
                 if(_gameManager.RandomCommandNum == 0)
                 {
+                    _gameManager.EnableAllAnimators(2);
                     if (_gameManager.FirstPlayerRandomNum == 0)
                     {
                        
@@ -196,6 +197,7 @@ public class CommandManager1P : MonoBehaviour
                 }
                 if (_gameManager.RandomCommandNum == 1)
                 {
+                    _gameManager.EnableAllAnimators(3);
                     if (_gameManager.FirstPlayerRandomNum == 0)
                     {
                        
@@ -229,6 +231,7 @@ public class CommandManager1P : MonoBehaviour
                 }
                 if (_gameManager.RandomCommandNum == 2)
                 {
+                    _gameManager.EnableAllAnimators(4);
                     if (_gameManager.FirstPlayerRandomNum == 0)
                     {
                     

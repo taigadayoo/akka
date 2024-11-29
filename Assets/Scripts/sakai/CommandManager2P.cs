@@ -94,7 +94,7 @@ public class CommandManager2P : MonoBehaviour
                 FirstImage.gameObject.SetActive(true);
                 SecondImage.gameObject.SetActive(true);
                 ThirdImage.gameObject.SetActive(true);
-
+                _gameManager.EnableAllAnimators(1);
                 for (int i = 0; i < 3; i++)
                 {
                     string randomCommand = _commands[UnityEngine.Random.Range(0, _commands.Count)];
