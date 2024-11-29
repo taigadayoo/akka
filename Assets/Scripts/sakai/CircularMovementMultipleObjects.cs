@@ -30,8 +30,10 @@ public class CircularMovementWithBackground : MonoBehaviour
             StartCircularMovement();  // 円運動を開始
             _gameManager.StartThard = false;  // 一度だけ呼ばれるようにフラグをリセット
         }
-
-        UpdateCircularMovement();  // 各オブジェクトの円運動を更新
+        if (_gameManager.GameStart)
+        {
+            UpdateCircularMovement();  // 各オブジェクトの円運動を更新
+        }
     }
 
     void PositionObjectsOnCircle()

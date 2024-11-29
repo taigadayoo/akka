@@ -118,7 +118,7 @@ public class CommandManager2P : MonoBehaviour
                 {
                     CommandTime += Time.deltaTime; // 経過時間を加算
 
-                    if (CommandTime >= _commandTimeout) // 3秒経過した場合
+                    if (CommandTime >= _commandTimeout && _gameManager.GameStart) // 3秒経過した場合
                     {
                         StartCoroutine(MissCommand());
                         yield break; // コルーチンを終了
@@ -251,7 +251,7 @@ public class CommandManager2P : MonoBehaviour
                 {
                     _gameManager.SecondCommandTime += Time.deltaTime; // 経過時間を加算
 
-                    if (_gameManager.SecondCommandTime >= _commandTimeoutSecond) // 5秒経過した場合
+                    if (_gameManager.SecondCommandTime >= _commandTimeoutSecond && _gameManager.GameStart) // 5秒経過した場合
                     {
                         if (_gameManager.FirstPlayerRandomNum == 0 && _gameManager.SwitchPlayer || _gameManager.FirstPlayerRandomNum == 1 && !_gameManager.SwitchPlayer)
                         {
@@ -421,7 +421,7 @@ public class CommandManager2P : MonoBehaviour
                 {
                     _gameManager.SecondCommandTime += Time.deltaTime; // 経過時間を加算
 
-                    if (_gameManager.ThardTimeUp) // 5秒経過した場合
+                    if (_gameManager.ThardTimeUp && _gameManager.GameStart) // 5秒経過した場合
                     {
                         _gameManager.ThardImagesActive(false);
 
@@ -525,7 +525,7 @@ public class CommandManager2P : MonoBehaviour
 
                     StartCoroutine(_1P.MissSecond(ControllerData));
                 }
-                if (_gameManager.PhaseCount == 2 && !IsCoolDown && !_gameManager.OneTimeUp)
+                if (_gameManager.PhaseCount == 2 && !IsCoolDown && !_gameManager.OneTimeUp && _gameManager.GameStart)
                 {
                
                     StartCoroutine(_1P.MissThard(ControllerData));
@@ -547,13 +547,27 @@ public class CommandManager2P : MonoBehaviour
     //}
         private void HandleCommandInput()
     {
+        Vector3 firstCommand;
         if (_currentIndex == 0)
-            FirstImage.gameObject.SetActive(false);
-        else if (_currentIndex == 1)
-            SecondImage.gameObject.SetActive(false);
-        else if (_currentIndex == 2)
-            ThirdImage.gameObject.SetActive(false);
+        {
 
+            firstCommand = FirstImage.gameObject.transform.position;
+            Instantiate(_gameManager.CommandEffect, firstCommand, Quaternion.identity);
+            FirstImage.gameObject.SetActive(false);
+        }
+        else if (_currentIndex == 1)
+        {
+            firstCommand = SecondImage.gameObject.transform.position;
+            Instantiate(_gameManager.CommandEffect, firstCommand, Quaternion.identity);
+            SecondImage.gameObject.SetActive(false);
+        }
+
+        else if (_currentIndex == 2)
+        {
+            firstCommand = ThirdImage.gameObject.transform.position;
+            Instantiate(_gameManager.CommandEffect, firstCommand, Quaternion.identity);
+            ThirdImage.gameObject.SetActive(false);
+        }
         _currentIndex++;
 
         if (_currentIndex >= _currentSequence.Count)
@@ -563,6 +577,7 @@ public class CommandManager2P : MonoBehaviour
     }
     private void HandleSecondCommandInput()
     {
+        Vector3 secondCommand;
         if (_gameManager.FirstPlayerRandomNum == 0)
         {
 
@@ -570,6 +585,8 @@ public class CommandManager2P : MonoBehaviour
             {
                 if (_currentIndex == 0 && _gameManager.SwitchPlayer)
                 {
+                    secondCommand = _gameManager.ThreeCommand[1].gameObject.transform.position;
+                    Instantiate(_gameManager.CommandEffect, secondCommand, Quaternion.identity);
                     _gameManager.ThreeCommand[1].gameObject.SetActive(false);
 
                     _gameManager.SwitchPlayer = false;
@@ -582,6 +599,8 @@ public class CommandManager2P : MonoBehaviour
             {
                 if (_currentIndex == 0 && _gameManager.SwitchPlayer)
                 {
+                    secondCommand = _gameManager.FourCommand[1].gameObject.transform.position;
+                    Instantiate(_gameManager.CommandEffect, secondCommand, Quaternion.identity);
                     _gameManager.FourCommand[1].gameObject.SetActive(false);
 
                     _gameManager.SwitchPlayer = false;
@@ -590,6 +609,8 @@ public class CommandManager2P : MonoBehaviour
                 }
                 else if (_currentIndex == 1 && _gameManager.SwitchPlayer)
                 {
+                    secondCommand = _gameManager.FourCommand[3].gameObject.transform.position;
+                    Instantiate(_gameManager.CommandEffect, secondCommand, Quaternion.identity);
                     _gameManager.FourCommand[3].gameObject.SetActive(false);
                     _gameManager.ClearSecond = true;
                     _currentIndex++;
@@ -599,6 +620,8 @@ public class CommandManager2P : MonoBehaviour
             {
                 if (_currentIndex == 0 && _gameManager.SwitchPlayer)
                 {
+                    secondCommand = _gameManager.FiveCommand[1].gameObject.transform.position;
+                    Instantiate(_gameManager.CommandEffect, secondCommand, Quaternion.identity);
                     _gameManager.FiveCommand[1].gameObject.SetActive(false);
 
                     _gameManager.SwitchPlayer = false;
@@ -607,6 +630,8 @@ public class CommandManager2P : MonoBehaviour
                 }
                 else if (_currentIndex == 1 && _gameManager.SwitchPlayer)
                 {
+                    secondCommand = _gameManager.FiveCommand[3].gameObject.transform.position;
+                    Instantiate(_gameManager.CommandEffect, secondCommand, Quaternion.identity);
                     _gameManager.FiveCommand[3].gameObject.SetActive(false);
 
                     _gameManager.SwitchPlayer = false;
@@ -621,6 +646,8 @@ public class CommandManager2P : MonoBehaviour
             {
                 if (_currentIndex == 0 && !_gameManager.SwitchPlayer)
                 {
+                    secondCommand = _gameManager.ThreeCommand[0].gameObject.transform.position;
+                    Instantiate(_gameManager.CommandEffect, secondCommand, Quaternion.identity);
                     _gameManager.ThreeCommand[0].gameObject.SetActive(false);
 
                     _gameManager.SwitchPlayer = true;
@@ -628,6 +655,8 @@ public class CommandManager2P : MonoBehaviour
                 }
                 else if (_currentIndex == 1 && !_gameManager.SwitchPlayer)
                 {
+                    secondCommand = _gameManager.ThreeCommand[2].gameObject.transform.position;
+                    Instantiate(_gameManager.CommandEffect, secondCommand, Quaternion.identity);
                     _gameManager.ThreeCommand[2].gameObject.SetActive(false);
 
                     _gameManager.ClearSecond = true;
@@ -638,6 +667,8 @@ public class CommandManager2P : MonoBehaviour
             {
                 if (_currentIndex == 0 && !_gameManager.SwitchPlayer)
                 {
+                    secondCommand = _gameManager.FourCommand[0].gameObject.transform.position;
+                    Instantiate(_gameManager.CommandEffect, secondCommand, Quaternion.identity);
                     _gameManager.FourCommand[0].gameObject.SetActive(false);
 
                     _gameManager.SwitchPlayer = true;
@@ -645,6 +676,8 @@ public class CommandManager2P : MonoBehaviour
                 }
                 else if (_currentIndex == 1 && !_gameManager.SwitchPlayer)
                 {
+                    secondCommand = _gameManager.FourCommand[2].gameObject.transform.position;
+                    Instantiate(_gameManager.CommandEffect, secondCommand, Quaternion.identity);
                     _gameManager.FourCommand[2].gameObject.SetActive(false);
 
                     _gameManager.SwitchPlayer = true;
@@ -655,6 +688,8 @@ public class CommandManager2P : MonoBehaviour
             {
                 if (_currentIndex == 0 && !_gameManager.SwitchPlayer)
                 {
+                    secondCommand = _gameManager.FiveCommand[0].gameObject.transform.position;
+                    Instantiate(_gameManager.CommandEffect, secondCommand, Quaternion.identity);
                     _gameManager.FiveCommand[0].gameObject.SetActive(false);
 
                     _gameManager.SwitchPlayer = true;
@@ -662,6 +697,8 @@ public class CommandManager2P : MonoBehaviour
                 }
                 else if (_currentIndex == 1 && !_gameManager.SwitchPlayer)
                 {
+                    secondCommand = _gameManager.FiveCommand[2].gameObject.transform.position;
+                    Instantiate(_gameManager.CommandEffect, secondCommand, Quaternion.identity);
                     _gameManager.FiveCommand[2].gameObject.SetActive(false);
 
                     _gameManager.SwitchPlayer = true;
@@ -669,6 +706,8 @@ public class CommandManager2P : MonoBehaviour
                 }
                 else if (_currentIndex == 2 && !_gameManager.SwitchPlayer)
                 {
+                    secondCommand = _gameManager.FiveCommand[4].gameObject.transform.position;
+                    Instantiate(_gameManager.CommandEffect, secondCommand, Quaternion.identity);
                     _gameManager.FiveCommand[4].gameObject.SetActive(false);
                     _gameManager.ClearSecond = true;
                 }
@@ -678,23 +717,30 @@ public class CommandManager2P : MonoBehaviour
     }
     private void HandleThardCommandInput()
     {
+        Vector3 thardCommand;
         if (_gameManager.FirstPlayerRandomNum == 1)
         {
             if (_gameManager.RandomCommandNum == 0)
             {
                 if (_currentIndex == 0)
                 {
+                    thardCommand = _gameManager.FiveCommandThard[0].gameObject.transform.position;
+                    Instantiate(_gameManager.CommandEffect, thardCommand, Quaternion.identity);
                     _gameManager.FiveCommandThard[0].gameObject.SetActive(false);
 
                     _currentIndex++;
                 }
                 else if (_currentIndex == 1)
                 {
+                    thardCommand = _gameManager.FiveCommandThard[2].gameObject.transform.position;
+                    Instantiate(_gameManager.CommandEffect, thardCommand, Quaternion.identity);
                     _gameManager.FiveCommandThard[2].gameObject.SetActive(false);
                     _currentIndex++;
                 }
                 else if (_currentIndex == 2)
                 {
+                    thardCommand = _gameManager.FiveCommandThard[4].gameObject.transform.position;
+                    Instantiate(_gameManager.CommandEffect, thardCommand, Quaternion.identity);
                     _gameManager.FiveCommandThard[4].gameObject.SetActive(false);
                     _currentIndex++;
                     _gameManager.ClearThard = true;
@@ -705,18 +751,24 @@ public class CommandManager2P : MonoBehaviour
             {
                 if (_currentIndex == 0)
                 {
+                    thardCommand = _gameManager.SixCommand[0].gameObject.transform.position;
+                    Instantiate(_gameManager.CommandEffect, thardCommand, Quaternion.identity);
                     _gameManager.SixCommand[0].gameObject.SetActive(false);
 
                     _currentIndex++;
                 }
                 else if (_currentIndex == 1)
                 {
+                    thardCommand = _gameManager.SixCommand[2].gameObject.transform.position;
+                    Instantiate(_gameManager.CommandEffect, thardCommand, Quaternion.identity);
                     _gameManager.SixCommand[2].gameObject.SetActive(false);
 
                     _currentIndex++;
                 }
                 else if (_currentIndex == 2)
                 {
+                    thardCommand = _gameManager.SixCommand[4].gameObject.transform.position;
+                    Instantiate(_gameManager.CommandEffect, thardCommand, Quaternion.identity);
                     _gameManager.SixCommand[4].gameObject.SetActive(false);
 
                     _currentIndex++;
@@ -726,24 +778,32 @@ public class CommandManager2P : MonoBehaviour
             {
                 if (_currentIndex == 0)
                 {
+                    thardCommand = _gameManager.SevenCommand[0].gameObject.transform.position;
+                    Instantiate(_gameManager.CommandEffect, thardCommand, Quaternion.identity);
                     _gameManager.SevenCommand[0].gameObject.SetActive(false);
 
                     _currentIndex++;
                 }
                 else if (_currentIndex == 1)
                 {
+                    thardCommand = _gameManager.SevenCommand[2].gameObject.transform.position;
+                    Instantiate(_gameManager.CommandEffect, thardCommand, Quaternion.identity);
                     _gameManager.SevenCommand[2].gameObject.SetActive(false);
 
                     _currentIndex++;
                 }
                 else if (_currentIndex == 2)
                 {
+                    thardCommand = _gameManager.SevenCommand[4].gameObject.transform.position;
+                    Instantiate(_gameManager.CommandEffect, thardCommand, Quaternion.identity);
                     _gameManager.SevenCommand[4].gameObject.SetActive(false);
 
                     _currentIndex++;
                 }
                 else if (_currentIndex == 3)
                 {
+                    thardCommand = _gameManager.SevenCommand[6].gameObject.transform.position;
+                    Instantiate(_gameManager.CommandEffect, thardCommand, Quaternion.identity);
                     _gameManager.SevenCommand[6].gameObject.SetActive(false);
 
                     _currentIndex++;
@@ -759,12 +819,16 @@ public class CommandManager2P : MonoBehaviour
 
                 if (_currentIndex == 0)
                 {
+                    thardCommand = _gameManager.FiveCommandThard[1].gameObject.transform.position;
+                    Instantiate(_gameManager.CommandEffect, thardCommand, Quaternion.identity);
                     _gameManager.FiveCommandThard[1].gameObject.SetActive(false);
 
                     _currentIndex++;
                 }
                 else if (_currentIndex == 1)
                 {
+                    thardCommand = _gameManager.FiveCommandThard[3].gameObject.transform.position;
+                    Instantiate(_gameManager.CommandEffect, thardCommand, Quaternion.identity);
                     _gameManager.FiveCommandThard[3].gameObject.SetActive(false);
                     _currentIndex++;
                 }
@@ -775,18 +839,24 @@ public class CommandManager2P : MonoBehaviour
             {
                 if (_currentIndex == 0)
                 {
+                    thardCommand = _gameManager.SixCommand[1].gameObject.transform.position;
+                    Instantiate(_gameManager.CommandEffect, thardCommand, Quaternion.identity);
                     _gameManager.SixCommand[1].gameObject.SetActive(false);
 
                     _currentIndex++;
                 }
                 else if (_currentIndex == 1)
                 {
+                    thardCommand = _gameManager.SixCommand[3].gameObject.transform.position;
+                    Instantiate(_gameManager.CommandEffect, thardCommand, Quaternion.identity);
                     _gameManager.SixCommand[3].gameObject.SetActive(false);
 
                     _currentIndex++;
                 }
                 else if (_currentIndex == 2)
                 {
+                    thardCommand = _gameManager.SixCommand[5].gameObject.transform.position;
+                    Instantiate(_gameManager.CommandEffect, thardCommand, Quaternion.identity);
                     _gameManager.SixCommand[5].gameObject.SetActive(false);
 
                     _currentIndex++;
@@ -797,18 +867,24 @@ public class CommandManager2P : MonoBehaviour
             {
                 if (_currentIndex == 0)
                 {
+                    thardCommand = _gameManager.SevenCommand[1].gameObject.transform.position;
+                    Instantiate(_gameManager.CommandEffect, thardCommand, Quaternion.identity);
                     _gameManager.SevenCommand[1].gameObject.SetActive(false);
 
                     _currentIndex++;
                 }
                 else if (_currentIndex == 1)
                 {
+                    thardCommand = _gameManager.SevenCommand[3].gameObject.transform.position;
+                    Instantiate(_gameManager.CommandEffect, thardCommand, Quaternion.identity);
                     _gameManager.SevenCommand[3].gameObject.SetActive(false);
 
                     _currentIndex++;
                 }
                 else if (_currentIndex == 2)
                 {
+                    thardCommand = _gameManager.SevenCommand[5].gameObject.transform.position;
+                    Instantiate(_gameManager.CommandEffect, thardCommand, Quaternion.identity);
                     _gameManager.SevenCommand[5].gameObject.SetActive(false);
 
                     _currentIndex++;

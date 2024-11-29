@@ -26,6 +26,10 @@ public class GameManager : MonoBehaviour
     public SpriteRenderer[] SevenCommand;
     public int MissCount = 0;
     public SpriteRenderer SecondBoxSprite;
+    [SerializeField]
+   public GameObject CommandEffect;
+    [SerializeField]
+    StartTextAnimation _textAnimation;
     public bool OnGameOver = false;
     public Slider LeftHP;
     public Slider RightHP;
@@ -57,6 +61,7 @@ public class GameManager : MonoBehaviour
     public bool TimeUpThard1P = false;
     public bool TimeUpThard2P = false;
     public bool OneTimeUp = false;
+    public bool OneClear = false;
     public bool AllObjectSizeReset = false;
     public Collider2D OnTimeUpCol;
     public bool GameStart = false;
@@ -77,7 +82,13 @@ public class GameManager : MonoBehaviour
         }
         if(MissCount == 5)
         {
-            StartCoroutine(GameOver());
+            if (!OneClear)
+            {
+                _textAnimation.StartText();
+                SampleSoundManager.Instance.StopBgm();
+                ClearEnabled();
+                OneClear = true;
+            }
         }
        if(LeftHP.value <= 40 && LeftHP.value > 20)
         {
@@ -92,8 +103,14 @@ public class GameManager : MonoBehaviour
         }
        else if(LeftHP.value == 0)
         {
-            StartCoroutine(GameOver());
-            SampleSoundManager.Instance.StopBgm();
+            if (!OneClear)
+            {
+                ClearEnabled();
+                _textAnimation.StartText();
+            
+                SampleSoundManager.Instance.StopBgm();
+                OneClear = true;
+            }
         }
         if (PhaseCount == 1 && !ChangeNext)
         {
@@ -113,6 +130,33 @@ public class GameManager : MonoBehaviour
             _2P.IsCoolDown = false;
             ChangeLast = true;
         }
+    }
+    public void ClearEnabled()
+    {
+        foreach (SpriteRenderer renderer in FiveCommandThard)
+        {
+            if (renderer != null) // nullチェック
+            {
+                renderer.enabled = false;
+            }
+        }
+        foreach (SpriteRenderer renderer in SixCommand)
+        {
+            if (renderer != null) // nullチェック
+            {
+                renderer.enabled = false;
+            }
+        }
+        foreach (SpriteRenderer renderer in SevenCommand)
+        {
+            if (renderer != null) // nullチェック
+            {
+                renderer.enabled = false;
+            }
+        }
+
+        JudgementRing.SetActive(false);
+        LaneRing.SetActive(false);
     }
     public void Miss1pCountMark()
     {
@@ -210,10 +254,10 @@ public class GameManager : MonoBehaviour
         }
 
     }
-    IEnumerator GameOver()
+
+    public void StartGameOver()
     {
 
-        yield return new WaitForSeconds(2.0f);
 
         SceneManager.Instance.LoadScene(SceneName.Result);
         //ゲームオーバー処理

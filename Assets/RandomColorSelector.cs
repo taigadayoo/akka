@@ -1,4 +1,7 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
 
 public class RandomColorSelector : MonoBehaviour
 {
@@ -12,8 +15,14 @@ public class RandomColorSelector : MonoBehaviour
 
         // ランダムな色を選択
         SetRandomColor();
+        StartCoroutine(DestroyObject());
     }
+   IEnumerator DestroyObject()
+    {
+        yield return new WaitForSeconds(2f);
 
+        Destroy(this.gameObject);
+    }
     void SetRandomColor()
     {
         if (_colors.Length == 0)
