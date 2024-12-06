@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class SE2 : MonoBehaviour
+public class SE11 : MonoBehaviour
 {
     public AudioClip SoundEffect;
     private AudioSource _audioSource;
