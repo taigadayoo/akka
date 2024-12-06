@@ -21,7 +21,8 @@ public class CommandManager2P : MonoBehaviour
     private Dictionary<string, Sprite> _commandSprites;
 
     private float _lastResetTime;
- 
+    [SerializeField]
+    public Animator Animator2P;
     public GameObject FirstBox;
     public float CommandTime = 0f;
     private float _commandTimeout = 3f; // 3秒
@@ -140,6 +141,7 @@ public class CommandManager2P : MonoBehaviour
 
                 _gameManager.LeftHP.value -= 2.5f;
                 _gameManager.RightHP.value -= 2.5f; //HP減少処理
+                Animator2P.SetTrigger("Attack2p");
                 CommandTime = 0f; // 経過時間リセット
 
 

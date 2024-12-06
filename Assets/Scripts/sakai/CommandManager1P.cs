@@ -16,7 +16,8 @@ public class CommandManager1P : MonoBehaviour
     private int _currentIndex;
 
     private Dictionary<string, Sprite> _commandSprites;
-
+    [SerializeField]
+    public Animator Animator1P;
     public GameObject FirstBox;
     private float _lastResetTime;
 
@@ -152,7 +153,7 @@ public class CommandManager1P : MonoBehaviour
 
                _gameManager.LeftHP.value -= 2.5f;
                _gameManager.RightHP.value -= 2.5f; //HP減少処理
-
+                Animator1P.SetTrigger("Attack");
                     CommandTime = 0f; // 経過時間リセット
               
 
@@ -523,7 +524,8 @@ public class CommandManager1P : MonoBehaviour
 
             _gameManager.LeftHP.value -= 5f;
             _gameManager.RightHP.value -= 5f; //HP減少処理
-
+        Animator1P.SetTrigger("Attack");
+       _2P.Animator2P.SetTrigger("Attack2p");
         _gameManager.SecondCommandTime = 0;
         _gameManager.ClearSecond = false;
             yield return new WaitForSeconds(1.0f);
@@ -540,7 +542,8 @@ public class CommandManager1P : MonoBehaviour
 
         _gameManager.LeftHP.value -= 10f;
         _gameManager.RightHP.value -= 10f; //HP減少処理
-
+        Animator1P.SetTrigger("Attack");
+        _2P.Animator2P.SetTrigger("Attack2p");
         _gameManager.ClearSecond = false;
         yield return new WaitForSeconds(1.0f);
         IsCoolDown = false;
