@@ -64,6 +64,12 @@ public class CommandManager2P : MonoBehaviour
             StartCoroutine(_1P.MissTimeUp(ControllerData));
             _gameManager.TimeUpThard2P = false;
         }
+        if (_gameManager.OneClear)
+        {
+            FirstImage.gameObject.SetActive(false);
+            SecondImage.gameObject.SetActive(false);
+            ThirdImage.gameObject.SetActive(false);
+        }
     }
     private void StartCommand()
     {
@@ -485,7 +491,7 @@ public class CommandManager2P : MonoBehaviour
 
         ControllerData = controllerData;
 
-        if (controllerData.ActionType == ActionType.Buttons && _oneStart)
+        if (controllerData.ActionType == ActionType.Buttons && _oneStart && !_gameManager.OneClear)
         {
             if (IsCorrectCommand(controllerData, expectedCommand) && _gameManager.PhaseCount == 0)
             {
