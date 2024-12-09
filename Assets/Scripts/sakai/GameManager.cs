@@ -95,7 +95,7 @@ public class GameManager : MonoBehaviour
             PhaseCount = 1;
             SecondBoxSprite.gameObject.SetActive(true);
         }
-       else if(LeftHP.value <= 20 && LeftHP.value > 0)
+       else if(LeftHP.value <= 20 && LeftHP.value > 0 && !OneClear)
         {
             PhaseCount = 2;
             JudgementRing.gameObject.SetActive(true);
@@ -157,6 +157,9 @@ public class GameManager : MonoBehaviour
 
         JudgementRing.SetActive(false);
         LaneRing.SetActive(false);
+        SecondImagesActive(false);
+        _1P.FirstBox.SetActive(false);
+        _2P.FirstBox.SetActive(false);
     }
     public void Miss1pCountMark()
     {

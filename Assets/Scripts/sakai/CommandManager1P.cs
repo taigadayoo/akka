@@ -16,7 +16,8 @@ public class CommandManager1P : MonoBehaviour
     private int _currentIndex;
 
     private Dictionary<string, Sprite> _commandSprites;
-
+    [SerializeField]
+    public Animator Animator1P;
     public GameObject FirstBox;
     private float _lastResetTime;
 
@@ -80,6 +81,12 @@ public class CommandManager1P : MonoBehaviour
         {
             StartCoroutine(ClearThard());
             _gameManager.ClearThard = false;
+        }
+        if(_gameManager.OneClear)
+        {
+            FirstImage.gameObject.SetActive(false);
+            SecondImage.gameObject.SetActive(false);
+            ThirdImage.gameObject.SetActive(false);
         }
     }
     private void  StartCommand()
@@ -146,7 +153,7 @@ public class CommandManager1P : MonoBehaviour
 
                _gameManager.LeftHP.value -= 2.5f;
                _gameManager.RightHP.value -= 2.5f; //HP減少処理
-
+                Animator1P.SetTrigger("Attack");
                     CommandTime = 0f; // 経過時間リセット
               
 
@@ -517,7 +524,8 @@ public class CommandManager1P : MonoBehaviour
 
             _gameManager.LeftHP.value -= 5f;
             _gameManager.RightHP.value -= 5f; //HP減少処理
-
+        Animator1P.SetTrigger("Attack");
+       _2P.Animator2P.SetTrigger("Attack2p");
         _gameManager.SecondCommandTime = 0;
         _gameManager.ClearSecond = false;
             yield return new WaitForSeconds(1.0f);
@@ -534,7 +542,8 @@ public class CommandManager1P : MonoBehaviour
 
         _gameManager.LeftHP.value -= 10f;
         _gameManager.RightHP.value -= 10f; //HP減少処理
-
+        Animator1P.SetTrigger("Attack");
+        _2P.Animator2P.SetTrigger("Attack2p");
         _gameManager.ClearSecond = false;
         yield return new WaitForSeconds(1.0f);
         IsCoolDown = false;
@@ -588,7 +597,7 @@ public class CommandManager1P : MonoBehaviour
         }
         IsCoolDown = true;
         _2P.IsCoolDown = true;
-        yield return new WaitForSeconds(2.0f);
+        yield return new WaitForSeconds(2f);
        
         _gameManager.AllObjectSizeReset = true;
         IsCoolDown = false;
@@ -615,7 +624,7 @@ public class CommandManager1P : MonoBehaviour
         }
         IsCoolDown = true;
         _2P.IsCoolDown = true;
-        yield return new WaitForSeconds(3.0f);
+        yield return new WaitForSeconds(3.5f);
         _circular.ResetAllObjects();
         _gameManager.ThardImagesActive(false);
         IsCoolDown = false;
@@ -636,7 +645,7 @@ public class CommandManager1P : MonoBehaviour
         string expectedCommand = _currentSequence[_currentIndex];
 
 
-         if (controllerData.ActionType == ActionType.Buttons && _oneStart)
+         if (controllerData.ActionType == ActionType.Buttons && _oneStart && !_gameManager.OneClear)
         {
             if (IsCorrectCommand(controllerData, expectedCommand) && _gameManager.PhaseCount == 0)
             {

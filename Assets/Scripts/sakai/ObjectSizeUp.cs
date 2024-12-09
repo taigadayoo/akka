@@ -15,6 +15,7 @@ public class ObjectSizeUp : MonoBehaviour
     CommandManager1P _1P;
     CommandManager2P _2P;
     ThardObjectController _thardObjectController;
+    Animator _animator;
   
     public enum Player
     {
@@ -23,10 +24,14 @@ public class ObjectSizeUp : MonoBehaviour
     }
     private void Start()
     {
-      
+        _animator = GetComponent<Animator>();
         _1P = FindFirstObjectByType<CommandManager1P>();
         _2P = FindFirstObjectByType<CommandManager2P>();
         _thardObjectController = FindFirstObjectByType<ThardObjectController>();
+        if(_animator != null)
+        {
+            _animator.enabled = false;
+        }
     }
     public Player PlayerNum;
     private void OnEnable()

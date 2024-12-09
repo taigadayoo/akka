@@ -21,7 +21,8 @@ public class CommandManager2P : MonoBehaviour
     private Dictionary<string, Sprite> _commandSprites;
 
     private float _lastResetTime;
- 
+    [SerializeField]
+    public Animator Animator2P;
     public GameObject FirstBox;
     public float CommandTime = 0f;
     private float _commandTimeout = 3f; // 3秒
@@ -63,6 +64,12 @@ public class CommandManager2P : MonoBehaviour
         {
             StartCoroutine(_1P.MissTimeUp(ControllerData));
             _gameManager.TimeUpThard2P = false;
+        }
+        if (_gameManager.OneClear)
+        {
+            FirstImage.gameObject.SetActive(false);
+            SecondImage.gameObject.SetActive(false);
+            ThirdImage.gameObject.SetActive(false);
         }
     }
     private void StartCommand()
@@ -134,6 +141,7 @@ public class CommandManager2P : MonoBehaviour
 
                 _gameManager.LeftHP.value -= 2.5f;
                 _gameManager.RightHP.value -= 2.5f; //HP減少処理
+                Animator2P.SetTrigger("Attack2p");
                 CommandTime = 0f; // 経過時間リセット
 
 
@@ -485,7 +493,7 @@ public class CommandManager2P : MonoBehaviour
 
         ControllerData = controllerData;
 
-        if (controllerData.ActionType == ActionType.Buttons && _oneStart)
+        if (controllerData.ActionType == ActionType.Buttons && _oneStart && !_gameManager.OneClear)
         {
             if (IsCorrectCommand(controllerData, expectedCommand) && _gameManager.PhaseCount == 0)
             {
