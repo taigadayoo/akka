@@ -12,7 +12,7 @@ public class TitleEvent : MonoBehaviour
     /// </summary>
     void Start()
     {
-        SampleSoundManager.Instance.PlayBgm(BgmType.BGM1);
+        // SampleSoundManager.Instance.PlayBgm(BgmType.BGM1);
         // ControllerManager からの ControllerData を購読
         ControllerManager.Instance.OnControllerData
         .Where(_ => !SceneManager.Instance.IsFading)
@@ -49,7 +49,7 @@ public class TitleEvent : MonoBehaviour
         {
             Debug.Log("FadeStart");
             SceneManager.Instance.LoadScene(SceneName.Setting);
-            SampleSoundManager.Instance.StopBgm();
+            // SampleSoundManager.Instance.StopBgm();
         }
     }
 

@@ -14,12 +14,27 @@ public class GameSettingEvent : MonoBehaviour
     [SerializeField]
     private GameObject _player2Panel;
 
+    [SerializeField]
+    private GameObject _firstPanel;
+    [SerializeField]
+    private GameObject _secondPanel;
+
+
+    enum SettingPhase
+    {
+        First,
+        Second,
+        Start,
+    }
+
+    private SettingPhase _settingPhase = SettingPhase.First;
+
     /// <summary>
     /// オブジェクトが初期化されたときに呼び出されるメソッド
     /// </summary>
     private void Start()
     {
-        SampleSoundManager.Instance.PlayBgm(BgmType.BGM2);
+        // SampleSoundManager.Instance.PlayBgm(BgmType.BGM2);
         // プレイヤー1およびプレイヤー2のパネルを非アクティブに設定
         _player1Panel.SetActive(false);
         _player2Panel.SetActive(false);
@@ -29,21 +44,15 @@ public class GameSettingEvent : MonoBehaviour
         {
             Debug.Log($"Player: {controllerData.PlayerType}, Input: {controllerData.ActionType}");
 
-            // 入力されたアクションのタイプに応じて処理を分岐
             switch (controllerData.ActionType)
             {
                 case ActionType.Buttons:
                     HandleButtonInput(controllerData);
                     if (CheckPlayerPanelActive())
                     {
-                        Debug.Log("FadeStart");
-                        SceneManager.Instance.LoadScene(SceneName.Game);
-                        SampleSoundManager.Instance.StopBgm();
+                        HandlePhaseAction();
                     }
                     break;
-                // case ActionType.Sticks:
-                //     HandleStickInput(controllerData.StickDirection);
-                //     break;
                 default:
                     Debug.LogError("Invalid Action Type");
                     break;
@@ -53,6 +62,8 @@ public class GameSettingEvent : MonoBehaviour
         // MonoBehaviour のライフサイクルに合わせて購読を解除
         .AddTo(this);
     }
+
+
 
     /// <summary>
     /// ボタン入力を処理します
@@ -94,5 +105,55 @@ public class GameSettingEvent : MonoBehaviour
     private bool CheckPlayerPanelActive()
     {
         return _player1Panel.activeSelf && _player2Panel.activeSelf;
+    }
+
+    private void DisablePlayerPanel()
+    {
+        _player1Panel.SetActive(false);
+        _player2Panel.SetActive(false);
+    }
+
+    /// <summary>
+    /// フェーズの状態を次に進めます
+    /// </summary>
+    private void NextPhase()
+    {
+        switch (_settingPhase)
+        {
+            case SettingPhase.First:
+                _settingPhase = SettingPhase.Second;
+                break;
+            case SettingPhase.Second:
+                _settingPhase = SettingPhase.Start;
+                break;
+            case SettingPhase.Start:
+                break;
+            default:
+                Debug.LogWarning($"Unsupported SettingPhase: {_settingPhase}");
+                break;
+        }
+    }
+
+    private void HandlePhaseAction()
+    {
+        switch (_settingPhase)
+        {
+            case SettingPhase.First:
+                _secondPanel.SetActive(true);
+                DisablePlayerPanel();
+                NextPhase();
+                break;
+            case SettingPhase.Second:
+                _secondPanel.SetActive(false);
+                Debug.Log("FadeStart");
+                SceneManager.Instance.LoadScene(SceneName.Game);
+                NextPhase();
+                break;
+            case SettingPhase.Start:
+                break;
+            default:
+                Debug.LogWarning($"Unsupported SettingPhase: {_settingPhase}");
+                break;
+        }
     }
 }
