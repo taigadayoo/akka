@@ -215,7 +215,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &501232227
+--- !u!1 &1277533705
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -223,38 +223,37 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 501232229}
-  - component: {fileID: 501232228}
+  - component: {fileID: 1277533708}
+  - component: {fileID: 1277533707}
   m_Layer: 0
-  m_Name: SEManager
+  m_Name: BGMSE
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &501232228
+--- !u!114 &1277533707
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 501232227}
+  m_GameObject: {fileID: 1277533705}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3495caf8df6c95d4f85df74e5923227f, type: 3}
+  m_Script: {fileID: 11500000, guid: 9f27e5474ad7b814eaf875a334febe6d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SoundEffect: {fileID: 8300000, guid: 08bdaefa8786d2947a963e006a0da83e, type: 3}
---- !u!4 &501232229
+--- !u!4 &1277533708
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 501232227}
+  m_GameObject: {fileID: 1277533705}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -10}
+  m_LocalPosition: {x: 1.3448765, y: -0.04483164, z: -9.979605}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -310,4 +309,4 @@ SceneRoots:
   m_Roots:
   - {fileID: 39903951}
   - {fileID: 1632375554}
-  - {fileID: 501232229}
+  - {fileID: 1277533708}
