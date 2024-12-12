@@ -78,6 +78,8 @@ public class GameSettingEvent : MonoBehaviour
         }
     }
 
+
+
     /// <summary>
     /// 指定されたプレイヤーのパネルを表示します
     /// </summary>
