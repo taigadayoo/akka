@@ -85,7 +85,6 @@ public class GameManager : MonoBehaviour
         if (!_isClear && GameStart)
         {
             _clearTIme += Time.deltaTime;
-            Debug.Log(_clearTIme);
         }
         if (GameStart)
         {
