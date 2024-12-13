@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GameSceneAudio : MonoBehaviour
 {
@@ -14,6 +15,16 @@ public class GameSceneAudio : MonoBehaviour
     public GameObject TargetObject8;
     public GameObject TargetObject9;
     public GameObject TargetObject10;
+    public GameObject TargetObject11;
+    public GameObject TargetObject12;
+    public GameObject TargetObject13;
+    public GameObject TargetObject14;
+    public GameObject TargetObject15;
+    public GameObject TargetObject16;
+    public GameObject TargetObject17;
+    public GameObject TargetObject18;
+    public GameObject TargetObject19;
+    public GameObject TargetObject20;
     private bool _wasActive1;
     private bool _wasActive2;
     private bool _wasActive3;
@@ -24,8 +35,24 @@ public class GameSceneAudio : MonoBehaviour
     private bool _wasActive8;
     private bool _wasActive9;
     private bool _wasActive10;
+    private bool _wasActive11;
+    private bool _wasActive12;
+    private bool _wasActive13;
+    private bool _wasActive14;
+    private bool _wasActive15;
+    private bool _wasActive16;
+    private bool _wasActive17;
+    private bool _wasActive18;
+    private bool _wasActive19;
+    private bool _wasActive20;
 
     public float Delay = 1.0f;
+
+    public Slider Slider;
+    public Slider Slider1;
+
+    private float _previousValue;
+    private float _previousValue1;
     void Start()
     {
         AudioManager.Instance.PlayBGM("ビッグモンキー", 0.1f);
@@ -70,6 +97,56 @@ public class GameSceneAudio : MonoBehaviour
         {
             _wasActive10 = TargetObject10.activeSelf;
         }
+
+
+
+
+        if (TargetObject11 != null)
+        {
+            _wasActive11 = TargetObject11.activeSelf;
+        }
+        if (TargetObject12 != null)
+        {
+            _wasActive12 = TargetObject12.activeSelf;
+        }
+        if (TargetObject13 != null)
+        {
+            _wasActive13 = TargetObject13.activeSelf;
+        }
+        if (TargetObject14 != null)
+        {
+            _wasActive14 = TargetObject14.activeSelf;
+        }
+        if (TargetObject15 != null)
+        {
+            _wasActive15 = TargetObject15.activeSelf;
+        }
+        if (TargetObject16 != null)
+        {
+            _wasActive16 = TargetObject16.activeSelf;
+        }
+        if (TargetObject17 != null)
+        {
+            _wasActive17 = TargetObject17.activeSelf;
+        }
+        if (TargetObject18 != null)
+        {
+            _wasActive18 = TargetObject18.activeSelf;
+        }
+        if (TargetObject19 != null)
+        {
+            _wasActive19 = TargetObject19.activeSelf;
+        }
+        if (TargetObject20 != null)
+        {
+            _wasActive20 = TargetObject20.activeSelf;
+        }
+
+
+
+
+        _previousValue = Slider.value;
+        _previousValue1 = Slider1.value;
     }
 
     void Update()
@@ -147,6 +224,98 @@ public class GameSceneAudio : MonoBehaviour
         }
 
         _wasActive10 = TargetObject10.activeSelf;
+
+
+
+        if (Input.anyKeyDown)
+        {
+            AudioManager.Instance.PlaySE("電子ルーレット停止ボタンを押す", 1f);
+
+            if (TargetObject11.activeSelf && !_wasActive11)
+            {
+                AudioManager.Instance.PlaySE("キャンセル3", 1f);
+            }
+            if (TargetObject12.activeSelf && !_wasActive12)
+            {
+                AudioManager.Instance.PlaySE("キャンセル3", 1f);
+            }
+            if (TargetObject13.activeSelf && !_wasActive13)
+            {
+                AudioManager.Instance.PlaySE("キャンセル3", 1f);
+            }
+            if (TargetObject14.activeSelf && !_wasActive14)
+            {
+                AudioManager.Instance.PlaySE("キャンセル3", 1f);
+            }
+            if (TargetObject15.activeSelf && !_wasActive15)
+            {
+                AudioManager.Instance.PlaySE("キャンセル3", 1f);
+            }
+            if (TargetObject16.activeSelf && !_wasActive16)
+            {
+                AudioManager.Instance.PlaySE("キャンセル3", 1f);
+            }
+            if (TargetObject17.activeSelf && !_wasActive17)
+            {
+                AudioManager.Instance.PlaySE("キャンセル3", 1f);
+            }
+            if (TargetObject18.activeSelf && !_wasActive18)
+            {
+                AudioManager.Instance.PlaySE("キャンセル3", 1f);
+            }
+            if (TargetObject19.activeSelf && !_wasActive19)
+            {
+                AudioManager.Instance.PlaySE("キャンセル3", 1f);
+            }
+            if (TargetObject20.activeSelf && !_wasActive20)
+            {
+                AudioManager.Instance.PlaySE("キャンセル3", 1f);
+            }
+            else
+            {
+                AudioManager.Instance.PlaySE("ひらめき05", 1f);
+            }
+
+            _wasActive11 = TargetObject11.activeSelf;
+            _wasActive12 = TargetObject12.activeSelf;
+            _wasActive13 = TargetObject13.activeSelf;
+            _wasActive14 = TargetObject14.activeSelf;
+            _wasActive15 = TargetObject15.activeSelf;
+            _wasActive16 = TargetObject16.activeSelf;
+            _wasActive17 = TargetObject17.activeSelf;
+            _wasActive18 = TargetObject18.activeSelf;
+            _wasActive19 = TargetObject19.activeSelf;
+            _wasActive20 = TargetObject20.activeSelf;
+        }
+
+
+
+
+        if (Slider.value < _previousValue)
+        {
+            AudioManager.Instance.PlaySE("毒魔法1", 1f);
+        }
+        if (Slider1.value < _previousValue1)
+        {
+            AudioManager.Instance.PlaySE("毒魔法1", 1f);
+
+        }
+
+        if (Slider.value == 0)
+        {
+            AudioManager.Instance.PlaySE("HP吸収魔法2", 1f);
+
+        }
+        if (Slider1.value == 0)
+        {
+            AudioManager.Instance.PlaySE("HP吸収魔法2", 1f);
+
+        }
+
+
+
+
+
     }
 
     IEnumerator SoundPlay1()

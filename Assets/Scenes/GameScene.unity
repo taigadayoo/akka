@@ -3670,7 +3670,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1000964225}
   - component: {fileID: 1000964227}
-  - component: {fileID: 1000964228}
   m_Layer: 0
   m_Name: BGMSE
   m_TagString: Untagged
@@ -3715,19 +3714,19 @@ MonoBehaviour:
   TargetObject8: {fileID: 1654521039}
   TargetObject9: {fileID: 857942622}
   TargetObject10: {fileID: 2053609527}
+  TargetObject11: {fileID: 1804379723}
+  TargetObject12: {fileID: 326770875}
+  TargetObject13: {fileID: 1479024921}
+  TargetObject14: {fileID: 634102913}
+  TargetObject15: {fileID: 765108885}
+  TargetObject16: {fileID: 1717792702}
+  TargetObject17: {fileID: 1573560941}
+  TargetObject18: {fileID: 1752260864}
+  TargetObject19: {fileID: 592540493}
+  TargetObject20: {fileID: 573781038}
   Delay: 0.5
---- !u!114 &1000964228
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1000964224}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 700d70f5244421b478cbd654ea3d9921, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  Slider: {fileID: 1499515089}
+  Slider1: {fileID: 1385499622}
 --- !u!1 &1039433807
 GameObject:
   m_ObjectHideFlags: 0
