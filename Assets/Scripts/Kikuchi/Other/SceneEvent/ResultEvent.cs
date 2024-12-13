@@ -121,7 +121,6 @@ public class ResultEvent : MonoBehaviour
         _player2OKImage.SetActive(false);
     }
 
-
     private void GetScore()
     {
         _isClear = PlayerPrefs.GetInt("IsClear", _isDebug) == 1;
