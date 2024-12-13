@@ -138,7 +138,7 @@ public class CommandManager2P : MonoBehaviour
                 FirstImage.gameObject.SetActive(false);
                 SecondImage.gameObject.SetActive(false);
                 ThirdImage.gameObject.SetActive(false);
-
+                _gameManager.EnemyAnim.SetTrigger("damage");
                 _gameManager.LeftHP.value -= 2.5f;
                 _gameManager.RightHP.value -= 2.5f; //HP減少処理
                 Animator2P.SetTrigger("Attack2p");
