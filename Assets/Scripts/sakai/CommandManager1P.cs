@@ -150,7 +150,7 @@ public class CommandManager1P : MonoBehaviour
                 FirstImage.gameObject.SetActive(false);
                 SecondImage.gameObject.SetActive(false);
                 ThirdImage.gameObject.SetActive(false);
-
+                _gameManager.EnemyAnim.SetTrigger("damage");
                _gameManager.LeftHP.value -= 2.5f;
                _gameManager.RightHP.value -= 2.5f; //HP減少処理
                 Animator1P.SetTrigger("Attack");
@@ -521,8 +521,8 @@ public class CommandManager1P : MonoBehaviour
     {
 
             _gameManager.SecondImagesActive(false);
-
-            _gameManager.LeftHP.value -= 5f;
+        _gameManager.EnemyAnim.SetTrigger("damage");
+        _gameManager.LeftHP.value -= 5f;
             _gameManager.RightHP.value -= 5f; //HP減少処理
         Animator1P.SetTrigger("Attack");
        _2P.Animator2P.SetTrigger("Attack2p");
@@ -537,7 +537,7 @@ public class CommandManager1P : MonoBehaviour
     }
     public IEnumerator ClearThard()
     {
-
+        _gameManager.EnemyAnim.SetTrigger("damage");
         _gameManager.ThardImagesActive(false);
 
         _gameManager.LeftHP.value -= 10f;

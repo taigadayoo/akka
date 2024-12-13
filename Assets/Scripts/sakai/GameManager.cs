@@ -68,6 +68,9 @@ public class GameManager : MonoBehaviour
     public bool AllObjectSizeReset = false;
     public Collider2D OnTimeUpCol;
     public bool GameStart = false;
+    [SerializeField]
+    public Animator EnemyAnim;
+    
     void Start()
     {
         SampleSoundManager.Instance.PlayBgm(BgmType.BGM3);
@@ -79,7 +82,12 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(GameStart)
+        if (!_isClear && GameStart)
+        {
+            _clearTIme += Time.deltaTime;
+            Debug.Log(_clearTIme);
+        }
+        if (GameStart)
         {
             StartPanel.SetActive(false);
         }
@@ -96,6 +104,7 @@ public class GameManager : MonoBehaviour
         }
        if(LeftHP.value <= 40 && LeftHP.value > 20)
         {
+            EnemyAnim.SetBool("damage1", true);
             PhaseCount = 1;
             SecondBoxSprite.gameObject.SetActive(true);
         }
