@@ -17,6 +17,7 @@ public class ResultEvent : MonoBehaviour
     [SerializeField]
     private List<float> _clearTimeLimit = new List<float>();
 
+    [SerializeField]
     private List<ResultSheetData> _resultSpriteCollection = new List<ResultSheetData>();
     private ResultSheetData _currentResultSheetData = null;
 
@@ -125,9 +126,10 @@ public class ResultEvent : MonoBehaviour
 
     private void SetText()
     {
+        GetRank();
         GetScore();
 
-        _currentResultSheetData.ClearText.text = _isClear ? "失敗..." : "成功！";
+        _currentResultSheetData.ClearText.text = _isClear ? "成功！" : "失敗...";
         _currentResultSheetData.TimeText.text =　ConvertToTime(_clearTime);
         _currentResultSheetData.MissText.text = _missCount.ToString() + "回";
     }
