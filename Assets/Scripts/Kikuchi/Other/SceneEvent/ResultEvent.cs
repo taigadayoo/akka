@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
 using UniRx;
+using Unity.VisualScripting;
 
 public class ResultEvent : MonoBehaviour
 {
@@ -16,37 +17,10 @@ public class ResultEvent : MonoBehaviour
     [SerializeField]
     private List<float> _clearTimeLimit = new List<float>();
 
-
-    [SerializeField]
-    private TextMeshProUGUI _clearText = null;
-    [SerializeField]
-    private TextMeshProUGUI _timeText = null;
-    [SerializeField]
-    private TextMeshProUGUI _missText = null;
-    [SerializeField]
-    private Image _rankImage = null;
-
-
-    [SerializeField]
-    private List<Sprite> _rankSprite = new List<Sprite>();
-
-    [SerializeField]
-    private GameObject _player1OKImage = null;
-    [SerializeField]
-    private GameObject _player2OKImage = null;
+    private List<ResultSheetData> _resultSpriteCollection = new List<ResultSheetData>();
+    private ResultSheetData _currentResultSheetData = null;
 
     private Tween _tween = null;
-
-
-    //Debug用
-    [SerializeField]
-    private int _isDebug = 1;
-    [SerializeField]
-    private float _debugTime = 0.0f;
-    [SerializeField]
-    private int _debugMiss = 0;
-    //
-
 
     // Start is called before the first frame update
     void Start()
@@ -96,7 +70,7 @@ public class ResultEvent : MonoBehaviour
 
     private bool CheckPlayerPanelActive()
     {
-        return _player1OKImage.activeSelf && _player2OKImage.activeSelf;
+        return _currentResultSheetData.PL1OkImage.activeSelf && _currentResultSheetData.PL2OkImage.activeSelf;
     }
 
     private void ShowPlayerPanel(PlayerType playerType)
@@ -104,10 +78,10 @@ public class ResultEvent : MonoBehaviour
         switch (playerType)
         {
             case PlayerType.Player1:
-                _player1OKImage.SetActive(true);
+                _currentResultSheetData.PL1OkImage.SetActive(true);
                 break;
             case PlayerType.Player2:
-                _player2OKImage.SetActive(true);
+                _currentResultSheetData.PL2OkImage.SetActive(true);
                 break;
             default:
                 Debug.LogWarning($"Unsupported PlayerType: {playerType}");
@@ -117,38 +91,57 @@ public class ResultEvent : MonoBehaviour
 
     private void DisablePlayerPanel()
     {
-        _player1OKImage.SetActive(false);
-        _player2OKImage.SetActive(false);
+        _currentResultSheetData.PL1OkImage.SetActive(false);
+        _currentResultSheetData.PL2OkImage.SetActive(false);
     }
+
+
 
     private void GetScore()
     {
-        _isClear = PlayerPrefs.GetInt("IsClear", _isDebug) == 1;
-        _clearTime = PlayerPrefs.GetFloat("ClearTime", _debugTime);
-        _missCount = PlayerPrefs.GetInt("MissCount", _debugMiss);
+        _isClear = PlayerPrefs.GetInt("IsClear") == 0;
+        _clearTime = PlayerPrefs.GetFloat("ClearTime");
+        _missCount = PlayerPrefs.GetInt("MissCount");
+    }
+
+    private void GetRank()
+    {
+        if(_isClear)
+        {
+            for(int i = 0; i < _clearTimeLimit.Count; i++)
+            {
+                if(_clearTime < _clearTimeLimit[i])
+                {
+                    _currentResultSheetData = _resultSpriteCollection[i];
+                    break;
+                }
+            }
+        }
+        else
+        {
+            _currentResultSheetData = _resultSpriteCollection[_resultSpriteCollection.Count - 1];
+        }
     }
 
     private void SetText()
     {
         GetScore();
 
-        _clearText.text = _isClear ? "成功！" : "失敗...";
-        _timeText.text =　_clearTime.ToString("F0");
-        _missText.text = _missCount.ToString();
+        _currentResultSheetData.ClearText.text = _isClear ? "失敗..." : "成功！";
+        _currentResultSheetData.TimeText.text =　ConvertToTime(_clearTime);
+        _currentResultSheetData.MissText.text = _missCount.ToString() + "回";
+    }
 
-        for (int i = 0; i < _clearTimeLimit.Count; i++)
-        {
-            if (_clearTime <= _clearTimeLimit[i])
-            {
-                _rankImage.sprite = _rankSprite[i];
-                break;
-            }
-        }
+    private string ConvertToTime(float time)
+    {
+        int minute = (int)time / 60;
+        int second = (int)time % 60;
+        return minute.ToString("00") + ":" + second.ToString("00") + "秒";
     }
 
     private void PanelTween()
     {
-        RectTransform rect = _rankImage.GetComponent<RectTransform>();
+        RectTransform rect = _currentResultSheetData.gameObject.GetComponent<RectTransform>();
         _tween = rect.DOMoveY(0, 1.0f).SetEase(Ease.OutBounce).OnComplete(() => _tween = null);
     }
 

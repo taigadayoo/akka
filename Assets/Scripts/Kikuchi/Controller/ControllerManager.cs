@@ -15,6 +15,8 @@ public class ControllerManager : SingletonMonoBehaviour<ControllerManager>
     private PlayerInputManager _playerInputManager;
     private Subject<ControllerData> _controllerDataSubject = new Subject<ControllerData>();
     public IObservable<ControllerData> OnControllerData => _controllerDataSubject;
+
+    private bool _isPlayer1Joined = false;
     protected override void Awake()
     {
         base.Awake();
@@ -25,10 +27,12 @@ public class ControllerManager : SingletonMonoBehaviour<ControllerManager>
     {
         _playerInputManager.onPlayerJoined += OnPlayerJoined;
         _playerInputManager.onPlayerLeft += OnPlayerLeft;
+        _isPlayer1Joined = true;
     }
 
-    private void OnDisable()
+    private void OnDestroy()
     {
+        if(!_isPlayer1Joined) return;
         _playerInputManager.onPlayerJoined -= OnPlayerJoined;
         _playerInputManager.onPlayerLeft -= OnPlayerLeft;
     }
