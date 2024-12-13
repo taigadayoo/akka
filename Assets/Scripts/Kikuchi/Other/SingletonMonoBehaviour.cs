@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using UnityEngine;
 
 public abstract class SingletonMonoBehaviour<T> : MonoBehaviour where T : MonoBehaviour
@@ -27,7 +27,7 @@ public abstract class SingletonMonoBehaviour<T> : MonoBehaviour where T : MonoBe
     {
         if (this != Instance)
         {
-            Destroy(this);
+            Destroy(this.gameObject);
             return;
         }
         if (DontDestroyOnLoad)

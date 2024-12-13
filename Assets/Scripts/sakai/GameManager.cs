@@ -5,6 +5,9 @@ using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
+    private float _clearTIme = 0;
+  
+    private bool _isClear = false;
     // Start is called before the first frame update
     [SerializeField]
    public Image[] Miss1P;
@@ -84,6 +87,7 @@ public class GameManager : MonoBehaviour
         {
             if (!OneClear)
             {
+                _isClear = true;
                 _textAnimation.StartText();
                 SampleSoundManager.Instance.StopBgm();
                 ClearEnabled();
@@ -154,7 +158,7 @@ public class GameManager : MonoBehaviour
                 renderer.enabled = false;
             }
         }
-
+        SaveDate();
         JudgementRing.SetActive(false);
         LaneRing.SetActive(false);
         SecondImagesActive(false);
@@ -264,6 +268,14 @@ public class GameManager : MonoBehaviour
 
         SceneManager.Instance.LoadScene(SceneName.Result);
         //ゲームオーバー処理
+    }
+    private void SaveDate()
+    {
+        int key = _isClear ? 1 : 0;
+        PlayerPrefs.SetFloat("ClearTime", _clearTIme);
+        PlayerPrefs.SetInt("MissCount", MissCount);
+       
+        PlayerPrefs.SetInt("IsClear", key);
     }
    public void EnableAllAnimators(int num)
     {
