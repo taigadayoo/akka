@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -29,7 +29,7 @@ public class ResultEvent : MonoBehaviour
         SetText();
         DisablePlayerPanel();
         PanelTween();
-
+        AudioManager.Instance.PlayBGM("ポケットワールド");
         ResultEventHandler();
 
     }
@@ -50,6 +50,7 @@ public class ResultEvent : MonoBehaviour
                     if(CheckPlayerPanelActive())
                     {
                         SceneManager.Instance.LoadScene(SceneName.Title);
+                        AudioManager.Instance.StopBGM();
                     }
                     break;
                 default:
@@ -80,9 +81,11 @@ public class ResultEvent : MonoBehaviour
         {
             case PlayerType.Player1:
                 _currentResultSheetData.PL1OkImage.SetActive(true);
+                AudioManager.Instance.PlaySE("はんこ", 0.8f);
                 break;
             case PlayerType.Player2:
                 _currentResultSheetData.PL2OkImage.SetActive(true);
+                AudioManager.Instance.PlaySE("はんこ", 0.8f);
                 break;
             default:
                 Debug.LogWarning($"Unsupported PlayerType: {playerType}");
@@ -143,6 +146,7 @@ public class ResultEvent : MonoBehaviour
 
     private void PanelTween()
     {
+        AudioManager.Instance.PlaySE("チラシ01", 0.8f);
         RectTransform rect = _currentResultSheetData.gameObject.GetComponent<RectTransform>();
         _tween = rect.DOMoveY(0, 1.0f).SetEase(Ease.OutBounce).OnComplete(() => _tween = null);
     }

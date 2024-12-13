@@ -73,7 +73,7 @@ public class GameManager : MonoBehaviour
     
     void Start()
     {
-        SampleSoundManager.Instance.PlayBgm(BgmType.BGM3);
+        AudioManager.Instance.PlayBGM("ビッグモンキー", 0.5f);
         Set1pImagesActive(false);
         Set2pImagesActive(false);//配列内のミスマークは非表示に
         SecondBoxSprite.gameObject.SetActive(false);
@@ -96,7 +96,7 @@ public class GameManager : MonoBehaviour
             {
                 _isClear = true;
                 _textAnimation.StartText();
-                SampleSoundManager.Instance.StopBgm();
+                AudioManager.Instance.StopBGM();
                 ClearEnabled();
                 OneClear = true;
             }
@@ -117,9 +117,10 @@ public class GameManager : MonoBehaviour
         {
             if (!OneClear)
             {
+                _isClear = true;
                 ClearEnabled();
                 _textAnimation.StartText();
-            
+                AudioManager.Instance.StopBGM();
                 SampleSoundManager.Instance.StopBgm();
                 OneClear = true;
             }

@@ -133,7 +133,7 @@ public class CommandManager2P : MonoBehaviour
 
                     yield return null;
                 }
-
+                AudioManager.Instance.PlaySE("毒魔法", 0.8f);
 
                 FirstImage.gameObject.SetActive(false);
                 SecondImage.gameObject.SetActive(false);
@@ -444,6 +444,8 @@ public class CommandManager2P : MonoBehaviour
     }
    public IEnumerator MissCommand()
     {
+        Animator2P.SetTrigger("Miss");
+        AudioManager.Instance.PlaySE("キャンセル3", 1f);
         FirstImage.gameObject.SetActive(false);
         SecondImage.gameObject.SetActive(false);
         ThirdImage.gameObject.SetActive(false);
@@ -497,6 +499,7 @@ public class CommandManager2P : MonoBehaviour
         {
             if (IsCorrectCommand(controllerData, expectedCommand) && _gameManager.PhaseCount == 0)
             {
+              
                 HandleCommandInput();
 
             }
@@ -509,6 +512,7 @@ public class CommandManager2P : MonoBehaviour
                 }
                 else if (!_gameManager.SwitchPlayer && _gameManager.FirstPlayerRandomNum == 1)
                 {
+                
                     HandleSecondCommandInput();
                     _gameManager.SwitchPlayer = true;
                 }
@@ -520,23 +524,25 @@ public class CommandManager2P : MonoBehaviour
             }
             else if (IsCorrectCommand(controllerData, expectedCommand) && _gameManager.PhaseCount == 2 && _gameManager.OkPlayer2Thard && !_gameManager.OneTimeUp)
             {
+             
                 HandleThardCommandInput();
             }
             else
             {
+             
                 if (_gameManager.PhaseCount == 0 && !IsCoolDown)
                 {
                     ExecutePhaseCount();
+             
                 }
                 if (_gameManager.PhaseCount == 1 && !IsCoolDown)
                 {
-
+                
                     StartCoroutine(_1P.MissSecond(ControllerData));
                 }
                 if (_gameManager.PhaseCount == 2 && !IsCoolDown && !_gameManager.OneTimeUp && _gameManager.GameStart)
                 {
-               
-                    StartCoroutine(_1P.MissThard(ControllerData));
+                     StartCoroutine(_1P.MissThard(ControllerData));
                    
                 }
             }
@@ -562,12 +568,14 @@ public class CommandManager2P : MonoBehaviour
             firstCommand = FirstImage.gameObject.transform.position;
             Instantiate(_gameManager.CommandEffect, firstCommand, Quaternion.identity);
             FirstImage.gameObject.SetActive(false);
+            AudioManager.Instance.PlaySE("電子ルーレット停止ボタンを押す", 0.8f);
         }
         else if (_currentIndex == 1)
         {
             firstCommand = SecondImage.gameObject.transform.position;
             Instantiate(_gameManager.CommandEffect, firstCommand, Quaternion.identity);
             SecondImage.gameObject.SetActive(false);
+            AudioManager.Instance.PlaySE("電子ルーレット停止ボタンを押す", 0.8f);
         }
 
         else if (_currentIndex == 2)
@@ -575,6 +583,7 @@ public class CommandManager2P : MonoBehaviour
             firstCommand = ThirdImage.gameObject.transform.position;
             Instantiate(_gameManager.CommandEffect, firstCommand, Quaternion.identity);
             ThirdImage.gameObject.SetActive(false);
+            AudioManager.Instance.PlaySE("ひらめき05", 1f);
         }
         _currentIndex++;
 
@@ -598,7 +607,7 @@ public class CommandManager2P : MonoBehaviour
                     _gameManager.ThreeCommand[1].gameObject.SetActive(false);
 
                     _gameManager.SwitchPlayer = false;
-
+                    AudioManager.Instance.PlaySE("電子ルーレット停止ボタンを押す", 0.8f);
                     _currentIndex++;
                 }
 
@@ -610,7 +619,7 @@ public class CommandManager2P : MonoBehaviour
                     secondCommand = _gameManager.FourCommand[1].gameObject.transform.position;
                     Instantiate(_gameManager.CommandEffect, secondCommand, Quaternion.identity);
                     _gameManager.FourCommand[1].gameObject.SetActive(false);
-
+                    AudioManager.Instance.PlaySE("電子ルーレット停止ボタンを押す", 0.8f);
                     _gameManager.SwitchPlayer = false;
 
                     _currentIndex++;
@@ -622,6 +631,7 @@ public class CommandManager2P : MonoBehaviour
                     _gameManager.FourCommand[3].gameObject.SetActive(false);
                     _gameManager.ClearSecond = true;
                     _currentIndex++;
+                    AudioManager.Instance.PlaySE("ひらめき05", 0.8f);
                 }
             }
             if (_gameManager.RandomCommandNum == 2)
@@ -631,7 +641,7 @@ public class CommandManager2P : MonoBehaviour
                     secondCommand = _gameManager.FiveCommand[1].gameObject.transform.position;
                     Instantiate(_gameManager.CommandEffect, secondCommand, Quaternion.identity);
                     _gameManager.FiveCommand[1].gameObject.SetActive(false);
-
+                     AudioManager.Instance.PlaySE("電子ルーレット停止ボタンを押す", 0.8f);
                     _gameManager.SwitchPlayer = false;
 
                     _currentIndex++;
@@ -641,7 +651,7 @@ public class CommandManager2P : MonoBehaviour
                     secondCommand = _gameManager.FiveCommand[3].gameObject.transform.position;
                     Instantiate(_gameManager.CommandEffect, secondCommand, Quaternion.identity);
                     _gameManager.FiveCommand[3].gameObject.SetActive(false);
-
+                    AudioManager.Instance.PlaySE("電子ルーレット停止ボタンを押す", 0.8f);
                     _gameManager.SwitchPlayer = false;
 
                     _currentIndex++;
@@ -657,7 +667,7 @@ public class CommandManager2P : MonoBehaviour
                     secondCommand = _gameManager.ThreeCommand[0].gameObject.transform.position;
                     Instantiate(_gameManager.CommandEffect, secondCommand, Quaternion.identity);
                     _gameManager.ThreeCommand[0].gameObject.SetActive(false);
-
+                    AudioManager.Instance.PlaySE("電子ルーレット停止ボタンを押す", 0.8f);
                     _gameManager.SwitchPlayer = true;
                     _currentIndex++;
                 }
@@ -666,7 +676,7 @@ public class CommandManager2P : MonoBehaviour
                     secondCommand = _gameManager.ThreeCommand[2].gameObject.transform.position;
                     Instantiate(_gameManager.CommandEffect, secondCommand, Quaternion.identity);
                     _gameManager.ThreeCommand[2].gameObject.SetActive(false);
-
+                    AudioManager.Instance.PlaySE("ひらめき05", 0.8f);
                     _gameManager.ClearSecond = true;
                 }
 
@@ -678,7 +688,7 @@ public class CommandManager2P : MonoBehaviour
                     secondCommand = _gameManager.FourCommand[0].gameObject.transform.position;
                     Instantiate(_gameManager.CommandEffect, secondCommand, Quaternion.identity);
                     _gameManager.FourCommand[0].gameObject.SetActive(false);
-
+                    AudioManager.Instance.PlaySE("電子ルーレット停止ボタンを押す", 0.8f);
                     _gameManager.SwitchPlayer = true;
                     _currentIndex++;
                 }
@@ -687,7 +697,7 @@ public class CommandManager2P : MonoBehaviour
                     secondCommand = _gameManager.FourCommand[2].gameObject.transform.position;
                     Instantiate(_gameManager.CommandEffect, secondCommand, Quaternion.identity);
                     _gameManager.FourCommand[2].gameObject.SetActive(false);
-
+                    AudioManager.Instance.PlaySE("電子ルーレット停止ボタンを押す", 0.8f);
                     _gameManager.SwitchPlayer = true;
                     _currentIndex++;
                 }
@@ -699,7 +709,7 @@ public class CommandManager2P : MonoBehaviour
                     secondCommand = _gameManager.FiveCommand[0].gameObject.transform.position;
                     Instantiate(_gameManager.CommandEffect, secondCommand, Quaternion.identity);
                     _gameManager.FiveCommand[0].gameObject.SetActive(false);
-
+                    AudioManager.Instance.PlaySE("電子ルーレット停止ボタンを押す", 0.8f);
                     _gameManager.SwitchPlayer = true;
                     _currentIndex++;
                 }
@@ -708,7 +718,7 @@ public class CommandManager2P : MonoBehaviour
                     secondCommand = _gameManager.FiveCommand[2].gameObject.transform.position;
                     Instantiate(_gameManager.CommandEffect, secondCommand, Quaternion.identity);
                     _gameManager.FiveCommand[2].gameObject.SetActive(false);
-
+                    AudioManager.Instance.PlaySE("電子ルーレット停止ボタンを押す", 0.8f);
                     _gameManager.SwitchPlayer = true;
                     _currentIndex++;
                 }
@@ -718,6 +728,7 @@ public class CommandManager2P : MonoBehaviour
                     Instantiate(_gameManager.CommandEffect, secondCommand, Quaternion.identity);
                     _gameManager.FiveCommand[4].gameObject.SetActive(false);
                     _gameManager.ClearSecond = true;
+                    AudioManager.Instance.PlaySE("ひらめき05", 0.8f);
                 }
 
             }
@@ -735,11 +746,12 @@ public class CommandManager2P : MonoBehaviour
                     thardCommand = _gameManager.FiveCommandThard[0].gameObject.transform.position;
                     Instantiate(_gameManager.CommandEffect, thardCommand, Quaternion.identity);
                     _gameManager.FiveCommandThard[0].gameObject.SetActive(false);
-
+                    AudioManager.Instance.PlaySE("電子ルーレット停止ボタンを押す", 0.8f);
                     _currentIndex++;
                 }
                 else if (_currentIndex == 1)
                 {
+                    AudioManager.Instance.PlaySE("電子ルーレット停止ボタンを押す", 0.8f);
                     thardCommand = _gameManager.FiveCommandThard[2].gameObject.transform.position;
                     Instantiate(_gameManager.CommandEffect, thardCommand, Quaternion.identity);
                     _gameManager.FiveCommandThard[2].gameObject.SetActive(false);
@@ -751,6 +763,7 @@ public class CommandManager2P : MonoBehaviour
                     Instantiate(_gameManager.CommandEffect, thardCommand, Quaternion.identity);
                     _gameManager.FiveCommandThard[4].gameObject.SetActive(false);
                     _currentIndex++;
+                    AudioManager.Instance.PlaySE("ひらめき05", 0.8f);
                     _gameManager.ClearThard = true;
                 }
 
@@ -762,7 +775,7 @@ public class CommandManager2P : MonoBehaviour
                     thardCommand = _gameManager.SixCommand[0].gameObject.transform.position;
                     Instantiate(_gameManager.CommandEffect, thardCommand, Quaternion.identity);
                     _gameManager.SixCommand[0].gameObject.SetActive(false);
-
+                    AudioManager.Instance.PlaySE("電子ルーレット停止ボタンを押す", 0.8f);
                     _currentIndex++;
                 }
                 else if (_currentIndex == 1)
@@ -770,7 +783,7 @@ public class CommandManager2P : MonoBehaviour
                     thardCommand = _gameManager.SixCommand[2].gameObject.transform.position;
                     Instantiate(_gameManager.CommandEffect, thardCommand, Quaternion.identity);
                     _gameManager.SixCommand[2].gameObject.SetActive(false);
-
+                    AudioManager.Instance.PlaySE("電子ルーレット停止ボタンを押す", 0.8f);
                     _currentIndex++;
                 }
                 else if (_currentIndex == 2)
@@ -778,7 +791,7 @@ public class CommandManager2P : MonoBehaviour
                     thardCommand = _gameManager.SixCommand[4].gameObject.transform.position;
                     Instantiate(_gameManager.CommandEffect, thardCommand, Quaternion.identity);
                     _gameManager.SixCommand[4].gameObject.SetActive(false);
-
+                    AudioManager.Instance.PlaySE("電子ルーレット停止ボタンを押す", 0.8f);
                     _currentIndex++;
                 }
             }
@@ -789,7 +802,7 @@ public class CommandManager2P : MonoBehaviour
                     thardCommand = _gameManager.SevenCommand[0].gameObject.transform.position;
                     Instantiate(_gameManager.CommandEffect, thardCommand, Quaternion.identity);
                     _gameManager.SevenCommand[0].gameObject.SetActive(false);
-
+                    AudioManager.Instance.PlaySE("電子ルーレット停止ボタンを押す", 0.8f);
                     _currentIndex++;
                 }
                 else if (_currentIndex == 1)
@@ -797,7 +810,7 @@ public class CommandManager2P : MonoBehaviour
                     thardCommand = _gameManager.SevenCommand[2].gameObject.transform.position;
                     Instantiate(_gameManager.CommandEffect, thardCommand, Quaternion.identity);
                     _gameManager.SevenCommand[2].gameObject.SetActive(false);
-
+                    AudioManager.Instance.PlaySE("電子ルーレット停止ボタンを押す", 0.8f);
                     _currentIndex++;
                 }
                 else if (_currentIndex == 2)
@@ -805,7 +818,7 @@ public class CommandManager2P : MonoBehaviour
                     thardCommand = _gameManager.SevenCommand[4].gameObject.transform.position;
                     Instantiate(_gameManager.CommandEffect, thardCommand, Quaternion.identity);
                     _gameManager.SevenCommand[4].gameObject.SetActive(false);
-
+                    AudioManager.Instance.PlaySE("電子ルーレット停止ボタンを押す", 0.8f);
                     _currentIndex++;
                 }
                 else if (_currentIndex == 3)
@@ -813,7 +826,7 @@ public class CommandManager2P : MonoBehaviour
                     thardCommand = _gameManager.SevenCommand[6].gameObject.transform.position;
                     Instantiate(_gameManager.CommandEffect, thardCommand, Quaternion.identity);
                     _gameManager.SevenCommand[6].gameObject.SetActive(false);
-
+                    AudioManager.Instance.PlaySE("ひらめき05", 0.8f);
                     _currentIndex++;
                     _gameManager.ClearThard = true;
                 }
@@ -830,7 +843,7 @@ public class CommandManager2P : MonoBehaviour
                     thardCommand = _gameManager.FiveCommandThard[1].gameObject.transform.position;
                     Instantiate(_gameManager.CommandEffect, thardCommand, Quaternion.identity);
                     _gameManager.FiveCommandThard[1].gameObject.SetActive(false);
-
+                    AudioManager.Instance.PlaySE("電子ルーレット停止ボタンを押す", 0.8f);
                     _currentIndex++;
                 }
                 else if (_currentIndex == 1)
@@ -839,6 +852,7 @@ public class CommandManager2P : MonoBehaviour
                     Instantiate(_gameManager.CommandEffect, thardCommand, Quaternion.identity);
                     _gameManager.FiveCommandThard[3].gameObject.SetActive(false);
                     _currentIndex++;
+                    AudioManager.Instance.PlaySE("電子ルーレット停止ボタンを押す", 0.8f);
                 }
 
 
@@ -850,7 +864,7 @@ public class CommandManager2P : MonoBehaviour
                     thardCommand = _gameManager.SixCommand[1].gameObject.transform.position;
                     Instantiate(_gameManager.CommandEffect, thardCommand, Quaternion.identity);
                     _gameManager.SixCommand[1].gameObject.SetActive(false);
-
+                    AudioManager.Instance.PlaySE("電子ルーレット停止ボタンを押す", 0.8f);
                     _currentIndex++;
                 }
                 else if (_currentIndex == 1)
@@ -858,7 +872,7 @@ public class CommandManager2P : MonoBehaviour
                     thardCommand = _gameManager.SixCommand[3].gameObject.transform.position;
                     Instantiate(_gameManager.CommandEffect, thardCommand, Quaternion.identity);
                     _gameManager.SixCommand[3].gameObject.SetActive(false);
-
+                    AudioManager.Instance.PlaySE("電子ルーレット停止ボタンを押す", 0.8f);
                     _currentIndex++;
                 }
                 else if (_currentIndex == 2)
@@ -866,7 +880,7 @@ public class CommandManager2P : MonoBehaviour
                     thardCommand = _gameManager.SixCommand[5].gameObject.transform.position;
                     Instantiate(_gameManager.CommandEffect, thardCommand, Quaternion.identity);
                     _gameManager.SixCommand[5].gameObject.SetActive(false);
-
+                    AudioManager.Instance.PlaySE("ひらめき05", 0.8f);
                     _currentIndex++;
                     _gameManager.ClearThard = true;
                 }
@@ -878,7 +892,7 @@ public class CommandManager2P : MonoBehaviour
                     thardCommand = _gameManager.SevenCommand[1].gameObject.transform.position;
                     Instantiate(_gameManager.CommandEffect, thardCommand, Quaternion.identity);
                     _gameManager.SevenCommand[1].gameObject.SetActive(false);
-
+                    AudioManager.Instance.PlaySE("電子ルーレット停止ボタンを押す", 0.8f);
                     _currentIndex++;
                 }
                 else if (_currentIndex == 1)
@@ -886,7 +900,7 @@ public class CommandManager2P : MonoBehaviour
                     thardCommand = _gameManager.SevenCommand[3].gameObject.transform.position;
                     Instantiate(_gameManager.CommandEffect, thardCommand, Quaternion.identity);
                     _gameManager.SevenCommand[3].gameObject.SetActive(false);
-
+                    AudioManager.Instance.PlaySE("電子ルーレット停止ボタンを押す", 0.8f);
                     _currentIndex++;
                 }
                 else if (_currentIndex == 2)
@@ -894,7 +908,7 @@ public class CommandManager2P : MonoBehaviour
                     thardCommand = _gameManager.SevenCommand[5].gameObject.transform.position;
                     Instantiate(_gameManager.CommandEffect, thardCommand, Quaternion.identity);
                     _gameManager.SevenCommand[5].gameObject.SetActive(false);
-
+                    AudioManager.Instance.PlaySE("電子ルーレット停止ボタンを押す", 0.8f);
                     _currentIndex++;
                 }
 

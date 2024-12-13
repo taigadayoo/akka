@@ -12,7 +12,7 @@ public class TitleEvent : MonoBehaviour
     /// </summary>
     void Start()
     {
-        // SampleSoundManager.Instance.PlayBgm(BgmType.BGM1);
+        AudioManager.Instance.PlayBGM("この訓練、方向性合ってます的なBGM", 0.5f);
         // ControllerManager からの ControllerData を購読
         ControllerManager.Instance.OnControllerData
         .Where(_ => !SceneManager.Instance.IsFading)
@@ -47,6 +47,8 @@ public class TitleEvent : MonoBehaviour
     {
         if(buttonType == ButtonType.East)
         {
+            AudioManager.Instance.PlaySE("決定ボタンを押す20", 0.8f);
+            AudioManager.Instance.StopBGM();
             Debug.Log("FadeStart");
             SceneManager.Instance.LoadScene(SceneName.Setting);
             // SampleSoundManager.Instance.StopBgm();

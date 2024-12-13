@@ -34,7 +34,7 @@ public class GameSettingEvent : MonoBehaviour
     /// </summary>
     private void Start()
     {
-        // SampleSoundManager.Instance.PlayBgm(BgmType.BGM2);
+        AudioManager.Instance.PlayBGM("Sunny_Days_Song", 0.9f);
         // プレイヤー1およびプレイヤー2のパネルを非アクティブに設定
         _player1Panel.SetActive(false);
         _player2Panel.SetActive(false);
@@ -89,9 +89,11 @@ public class GameSettingEvent : MonoBehaviour
         switch (playerType)
         {
             case PlayerType.Player1:
+                AudioManager.Instance.PlaySE("はんこ", 1f);
                 _player1Panel.SetActive(true);
                 break;
             case PlayerType.Player2:
+                AudioManager.Instance.PlaySE("はんこ", 1f);
                 _player2Panel.SetActive(true);
                 break;
             default:
@@ -149,6 +151,7 @@ public class GameSettingEvent : MonoBehaviour
                 _secondPanel.SetActive(false);
                 Debug.Log("FadeStart");
                 SceneManager.Instance.LoadScene(SceneName.Game);
+                AudioManager.Instance.StopBGM();
                 NextPhase();
                 break;
             case SettingPhase.Start:

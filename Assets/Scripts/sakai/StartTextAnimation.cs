@@ -27,7 +27,7 @@ public class StartTextAnimation : MonoBehaviour
         {
             GameObject obj = TextImages[i];
             obj.SetActive(true);
-
+            AudioManager.Instance.PlaySE("ボールをミットでキャッチ1", 1f);
             if (obj.TryGetComponent(out Animator animator))
             {
                 animator.enabled = true;
@@ -35,8 +35,11 @@ public class StartTextAnimation : MonoBehaviour
             }
             yield return new WaitForSeconds(0.5f);
         }
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(0.5f);
+        AudioManager.Instance.PlaySE("ホイッスル", 0.5f);
+        yield return new WaitForSeconds(0.5f);
         _gameManager.GameStart = true;
+        AudioManager.Instance.PlayBGM("ビッグモンキー", 0.5f);
     }
  public void StartText()
     {
@@ -58,7 +61,7 @@ public class StartTextAnimation : MonoBehaviour
         {
             GameObject obj = ClearTextImages[i];
             obj.SetActive(true);
-
+            AudioManager.Instance.PlaySE("ボールをミットでキャッチ1", 1f);
             if (obj.TryGetComponent(out Animator animator))
             {
                 animator.enabled = true;
@@ -66,7 +69,9 @@ public class StartTextAnimation : MonoBehaviour
             }
             yield return new WaitForSeconds(0.5f);
         }
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(0.5f);
+        AudioManager.Instance.PlaySE("ホイッスル・連続", 0.5f);
+        yield return new WaitForSeconds(0.5f);
         _gameManager.StartGameOver();
     }
 }
