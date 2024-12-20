@@ -73,7 +73,7 @@ public class GameManager : MonoBehaviour
     
     void Start()
     {
-        AudioManager.Instance.PlayBGM("ビッグモンキー", 0.5f);
+      
         Set1pImagesActive(false);
         Set2pImagesActive(false);//配列内のミスマークは非表示に
         SecondBoxSprite.gameObject.SetActive(false);
@@ -94,6 +94,7 @@ public class GameManager : MonoBehaviour
         {
             if (!OneClear)
             {
+                AudioManager.Instance.PlaySE("HP吸収魔法2", 1f);
                 _isClear = true;
                 _textAnimation.StartText();
                 AudioManager.Instance.StopBGM();
@@ -146,6 +147,7 @@ public class GameManager : MonoBehaviour
     }
     public void ClearEnabled()
     {
+       
         foreach (SpriteRenderer renderer in FiveCommandThard)
         {
             if (renderer != null) // nullチェック

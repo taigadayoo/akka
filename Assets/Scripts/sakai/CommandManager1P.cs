@@ -151,9 +151,10 @@ public class CommandManager1P : MonoBehaviour
                 SecondImage.gameObject.SetActive(false);
                 ThirdImage.gameObject.SetActive(false);
                 _gameManager.EnemyAnim.SetTrigger("damage");
-                AudioManager.Instance.PlaySE("毒魔法", 0.8f);
+               
                 _gameManager.LeftHP.value -= 2.5f;
                _gameManager.RightHP.value -= 2.5f; //HP減少処理
+                AudioManager.Instance.PlaySE("毒魔法", 0.8f);
                 Animator1P.SetTrigger("Attack");
                     CommandTime = 0f; // 経過時間リセット
               

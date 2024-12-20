@@ -133,7 +133,7 @@ public class CommandManager2P : MonoBehaviour
 
                     yield return null;
                 }
-                AudioManager.Instance.PlaySE("毒魔法", 0.8f);
+               
 
                 FirstImage.gameObject.SetActive(false);
                 SecondImage.gameObject.SetActive(false);
@@ -142,6 +142,7 @@ public class CommandManager2P : MonoBehaviour
                 _gameManager.LeftHP.value -= 2.5f;
                 _gameManager.RightHP.value -= 2.5f; //HP減少処理
                 Animator2P.SetTrigger("Attack2p");
+                AudioManager.Instance.PlaySE("毒魔法", 0.8f);
                 CommandTime = 0f; // 経過時間リセット
 
 
