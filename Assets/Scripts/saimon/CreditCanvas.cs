@@ -7,7 +7,7 @@ public class CreditCanvas : MonoBehaviour
     public Canvas Canvas;
 
     private bool _isVisible = true;
-
+  
     private void HandleButtonInput(ButtonType? buttonType)
     {
 
