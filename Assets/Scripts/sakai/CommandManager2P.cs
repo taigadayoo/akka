@@ -445,7 +445,11 @@ public class CommandManager2P : MonoBehaviour
     }
    public IEnumerator MissCommand()
     {
-        Animator2P.SetTrigger("Miss");
+        _gameManager.Miss2pCountMark();
+        if (_gameManager.MissCount != 5)
+        {
+            Animator2P.SetTrigger("Miss");
+        }
         AudioManager.Instance.PlaySE("キャンセル3", 1f);
         FirstImage.gameObject.SetActive(false);
         SecondImage.gameObject.SetActive(false);
@@ -453,7 +457,7 @@ public class CommandManager2P : MonoBehaviour
         // クールダウンを開始
         IsCoolDown = true;
         CommandTime = 0;
-        _gameManager.Miss2pCountMark();
+       
         yield return new WaitForSeconds(2.0f);
         IsCoolDown = false;
         ResetCommands();

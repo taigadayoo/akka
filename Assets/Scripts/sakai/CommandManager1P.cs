@@ -482,7 +482,11 @@ public class CommandManager1P : MonoBehaviour
 
    public IEnumerator MissCommand()
     {
-        Animator1P.SetTrigger("Miss");
+        _gameManager.Miss1pCountMark();
+        if (_gameManager.MissCount != 5)
+        {
+            Animator1P.SetTrigger("Miss");
+        }
         AudioManager.Instance.PlaySE("キャンセル3", 1f);
         FirstImage.gameObject.SetActive(false);
         SecondImage.gameObject.SetActive(false);
@@ -490,10 +494,11 @@ public class CommandManager1P : MonoBehaviour
         // クールダウンを開始
         IsCoolDown = true;
         CommandTime = 0;
-        _gameManager.Miss1pCountMark();
+       
         yield return new WaitForSeconds(2.0f);
         IsCoolDown = false;
         ResetCommands();
+     
     }
     //public IEnumerator MissSecondCommand()
     //{
@@ -523,7 +528,7 @@ public class CommandManager1P : MonoBehaviour
     }
     public IEnumerator ClearSecond()
     {
-
+        _gameManager.LifeHeal();
             _gameManager.SecondImagesActive(false);
         _gameManager.EnemyAnim.SetTrigger("damage");
         AudioManager.Instance.PlaySE("毒魔法", 0.8f);
@@ -560,40 +565,6 @@ public class CommandManager1P : MonoBehaviour
     }
     public IEnumerator MissSecond(ControllerData controllerData)
     {
-        _2P.Animator2P.SetTrigger("Miss");
-        Animator1P.SetTrigger("Miss");
-        AudioManager.Instance.PlaySE("キャンセル3", 1f);
-        _gameManager.SecondImagesActive(false);
-        if (controllerData.PlayerType == PlayerType.Player1)
-        {
-            _gameManager.Miss1pCountMark();
-        }
-        else if(controllerData.PlayerType == PlayerType.Player2)
-        {
-            _gameManager.Miss2pCountMark();
-        }
-        else if(controllerData == null)
-        {
-            Debug.Log("controllerDataないです" + controllerData);
-        }
-        _gameManager.SecondCommandTime = 0;
-        IsCoolDown = true;
-        _2P.IsCoolDown = true;
-        yield return new WaitForSeconds(2.0f);
-        IsCoolDown = false;
-        _2P.IsCoolDown = false;
-        ResetCommands();
-        _2P.ResetCommands();
-
-    }
-    public IEnumerator MissThard(ControllerData controllerData)
-    {
-        Animator1P.SetTrigger("Miss");
-      _2P.Animator2P.SetTrigger("Miss");
-        AudioManager.Instance.PlaySE("キャンセル3", 1f);
-        _gameManager.ThardImagesActive(false);
-        _circular.ResetAllObjects();
-      
         if (controllerData.PlayerType == PlayerType.Player1)
         {
             _gameManager.Miss1pCountMark();
@@ -606,6 +577,48 @@ public class CommandManager1P : MonoBehaviour
         {
             Debug.Log("controllerDataないです" + controllerData);
         }
+        if (_gameManager.MissCount != 5)
+        {
+            _2P.Animator2P.SetTrigger("Miss");
+            Animator1P.SetTrigger("Miss");
+        }
+        AudioManager.Instance.PlaySE("キャンセル3", 1f);
+        _gameManager.SecondImagesActive(false);
+       
+        _gameManager.SecondCommandTime = 0;
+        IsCoolDown = true;
+        _2P.IsCoolDown = true;
+        yield return new WaitForSeconds(2.0f);
+        IsCoolDown = false;
+        _2P.IsCoolDown = false;
+        ResetCommands();
+        _2P.ResetCommands();
+
+    }
+    public IEnumerator MissThard(ControllerData controllerData)
+    {
+
+        if (controllerData.PlayerType == PlayerType.Player1)
+        {
+            _gameManager.Miss1pCountMark();
+        }
+        else if (controllerData.PlayerType == PlayerType.Player2)
+        {
+            _gameManager.Miss2pCountMark();
+        }
+        else if (controllerData == null)
+        {
+            Debug.Log("controllerDataないです" + controllerData);
+        }
+        if (_gameManager.MissCount != 5)
+        {
+            Animator1P.SetTrigger("Miss");
+            _2P.Animator2P.SetTrigger("Miss");
+        }
+        AudioManager.Instance.PlaySE("キャンセル3", 1f);
+        _gameManager.ThardImagesActive(false);
+        _circular.ResetAllObjects();
+      
         IsCoolDown = true;
         _2P.IsCoolDown = true;
         yield return new WaitForSeconds(2f);

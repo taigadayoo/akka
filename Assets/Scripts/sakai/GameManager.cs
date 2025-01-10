@@ -32,6 +32,8 @@ public class GameManager : MonoBehaviour
     [SerializeField]
    public GameObject CommandEffect;
     [SerializeField]
+    public GameObject HealEffect;
+    [SerializeField]
     StartTextAnimation _textAnimation;
     public bool OnGameOver = false;
     public Slider LeftHP;
@@ -67,6 +69,7 @@ public class GameManager : MonoBehaviour
     public bool OneClear = false;
     public bool AllObjectSizeReset = false;
     public Collider2D OnTimeUpCol;
+    public Transform MainCanvas;
     public bool GameStart = false;
     [SerializeField]
     public Animator EnemyAnim;
@@ -94,6 +97,8 @@ public class GameManager : MonoBehaviour
         {
             if (!OneClear)
             {
+               _1P.Animator1P.SetTrigger("GameOver");
+                _2P.Animator2P.SetTrigger("GameOver");
                 AudioManager.Instance.PlaySE("HP吸収魔法2", 1f);
                 _isClear = true;
                 _textAnimation.StartText();
@@ -180,6 +185,23 @@ public class GameManager : MonoBehaviour
     {
         Miss1P[MissCount].gameObject.SetActive(true);
         MissCount += 1;
+    }
+    public void LifeHeal()
+    {
+        if (MissCount != 0)
+        {
+            MissCount -= 1;
+            GameObject spawnedObject = Instantiate(HealEffect, MainCanvas);
+            RectTransform rectTransform = spawnedObject.GetComponent<RectTransform>();
+            if (rectTransform != null)
+            {
+                rectTransform.anchoredPosition = Miss2P[MissCount].rectTransform.anchoredPosition;
+                
+            }
+            Miss2P[MissCount].gameObject.SetActive(false);
+            Miss1P[MissCount].gameObject.SetActive(false);
+        }
+   
     }
     IEnumerator DelayCol()
     {

@@ -1962,8 +1962,8 @@ Canvas:
   m_GameObject: {fileID: 352452526}
   m_Enabled: 1
   serializedVersion: 3
-  m_RenderMode: 0
-  m_Camera: {fileID: 0}
+  m_RenderMode: 1
+  m_Camera: {fileID: 35785922}
   m_PlaneDistance: 100
   m_PixelPerfect: 0
   m_ReceivesEvents: 1
@@ -1973,7 +1973,7 @@ Canvas:
   m_VertexColorAlwaysGammaSpace: 0
   m_AdditionalShaderChannelsFlag: 0
   m_UpdateRectTransformForStandalone: 0
-  m_SortingLayerID: 0
+  m_SortingLayerID: 1972585359
   m_SortingOrder: 0
   m_TargetDisplay: 0
 --- !u!224 &352452530
@@ -2104,8 +2104,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 410726220}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -6.9054027, y: -3.21, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -6.905403, y: -3.21, z: 0}
   m_LocalScale: {x: 0.75251, y: 0.75251, z: 0.75251}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -7356,6 +7356,7 @@ MonoBehaviour:
   MissCount: 0
   SecondBoxSprite: {fileID: 2073727094}
   CommandEffect: {fileID: 4981207715794838507, guid: 78577b08eff43e24a80d32a287f4bda8, type: 3}
+  HealEffect: {fileID: 4547418443037093805, guid: f79c713462f32fd4db28a93c6deb11ed, type: 3}
   _textAnimation: {fileID: 352452531}
   OnGameOver: 0
   LeftHP: {fileID: 1499515089}
@@ -7407,6 +7408,7 @@ MonoBehaviour:
   OneClear: 0
   AllObjectSizeReset: 0
   OnTimeUpCol: {fileID: 1276943831}
+  MainCanvas: {fileID: 352452530}
   GameStart: 0
   EnemyAnim: {fileID: 1206795327}
 --- !u!4 &1850516707
@@ -8387,13 +8389,13 @@ SceneRoots:
   - {fileID: 35785923}
   - {fileID: 608549754}
   - {fileID: 1206795326}
-  - {fileID: 410726222}
+  - {fileID: 352452530}
   - {fileID: 1657244874}
+  - {fileID: 410726222}
   - {fileID: 580301342}
   - {fileID: 1438424535}
   - {fileID: 430967015}
   - {fileID: 1850516707}
-  - {fileID: 352452530}
   - {fileID: 995764396}
   - {fileID: 134897100}
   - {fileID: 1397616737}
