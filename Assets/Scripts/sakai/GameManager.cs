@@ -121,16 +121,18 @@ public class GameManager : MonoBehaviour
                _1P.Animator1P.SetTrigger("GameOver");
                 _2P.Animator2P.SetTrigger("GameOver");
                 AudioManager.Instance.PlaySE("HP吸収魔法2", 1f);
-                _isClear = true;
+                _isClear = false;
                 _textAnimation.StartText();
                 AudioManager.Instance.StopBGM();
                 ClearEnabled();
+                Timer1P.SetActive(false);
+                Timer2P.SetActive(false);
                 OneClear = true;
             }
         }
        if(LeftHP.value <= 40 && LeftHP.value > 20)
         {
-            if(!OnCutIn && !OneCutIn)
+            if( !OneCutIn && !OneClear)
             {
                 OnCutIn = true;
                 OneCutIn = true;
@@ -142,7 +144,7 @@ public class GameManager : MonoBehaviour
         }
        else if(LeftHP.value <= 20 && LeftHP.value > 0 && !OneClear)
         {
-            if (!OnCutIn && OneCutIn)
+            if ( OneCutIn)
             {
                 OnCutIn = true;
                 OneCutIn = false;
@@ -154,13 +156,18 @@ public class GameManager : MonoBehaviour
         }
        else if(LeftHP.value == 0)
         {
-            if (!OneClear)
+            if (!_isClear)
             {
+                Debug.Log("aaa");
                 _isClear = true;
                 ClearEnabled();
                 _textAnimation.StartText();
                 AudioManager.Instance.StopBGM();
-                SampleSoundManager.Instance.StopBgm();
+                if (SampleSoundManager.Instance != null)
+                {
+                  
+                    SampleSoundManager.Instance.StopBgm();
+                }
                 OneClear = true;
             }
         }

@@ -103,7 +103,7 @@ public class ResultEvent : MonoBehaviour
 
     private void GetScore()
     {
-        _isClear = PlayerPrefs.GetInt("IsClear") == 0;
+        _isClear = PlayerPrefs.GetInt("IsClear", 0) == 1;
         _clearTime = PlayerPrefs.GetFloat("ClearTime");
         _missCount = PlayerPrefs.GetInt("MissCount");
     }

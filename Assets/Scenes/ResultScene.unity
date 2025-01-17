@@ -678,9 +678,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _clearTimeLimit:
+  - 50
+  - 70
   - 90
-  - 120
-  - 150
   _resultSpriteCollection:
   - {fileID: 1551581155}
   - {fileID: 1299970888}
@@ -1740,6 +1740,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 923c61c337230ad4b924e4b75cdf7349, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  BackGround: {fileID: 0}
   ClearText: {fileID: 1261378725}
   TimeText: {fileID: 307375210}
   MissText: {fileID: 2060283607}
@@ -2026,6 +2027,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 923c61c337230ad4b924e4b75cdf7349, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  BackGround: {fileID: 0}
   ClearText: {fileID: 479418169}
   TimeText: {fileID: 1066590315}
   MissText: {fileID: 743466586}
@@ -2130,6 +2132,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 923c61c337230ad4b924e4b75cdf7349, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  BackGround: {fileID: 0}
   ClearText: {fileID: 1985087816}
   TimeText: {fileID: 1076892269}
   MissText: {fileID: 225867564}
