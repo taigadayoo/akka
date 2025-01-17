@@ -98,6 +98,7 @@ public class CommandManager2P : MonoBehaviour
                 {
                     yield return null;
                 }
+                _gameManager.Timer2P.SetActive(true);
                 FirstImage.gameObject.SetActive(true);
                 SecondImage.gameObject.SetActive(true);
                 ThirdImage.gameObject.SetActive(true);
@@ -139,6 +140,7 @@ public class CommandManager2P : MonoBehaviour
                 SecondImage.gameObject.SetActive(false);
                 ThirdImage.gameObject.SetActive(false);
                 _gameManager.EnemyAnim.SetTrigger("damage");
+                _gameManager.Timer2P.SetActive(false);
                 _gameManager.LeftHP.value -= 2.5f;
                 _gameManager.RightHP.value -= 2.5f; //HP減少処理
                 Animator2P.SetTrigger("Attack2p");
@@ -450,6 +452,7 @@ public class CommandManager2P : MonoBehaviour
         {
             Animator2P.SetTrigger("Miss");
         }
+        _gameManager.Timer2P.SetActive(false);
         AudioManager.Instance.PlaySE("キャンセル3", 1f);
         FirstImage.gameObject.SetActive(false);
         SecondImage.gameObject.SetActive(false);

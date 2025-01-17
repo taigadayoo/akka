@@ -93,6 +93,8 @@ public class CommandManager1P : MonoBehaviour
     {
         if(_gameManager.GameStart && !_oneStart)
         {
+            _gameManager.Timer1P.SetActive(true);
+            _gameManager.Timer2P.SetActive(true);
             FirstBox.SetActive(true);
             FirstImage.gameObject.SetActive(true);
             SecondImage.gameObject.SetActive(true);
@@ -112,7 +114,8 @@ public class CommandManager1P : MonoBehaviour
             _gameManager.ClearThard = false;
             if (_gameManager.PhaseCount == 0)
             {
-
+                _gameManager.Timer1P.SetActive(true);
+            
                 FirstImage.gameObject.SetActive(true);
                 SecondImage.gameObject.SetActive(true);
                 ThirdImage.gameObject.SetActive(true);
@@ -151,7 +154,8 @@ public class CommandManager1P : MonoBehaviour
                 SecondImage.gameObject.SetActive(false);
                 ThirdImage.gameObject.SetActive(false);
                 _gameManager.EnemyAnim.SetTrigger("damage");
-               
+                _gameManager.Timer1P.SetActive(false);
+             
                 _gameManager.LeftHP.value -= 2.5f;
                _gameManager.RightHP.value -= 2.5f; //HP減少処理
                 AudioManager.Instance.PlaySE("毒魔法", 0.8f);
@@ -167,8 +171,10 @@ public class CommandManager1P : MonoBehaviour
                 FirstImage.gameObject.SetActive(false);
                 SecondImage.gameObject.SetActive(false);
                 ThirdImage.gameObject.SetActive(false);
-
-                    _gameManager.RandomCommandNum = Random.Range(0, 3);
+                _gameManager.Timer1P.SetActive(false);
+                _gameManager.Timer2P.SetActive(false);
+                _gameManager.TimerMix.SetActive(true);
+                _gameManager.RandomCommandNum = Random.Range(0, 3);
                     _gameManager.FirstPlayerRandomNum = Random.Range(0, 2);
 
                 _gameManager.SecondImagesActive(true);
@@ -302,6 +308,7 @@ public class CommandManager1P : MonoBehaviour
                 {
                     _thardObjectController.ResetObjects();
                 }
+                _gameManager.TimerMix.SetActive(false);
                 _oneResetThard = true;
                 _gameManager.SecondBoxSprite.gameObject.SetActive(false);
                 FirstBox.SetActive(false);
@@ -482,6 +489,8 @@ public class CommandManager1P : MonoBehaviour
 
    public IEnumerator MissCommand()
     {
+        _gameManager.Timer1P.SetActive(false);
+       
         _gameManager.Miss1pCountMark();
         if (_gameManager.MissCount != 5)
         {
@@ -528,6 +537,7 @@ public class CommandManager1P : MonoBehaviour
     }
     public IEnumerator ClearSecond()
     {
+        _gameManager.TimerMix.SetActive(false);
         _gameManager.LifeHeal();
             _gameManager.SecondImagesActive(false);
         _gameManager.EnemyAnim.SetTrigger("damage");
@@ -584,7 +594,7 @@ public class CommandManager1P : MonoBehaviour
         }
         AudioManager.Instance.PlaySE("キャンセル3", 1f);
         _gameManager.SecondImagesActive(false);
-       
+        _gameManager.TimerMix.SetActive(false);
         _gameManager.SecondCommandTime = 0;
         IsCoolDown = true;
         _2P.IsCoolDown = true;

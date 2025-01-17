@@ -71,6 +71,9 @@ public class GameManager : MonoBehaviour
     public Collider2D OnTimeUpCol;
     public Transform MainCanvas;
     public bool GameStart = false;
+    public GameObject Timer1P;
+    public GameObject Timer2P;
+    public GameObject TimerMix;
     [SerializeField]
     public Animator EnemyAnim;
     
@@ -193,10 +196,14 @@ public class GameManager : MonoBehaviour
             MissCount -= 1;
             GameObject spawnedObject = Instantiate(HealEffect, MainCanvas);
             RectTransform rectTransform = spawnedObject.GetComponent<RectTransform>();
+            AudioManager.Instance.PlaySE("HP吸収魔法2", 1f);
+
             if (rectTransform != null)
             {
-                rectTransform.anchoredPosition = Miss2P[MissCount].rectTransform.anchoredPosition;
-                
+                Vector2 newPosition = Miss2P[MissCount].rectTransform.anchoredPosition;
+                newPosition.x -= 30; // 丁度いい位置に合わせるためx座標から30引く
+                newPosition.y -= 40;
+                rectTransform.anchoredPosition = newPosition;
             }
             Miss2P[MissCount].gameObject.SetActive(false);
             Miss1P[MissCount].gameObject.SetActive(false);
