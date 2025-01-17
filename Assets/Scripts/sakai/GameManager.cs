@@ -71,9 +71,15 @@ public class GameManager : MonoBehaviour
     public Collider2D OnTimeUpCol;
     public Transform MainCanvas;
     public bool GameStart = false;
+    public bool OneCutIn = false;
     public GameObject Timer1P;
     public GameObject Timer2P;
     public GameObject TimerMix;
+    public bool OnCutIn = false;
+    public GameObject FirstSet;
+    public GameObject SecondSet;
+    public GameObject ThardSet;
+    public CutInAnimationManager CutInAnimation;
     [SerializeField]
     public Animator EnemyAnim;
     
@@ -88,6 +94,18 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(OnCutIn)
+        {
+            _1P.enabled = false;
+            _2P.enabled = false;
+            FirstSet.SetActive(false);
+            SecondSet.SetActive(false);
+            ThardSet.SetActive(false);
+            Timer1P.SetActive(false);
+            Timer2P.SetActive(false);
+            TimerMix.SetActive(false);
+
+        }
         if (!_isClear && GameStart)
         {
             _clearTIme += Time.deltaTime;
@@ -100,11 +118,7 @@ public class GameManager : MonoBehaviour
         {
             if (!OneClear)
             {
-                TimerMix.SetActive(false);
-                Timer1P.SetActive(false);
-                Timer2P.SetActive(false);
-                
-                _1P.Animator1P.SetTrigger("GameOver");
+               _1P.Animator1P.SetTrigger("GameOver");
                 _2P.Animator2P.SetTrigger("GameOver");
                 AudioManager.Instance.PlaySE("HP吸収魔法2", 1f);
                 _isClear = true;
@@ -116,12 +130,24 @@ public class GameManager : MonoBehaviour
         }
        if(LeftHP.value <= 40 && LeftHP.value > 20)
         {
+            if(!OnCutIn && !OneCutIn)
+            {
+                OnCutIn = true;
+                OneCutIn = true;
+                CutInAnimation.StartFirstCutIn();
+            }
             EnemyAnim.SetBool("damage1", true);
             PhaseCount = 1;
             SecondBoxSprite.gameObject.SetActive(true);
         }
        else if(LeftHP.value <= 20 && LeftHP.value > 0 && !OneClear)
         {
+            if (!OnCutIn && OneCutIn)
+            {
+                OnCutIn = true;
+                OneCutIn = false;
+                CutInAnimation.StartSecondCutIn();
+            }
             PhaseCount = 2;
             JudgementRing.gameObject.SetActive(true);
             LaneRing.gameObject.SetActive(true);

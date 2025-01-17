@@ -112,6 +112,7 @@ public class CommandManager1P : MonoBehaviour
             _currentIndex = 0;
             _gameManager.ClearSecond = false;
             _gameManager.ClearThard = false;
+
             if (_gameManager.PhaseCount == 0)
             {
                 if (!_gameManager.OneClear)
@@ -176,10 +177,11 @@ public class CommandManager1P : MonoBehaviour
                 ThirdImage.gameObject.SetActive(false);
                 _gameManager.Timer1P.SetActive(false);
                 _gameManager.Timer2P.SetActive(false);
-                _gameManager.TimerMix.SetActive(true);
+               
                 _gameManager.RandomCommandNum = Random.Range(0, 3);
                     _gameManager.FirstPlayerRandomNum = Random.Range(0, 2);
 
+                _gameManager.TimerMix.SetActive(true);
                 _gameManager.SecondImagesActive(true);
                 _gameManager.SecondBoxImage();
 
@@ -683,7 +685,7 @@ public class CommandManager1P : MonoBehaviour
         string expectedCommand = _currentSequence[_currentIndex];
 
 
-         if (controllerData.ActionType == ActionType.Buttons && _oneStart && !_gameManager.OneClear)
+         if (controllerData.ActionType == ActionType.Buttons && _oneStart && !_gameManager.OneClear && !_gameManager.OnCutIn)
         {
             if (IsCorrectCommand(controllerData, expectedCommand) && _gameManager.PhaseCount == 0)
             {

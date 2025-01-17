@@ -91,7 +91,7 @@ public class CommandManager2P : MonoBehaviour
             _currentSequence = new List<string>();
             _currentIndex = 0;
 
-
+        
             if (_gameManager.PhaseCount == 0)
             {
                 if (_gameManager.PhaseCount == 1)
@@ -506,7 +506,7 @@ public class CommandManager2P : MonoBehaviour
 
         ControllerData = controllerData;
 
-        if (controllerData.ActionType == ActionType.Buttons && _oneStart && !_gameManager.OneClear)
+        if (controllerData.ActionType == ActionType.Buttons && _oneStart && !_gameManager.OneClear && !_gameManager.OnCutIn)
         {
             if (IsCorrectCommand(controllerData, expectedCommand) && _gameManager.PhaseCount == 0)
             {
