@@ -49,7 +49,7 @@ public class CutInAnimationManager : MonoBehaviour
         CutInpanel.SetActive(true);
 
         yield return new WaitForSeconds(0.3f);
-       
+        AudioManager.Instance.PlaySE("flash-of-light-4", 1f);
         CutBack1.DOAnchorPos(new Vector2(-28, 0), 0.5f).SetEase(Ease.OutQuad);
 
         yield return new WaitForSeconds(0.5f);
@@ -63,12 +63,14 @@ public class CutInAnimationManager : MonoBehaviour
         yield return new WaitForSeconds(0.5f);
 
         Ink1.SetActive(true);
+        AudioManager.Instance.PlaySE("魚を釣り上げる", 1f);
         Ink1.transform.DOScale(new Vector3(0.2f, 0.2f, 1f), 0.2f)
                      .SetEase(Ease.OutBounce); // イージングを設定
 
         yield return new WaitForSeconds(0.3f);
 
         Ink2.SetActive(true);
+        AudioManager.Instance.PlaySE("魚を釣り上げる", 1f);
         Ink2.transform.DOScale(new Vector3(0.15f, 0.15f, 1f), 0.2f)
                     .SetEase(Ease.OutBounce); // イージングを設定
         yield return new WaitForSeconds(0.8f);
@@ -88,7 +90,7 @@ public class CutInAnimationManager : MonoBehaviour
         CutInpanel.SetActive(true);
 
         yield return new WaitForSeconds(0.3f);
-
+        AudioManager.Instance.PlaySE("flash-of-light-4", 1f);
         CutBack2.DOAnchorPos(new Vector2(-28, 0), 0.5f).SetEase(Ease.OutQuad);
 
         yield return new WaitForSeconds(0.5f);
@@ -102,12 +104,14 @@ public class CutInAnimationManager : MonoBehaviour
         yield return new WaitForSeconds(0.5f);
 
         Ink3.SetActive(true);
+        AudioManager.Instance.PlaySE("魚を釣り上げる", 1f);
         Ink3.transform.DOScale(new Vector3(0.2f, 0.2f, 1f), 0.2f)
                      .SetEase(Ease.OutBounce); // イージングを設定
 
         yield return new WaitForSeconds(0.3f);
 
         Ink4.SetActive(true);
+        AudioManager.Instance.PlaySE("魚を釣り上げる", 1f);
         Ink4.transform.DOScale(new Vector3(0.15f, 0.15f, 1f), 0.2f)
                     .SetEase(Ease.OutBounce); // イージングを設定
         yield return new WaitForSeconds(0.8f);
