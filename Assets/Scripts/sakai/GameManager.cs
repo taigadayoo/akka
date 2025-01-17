@@ -100,7 +100,11 @@ public class GameManager : MonoBehaviour
         {
             if (!OneClear)
             {
-               _1P.Animator1P.SetTrigger("GameOver");
+                TimerMix.SetActive(false);
+                Timer1P.SetActive(false);
+                Timer2P.SetActive(false);
+                
+                _1P.Animator1P.SetTrigger("GameOver");
                 _2P.Animator2P.SetTrigger("GameOver");
                 AudioManager.Instance.PlaySE("HP吸収魔法2", 1f);
                 _isClear = true;

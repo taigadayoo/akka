@@ -98,7 +98,10 @@ public class CommandManager2P : MonoBehaviour
                 {
                     yield return null;
                 }
-                _gameManager.Timer2P.SetActive(true);
+                if (!_gameManager.OneClear)
+                {
+                    _gameManager.Timer2P.SetActive(true);
+                }
                 FirstImage.gameObject.SetActive(true);
                 SecondImage.gameObject.SetActive(true);
                 ThirdImage.gameObject.SetActive(true);

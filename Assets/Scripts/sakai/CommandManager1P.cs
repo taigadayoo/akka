@@ -114,7 +114,10 @@ public class CommandManager1P : MonoBehaviour
             _gameManager.ClearThard = false;
             if (_gameManager.PhaseCount == 0)
             {
-                _gameManager.Timer1P.SetActive(true);
+                if (!_gameManager.OneClear)
+                {
+                    _gameManager.Timer1P.SetActive(true);
+                }
             
                 FirstImage.gameObject.SetActive(true);
                 SecondImage.gameObject.SetActive(true);
