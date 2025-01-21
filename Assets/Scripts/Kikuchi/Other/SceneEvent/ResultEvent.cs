@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -15,6 +15,9 @@ public class ResultEvent : MonoBehaviour
 
     [SerializeField]
     private List<float> _clearTimeLimit = new List<float>();  // クリアタイム制限のリスト
+
+    [SerializeField]
+    private List<Sprite> _clearImage = new List<Sprite>();
 
     [SerializeField]
     private List<ResultSheetData> _resultSpriteCollection = new List<ResultSheetData>();  // リザルトシートデータのリスト
@@ -42,6 +45,8 @@ public class ResultEvent : MonoBehaviour
 
         // リザルトイベントハンドラを設定する
         ResultEventHandler();
+
+        AudioManager.Instance.PlayBGM("ポケットワールド", 0.5f);//ResultBGM再生
     }
 
     // リザルトイベントハンドラ
@@ -153,7 +158,7 @@ public class ResultEvent : MonoBehaviour
     private void SetText()
     {
         // クリアテキスト、タイムテキスト、ミステキストを設定する
-        _currentResultSheetData.ClearText.text = _isClear ? "成功！" : "失敗...";
+        _currentResultSheetData.ClearImage.sprite = _isClear ?  _clearImage[0] : _clearImage[1] ;
         _currentResultSheetData.TimeText.text = ConvertToTime(_clearTime);
         _currentResultSheetData.MissText.text = _missCount.ToString() + "回";
     }

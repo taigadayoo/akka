@@ -71,7 +71,7 @@ public class CommandManager1P : MonoBehaviour
             _gameManager.TimeUpThard1P = false;
         }
       
-        if(_gameManager.ClearSecond)
+        if(_gameManager.ClearSecond && !IsCoolDown)
         {
            
             _gameManager.SecondCommandTime = 0;
@@ -563,7 +563,10 @@ public class CommandManager1P : MonoBehaviour
     public IEnumerator ClearThard()
     {
         AudioManager.Instance.PlaySE("毒魔法", 0.8f);
-        _gameManager.EnemyAnim.SetTrigger("damage");
+        if (_gameManager.LeftHP.value != 0)
+        {
+            _gameManager.EnemyAnim.SetTrigger("damage");
+        }
         _gameManager.ThardImagesActive(false);
 
         _gameManager.LeftHP.value -= 10f;
@@ -664,13 +667,15 @@ public class CommandManager1P : MonoBehaviour
         }
         IsCoolDown = true;
         _2P.IsCoolDown = true;
-        yield return new WaitForSeconds(3.5f);
-        _circular.ResetAllObjects();
+        yield return new WaitUntil(() => _gameManager.IsConditionMet);
+      
         _gameManager.ThardImagesActive(false);
+        _circular.ResetAllObjects();
         IsCoolDown = false;
         _2P.IsCoolDown = false;
         ResetCommands();
         _2P.ResetCommands();
+        _gameManager.IsConditionMet = false;
         _gameManager.OneTimeUp = false;
     }
     private void OnControllerDataReceived(ControllerData controllerData)

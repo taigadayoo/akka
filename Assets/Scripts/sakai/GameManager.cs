@@ -79,6 +79,7 @@ public class GameManager : MonoBehaviour
     public GameObject FirstSet;
     public GameObject SecondSet;
     public GameObject ThardSet;
+    public bool IsConditionMet = false;
     public CutInAnimationManager CutInAnimation;
     [SerializeField]
     public Animator EnemyAnim;
@@ -150,6 +151,7 @@ public class GameManager : MonoBehaviour
                 OneCutIn = false;
                 CutInAnimation.StartSecondCutIn();
             }
+            EnemyAnim.SetBool("damage2", true);
             PhaseCount = 2;
             JudgementRing.gameObject.SetActive(true);
             LaneRing.gameObject.SetActive(true);
@@ -158,6 +160,7 @@ public class GameManager : MonoBehaviour
         {
             if (!_isClear)
             {
+                EnemyAnim.SetBool("damage3", true);
                 Debug.Log("aaa");
                 _isClear = true;
                 ClearEnabled();
@@ -348,7 +351,7 @@ public class GameManager : MonoBehaviour
     }
     private void SaveDate()
     {
-        int key = _isClear ? 1 : 0;
+        int key = _isClear ? 0: 1;
         PlayerPrefs.SetFloat("ClearTime", _clearTIme);
         PlayerPrefs.SetInt("MissCount", MissCount);
        

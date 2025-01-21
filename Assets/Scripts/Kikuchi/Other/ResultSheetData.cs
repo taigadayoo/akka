@@ -8,7 +8,7 @@ using UnityEngine.UI;
 public class ResultSheetData : MonoBehaviour
 {
     public Image BackGround;
-    public TextMeshProUGUI ClearText;
+    public Image ClearImage;
     public TextMeshProUGUI TimeText;
     public TextMeshProUGUI MissText;
     public GameObject PL1OkImage;

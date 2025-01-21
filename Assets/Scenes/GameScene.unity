@@ -2496,7 +2496,7 @@ RectTransform:
   m_Father: {fileID: 1627687423}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -2513,7 +2513,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.5479032, g: 0.79927367, b: 0.85660374, a: 1}
+  m_Color: {r: 0.6881697, g: 0.19140615, b: 0.98490566, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -9231,6 +9231,7 @@ MonoBehaviour:
   FirstSet: {fileID: 995764395}
   SecondSet: {fileID: 134897099}
   ThardSet: {fileID: 1397616736}
+  IsConditionMet: 0
   CutInAnimation: {fileID: 352452532}
   EnemyAnim: {fileID: 1206795327}
 --- !u!4 &1850516707
@@ -9752,8 +9753,8 @@ Transform:
   m_GameObject: {fileID: 2073727092}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -967.86, y: -333.68, z: 0.5}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: -967.7, y: -333.68, z: 0.5}
+  m_LocalScale: {x: 2.2631834, y: 2.2631834, z: 2.2631834}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 134897100}
@@ -9799,7 +9800,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: e01d36bcb286b9941901faff7ec40d5b, type: 3}
+  m_Sprite: {fileID: 21300000, guid: ca67df6ce7f3d4c46b03a12907cf0b70, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0

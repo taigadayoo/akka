@@ -16,14 +16,17 @@ public class ObjectSizeUp : MonoBehaviour
     CommandManager2P _2P;
     ThardObjectController _thardObjectController;
     Animator _animator;
-  
+    Vector3 _startScale;
+    private bool _isDefaultSize = false;
     public enum Player
     {
         player1,
         player2
     }
+
     private void Start()
     {
+        _startScale = this.transform.localScale;
         _animator = GetComponent<Animator>();
         _1P = FindFirstObjectByType<CommandManager1P>();
         _2P = FindFirstObjectByType<CommandManager2P>();
@@ -36,6 +39,8 @@ public class ObjectSizeUp : MonoBehaviour
     public Player PlayerNum;
     private void OnEnable()
     {
+        _isDefaultSize = false;
+        this.transform.localScale = _startScale;
         ResetSize();
     }
     private void Update()
@@ -44,6 +49,10 @@ public class ObjectSizeUp : MonoBehaviour
         {
             ResetSize();
             _gameManager.AllObjectSizeReset = false;
+        }
+        if(!_isDefaultSize)
+        {
+            ResetSize();
         }
     }
     void ResetSize()
@@ -55,6 +64,7 @@ public class ObjectSizeUp : MonoBehaviour
         // オブジェクトがアクティブになったときに、まずサイズを大きくする
         if (gameObject.activeSelf && collision.gameObject.tag == "SizeUp")
         {
+            _isDefaultSize = true;
             EnlargeAndResize();
         }
         if (collision.gameObject.tag == "Judge")
