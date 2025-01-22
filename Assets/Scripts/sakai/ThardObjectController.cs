@@ -1,0 +1,93 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class ThardObjectController : MonoBehaviour
+{
+    public List<GameObject> Objects; // インスペクターで指定するオブジェクトのリスト
+    private List<GameObject> _initialObjectsState; // 初期のオブジェクトリストを保持
+    public float DelayBetweenActivations = 0.1f; // 各アニメーション開始の遅延
+    GameManager _gameManager;
+    private List<Animator> _activeAnimators = new List<Animator>();
+
+    void Start()
+    {
+        _gameManager = FindFirstObjectByType<GameManager>();
+        // 初期状態のオブジェクトリストをコピーして保存
+        _initialObjectsState = new List<GameObject>(Objects);
+    }
+
+    void Update()
+    {
+        // オブジェクトが非アクティブになった場合にリストから削除
+        for (int i = Objects.Count - 1; i >= 0; i--)
+        {
+            if (Objects[i] != null && !Objects[i].activeSelf)
+            {
+                Objects.RemoveAt(i); // 非アクティブなオブジェクトをリストから削除
+            }
+        }
+    }
+
+    // 指定した関数を呼び出し、オブジェクトのアニメーションを1秒ごとに順次再生
+    public void StartAnimationsSequentially()
+    {
+        StartCoroutine(ActivateObjectsWithAnimation());
+    }
+
+    private IEnumerator ActivateObjectsWithAnimation()
+    {
+        for (int i = 0; i < Objects.Count; i++)
+        {
+            GameObject obj = Objects[i];
+            obj.SetActive(true);
+
+            if (obj.TryGetComponent(out Animator animator))
+            {
+                animator.enabled = true;
+                animator.SetTrigger("SizeUp");
+                _activeAnimators.Add(animator);
+            }
+           
+
+            yield return new WaitForSeconds(DelayBetweenActivations);
+        }
+        yield return new WaitForSeconds(2);
+        CallActiveAnimators();
+
+        _gameManager.IsConditionMet = true;
+    }
+    private void CallActiveAnimators()
+    {
+        foreach (Animator animator in _activeAnimators)
+        {
+            if (animator != null)
+            {
+                animator.SetTrigger("idle"); // 任意のトリガーを再設定
+                animator.enabled = false; 
+            }
+        }
+
+        _activeAnimators.Clear(); // リストをクリア
+    }
+    // オブジェクトリストを初期状態にリセット
+    public void ResetObjects()
+    {
+        StopAllCoroutines(); // アニメーション再生を停止
+
+        // 現在のリストを初期の状態に戻す
+
+            Objects = new List<GameObject>(_initialObjectsState);
+
+
+        // オブジェクトを非表示にしてAnimatorを無効化
+        foreach (var obj in Objects)
+        {
+            obj.SetActive(false);
+            if (obj.TryGetComponent(out Animator animator))
+            {
+                animator.enabled = false;
+            }
+        }
+    }
+}
