@@ -2847,7 +2847,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 543158949}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -971.5, y: -331.64, z: 0.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -3090,12 +3090,15 @@ MonoBehaviour:
   DownSprite: {fileID: 21300000, guid: cdf89ee5d7e0362469916d350bab8203, type: 3}
   Animator1P: {fileID: 410726223}
   FirstBox: {fileID: 543158949}
+  SecondBox: {fileID: 2073727092}
   _command2p: {fileID: 1438424536}
   CommandTime: 0
   _circular: {fileID: 89473861}
   _2P: {fileID: 1438424536}
   IsCoolDown: 0
   _thardObjectController: {fileID: 89473862}
+  RotationSpeed: 8
+  MaxAngle: 10
 --- !u!4 &580301342
 Transform:
   m_ObjectHideFlags: 0

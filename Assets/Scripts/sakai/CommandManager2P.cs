@@ -450,6 +450,7 @@ public class CommandManager2P : MonoBehaviour
     }
    public IEnumerator MissCommand()
     {
+        _1P.MissCommandBox(1);
         _gameManager.Miss2pCountMark();
         if (_gameManager.MissCount != 5)
         {

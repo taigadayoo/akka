@@ -19,6 +19,7 @@ public class CommandManager1P : MonoBehaviour
     [SerializeField]
     public Animator Animator1P;
     public GameObject FirstBox;
+    public GameObject SecondBox;
     private float _lastResetTime;
 
     [SerializeField]
@@ -37,7 +38,10 @@ public class CommandManager1P : MonoBehaviour
     [SerializeField]
     ThardObjectController _thardObjectController;
     private bool _oneStart = false;
-
+    public float RotationSpeed = 3f; // 一秒間に二往復する速度
+    public float MaxAngle = 30f;    // 最大角度
+    private bool _isRotating = false; // 回転中かどうかを判定するフラグ
+    private bool _isRotating2P = false; // 回転中かどうかを判定するフラグ
     private void Start()
     {
        
@@ -495,7 +499,7 @@ public class CommandManager1P : MonoBehaviour
    public IEnumerator MissCommand()
     {
         _gameManager.Timer1P.SetActive(false);
-       
+        MissCommandBox(0);
         _gameManager.Miss1pCountMark();
         if (_gameManager.MissCount != 5)
         {
@@ -583,6 +587,7 @@ public class CommandManager1P : MonoBehaviour
     }
     public IEnumerator MissSecond(ControllerData controllerData)
     {
+        MissCommandBox(0);
         if (controllerData.PlayerType == PlayerType.Player1)
         {
             _gameManager.Miss1pCountMark();
@@ -1148,5 +1153,74 @@ public class CommandManager1P : MonoBehaviour
         }
 
         return false;
+    }
+    public void MissCommandBox(int playerNum)
+    {
+        // コルーチンを開始して回転処理を実行
+        if (!_isRotating && playerNum == 0) // 二重起動を防ぐ
+        {
+            StartCoroutine(RotateForOneSecond(playerNum));
+        }
+        if(!_isRotating2P && playerNum == 1)
+        {
+            StartCoroutine(RotateForOneSecond(playerNum));
+        }
+    }
+    private System.Collections.IEnumerator RotateForOneSecond(int playerNum)
+    {
+        if (playerNum == 0)
+        {
+            _isRotating = true; // 回転中に設定
+        }
+        if(playerNum == 1)
+        {
+            _isRotating2P = true;
+        }
+        float timer = 0f;
+
+        while (timer < 0.5f)
+        {
+            
+            float angle = Mathf.Sin(timer * RotationSpeed * Mathf.PI * 2) * MaxAngle;
+        
+            if (_gameManager.PhaseCount == 0)
+            {
+                if (playerNum == 0)
+                {
+                    FirstBox.transform.rotation = Quaternion.Euler(0, 0, angle);
+                }
+                else if (playerNum == 1)
+                {
+                    _2P.FirstBox.transform.rotation = Quaternion.Euler(0, 0, angle);
+                }
+            }
+            else if(_gameManager.PhaseCount == 1)
+            {
+                SecondBox.transform.rotation = Quaternion.Euler(0, 0, angle);
+            }
+            // 時間を更新
+            timer += Time.deltaTime;
+            yield return null; // 次のフレームまで待機
+        }
+        if (_gameManager.PhaseCount == 0)
+        {
+            if (playerNum == 0)
+            {
+                // 一秒経過後に回転を0にリセット
+                FirstBox.transform.rotation = Quaternion.Euler(0, 0, 0);
+                _isRotating = false; // 回転終了
+            }
+            else if (playerNum == 1)
+            {
+                _2P.FirstBox.transform.rotation = Quaternion.Euler(0, 0, 0);
+                _isRotating2P = false;
+            }
+           
+        }else if(_gameManager.PhaseCount == 1)
+        {
+            SecondBox.transform.rotation = Quaternion.Euler(0, 0, 0);
+            _isRotating = false; // 回転終了
+        }
+
     }
 }

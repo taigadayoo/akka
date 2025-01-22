@@ -8,7 +8,7 @@ public class ThardObjectController : MonoBehaviour
     private List<GameObject> _initialObjectsState; // 初期のオブジェクトリストを保持
     public float DelayBetweenActivations = 0.1f; // 各アニメーション開始の遅延
     GameManager _gameManager;
-    private List<Animator> activeAnimators = new List<Animator>();
+    private List<Animator> _activeAnimators = new List<Animator>();
 
     void Start()
     {
@@ -46,7 +46,7 @@ public class ThardObjectController : MonoBehaviour
             {
                 animator.enabled = true;
                 animator.SetTrigger("SizeUp");
-                activeAnimators.Add(animator);
+                _activeAnimators.Add(animator);
             }
            
 
@@ -59,7 +59,7 @@ public class ThardObjectController : MonoBehaviour
     }
     private void CallActiveAnimators()
     {
-        foreach (Animator animator in activeAnimators)
+        foreach (Animator animator in _activeAnimators)
         {
             if (animator != null)
             {
@@ -68,7 +68,7 @@ public class ThardObjectController : MonoBehaviour
             }
         }
 
-        activeAnimators.Clear(); // リストをクリア
+        _activeAnimators.Clear(); // リストをクリア
     }
     // オブジェクトリストを初期状態にリセット
     public void ResetObjects()
