@@ -27,6 +27,7 @@ public class CommandManager1P : MonoBehaviour
     // コマンドボックス
     public GameObject FirstBox; // 最初のコマンドボックス
     public GameObject SecondBox; // 二番目のコマンドボックス
+    public GameObject ThardRing; // 二番目のコマンドボックス
 
     // リセット時間の管理
     private float _lastResetTime; // 最後にリセットされた時間
@@ -784,6 +785,7 @@ public class CommandManager1P : MonoBehaviour
     // サードコマンドがミスした時の処理
     public IEnumerator MissThard(ControllerData controllerData)
     {
+        MissCommandBox(0);
         // プレイヤーのタイプによってミス回数を増加させる
         if (controllerData.PlayerType == PlayerType.Player1)
         {
@@ -1397,6 +1399,10 @@ public class CommandManager1P : MonoBehaviour
             {
                 SecondBox.transform.rotation = Quaternion.Euler(0, 0, angle);
             }
+            else if (_gameManager.PhaseCount == 2)
+            {
+                ThardRing.transform.rotation = Quaternion.Euler(0, 0, angle);
+            }
             // 時間を更新
             timer += Time.deltaTime;
             yield return null; // 次のフレームまで待機
@@ -1418,6 +1424,11 @@ public class CommandManager1P : MonoBehaviour
         }else if(_gameManager.PhaseCount == 1)
         {
             SecondBox.transform.rotation = Quaternion.Euler(0, 0, 0);
+            _isRotating = false; // 回転終了
+        }
+        else if (_gameManager.PhaseCount == 2)
+        {
+            ThardRing.transform.rotation = Quaternion.Euler(0, 0, 0);
             _isRotating = false; // 回転終了
         }
 
