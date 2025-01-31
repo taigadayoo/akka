@@ -303,8 +303,11 @@ public class GameManager : MonoBehaviour
     }
     public void Miss1pCountMark()
     {
-        Miss1P[MissCount].gameObject.SetActive(true);//失敗時1pの×付ける
-        MissCount += 1;
+        if (_isClear)
+            return;
+            
+            Miss1P[MissCount].gameObject.SetActive(true);//失敗時1pの×付ける
+            MissCount += 1;
     }
     public void LifeHeal()
     {
@@ -335,8 +338,10 @@ public class GameManager : MonoBehaviour
     }
     public void Miss2pCountMark()//ミスしたときの2pの×付ける
     {
-        Miss2P[MissCount].gameObject.SetActive(true);
-        MissCount += 1;
+        if (_isClear)
+            return;           
+            Miss2P[MissCount].gameObject.SetActive(true);
+            MissCount += 1;
     }
     // 配列内の全てのImageオブジェクトを一括でSetActiveを切り替えるメソッド
     public void Set1pImagesActive(bool isActive)
