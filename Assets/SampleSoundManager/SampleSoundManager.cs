@@ -50,15 +50,15 @@ public class SampleSoundManager : MonoBehaviour
 {
     public static SampleSoundManager Instance { get; private set; }
     
-    private AudioSource audioSource;
+    private AudioSource _audioSource;
     
     [SerializeField] 
-    private List<BgmData> bgmList        = new List<BgmData>(); //BGMのリスト
+    private List<BgmData> _bgmList        = new List<BgmData>(); //BGMのリスト
     [SerializeField]
-    private List<SeData>  seList         = new List<SeData>();  //SEのリスト
-    private BgmType       currentBgmType = BgmType.None;        //現在再生しているBGM
+    private List<SeData>  _seList         = new List<SeData>();  //SEのリスト
+    private BgmType       _currentBgmType = BgmType.None;        //現在再生しているBGM
     [SerializeField,Header("フェードにかかる時間")]
-    private float         fadeDuration   = 1.0f;
+    private float         _fadeDuration   = 1.0f;
     
     private void Awake()
     {
@@ -72,10 +72,10 @@ public class SampleSoundManager : MonoBehaviour
             Destroy(gameObject);
         }
 
-        audioSource = gameObject.AddComponent<AudioSource>();
+        _audioSource = gameObject.AddComponent<AudioSource>();
         //BGMがループするように設定
-        audioSource.loop = true;
-        audioSource.volume = 0;
+        _audioSource.loop = true;
+        _audioSource.volume = 0;
     }
 
     /// <summary>
@@ -84,19 +84,19 @@ public class SampleSoundManager : MonoBehaviour
     /// <param name="type">再生したいタイプ</param>
     public void PlayBgm(BgmType type)
     {
-        BgmData bgmData = bgmList.Find(s => s.Type == type);
+        BgmData bgmData = _bgmList.Find(s => s.Type == type);
         
-        if (currentBgmType == type)
+        if (_currentBgmType == type)
         {
             //再生中の場合は何もしない
-            if (audioSource.isPlaying)
+            if (_audioSource.isPlaying)
             {
                 return;
             }
             
             // 同じBGMがすでに再生されている場合は、フェードインして再生
             StartCoroutine(FadeInCurrentBgm(bgmData.Volume));
-            Debug.Log(audioSource.isPlaying);
+            Debug.Log(_audioSource.isPlaying);
             return;
         }
         
@@ -123,7 +123,7 @@ public class SampleSoundManager : MonoBehaviour
     /// <param name="type">再生したいSEのタイプ</param>
     public void PlaySe(SeType type)
     {
-        SeData seData = seList.Find(s => s.Type == type);
+        SeData seData = _seList.Find(s => s.Type == type);
         if (seData == null || seData.Type == SeType.None)
         {
             Debug.LogError("指定のTypeのSEが見つかりませんでした。\nSoundManagerに登録しておください。");
@@ -151,13 +151,13 @@ public class SampleSoundManager : MonoBehaviour
     {
         yield return StartCoroutine(FadeOutCurrentBgm());
         
-        audioSource.clip = newBGMData.Clip;
-        audioSource.volume = 0;
-        audioSource.Play();
+        _audioSource.clip = newBGMData.Clip;
+        _audioSource.volume = 0;
+        _audioSource.Play();
 
         yield return StartCoroutine(FadeInCurrentBgm(newBGMData.Volume));
         
-        currentBgmType = newBGMData.Type;
+        _currentBgmType = newBGMData.Type;
     }
 
     /// <summary>
@@ -166,18 +166,18 @@ public class SampleSoundManager : MonoBehaviour
     /// <returns></returns>
     private IEnumerator FadeOutCurrentBgm()
     {
-        float startVolume = audioSource.volume;
+        float startVolume = _audioSource.volume;
         float elapsedTime = 0;
 
-        while (audioSource.volume > 0)
+        while (_audioSource.volume > 0)
         {
             elapsedTime += Time.deltaTime;
-            audioSource.volume = Mathf.Lerp(startVolume, 0, elapsedTime / fadeDuration);
+            _audioSource.volume = Mathf.Lerp(startVolume, 0, elapsedTime / _fadeDuration);
             yield return null;
         }
 
-        audioSource.Stop();
-        currentBgmType = BgmType.None;
+        _audioSource.Stop();
+        _currentBgmType = BgmType.None;
     }
 
     /// <summary>
@@ -190,12 +190,12 @@ public class SampleSoundManager : MonoBehaviour
         float startVolume = 0;
         float elapsedTime = 0;
 
-        audioSource.volume = startVolume;
+        _audioSource.volume = startVolume;
 
-        while (audioSource.volume < targetVolume)
+        while (_audioSource.volume < targetVolume)
         {
             elapsedTime += Time.deltaTime;
-            audioSource.volume = Mathf.Lerp(startVolume, targetVolume, elapsedTime / fadeDuration);
+            _audioSource.volume = Mathf.Lerp(startVolume, targetVolume, elapsedTime / _fadeDuration);
             yield return null;
         }
     }

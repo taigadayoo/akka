@@ -7,6 +7,10 @@ using UniRx;
 /// </summary>
 public class TitleEvent : MonoBehaviour
 {
+    public Canvas Canvas;
+
+    private bool _isVisible = true;
+
     /// <summary>
     /// オブジェクトが初期化されたときに呼び出されるメソッド
     /// </summary>
@@ -52,6 +56,11 @@ public class TitleEvent : MonoBehaviour
             Debug.Log("FadeStart");
             SceneManager.Instance.LoadScene(SceneName.Setting);
             // SampleSoundManager.Instance.StopBgm();
+        }
+        else if (buttonType == ButtonType.South)
+        {
+            _isVisible = !_isVisible;
+            Canvas.gameObject.SetActive(!_isVisible);//Canvasの表示
         }
     }
 

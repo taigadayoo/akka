@@ -5,99 +5,172 @@ using UniRx;
 using UnityEngine.UI;
 public class CommandManager1P : MonoBehaviour
 {
-    public SpriteRenderer FirstImage;
-    public SpriteRenderer SecondImage;
-    public SpriteRenderer ThirdImage;
+    public SpriteRenderer FirstImage; // 最初のコマンド画像
+    public SpriteRenderer SecondImage; // 二番目のコマンド画像
+    public SpriteRenderer ThirdImage; // 三番目のコマンド画像
 
+    // コマンドに対応するスプライト
     public Sprite ASprite, BSprite, XSprite, YSprite, RightSprite, LeftSprite, UpSprite, DownSprite;
 
-    private List<string> _commands;
-    private List<string> _currentSequence = new List<string>();
-    private int _currentIndex;
+    // コマンドリストと現在のコマンド順序
+    private List<string> _commands; // 使用するコマンドのリスト
+    private List<string> _currentSequence = new List<string>(); // 現在のコマンドの順番
+    private int _currentIndex; // 現在のコマンドインデックス
 
-    private Dictionary<string, Sprite> _commandSprites;
+    // コマンドごとのスプライトを管理するディクショナリ
+    private Dictionary<string, Sprite> _commandSprites; // コマンドに対応するスプライトのディクショナリ
+
+    // プレイヤー1のアニメーター
     [SerializeField]
     public Animator Animator1P;
-    public GameObject FirstBox;
-    private float _lastResetTime;
 
+    // コマンドボックス
+    public GameObject FirstBox; // 最初のコマンドボックス
+    public GameObject SecondBox; // 二番目のコマンドボックス
+    public GameObject ThardRing; // 二番目のコマンドボックス
+
+    // リセット時間の管理
+    private float _lastResetTime; // 最後にリセットされた時間
+
+    // プレイヤー2のコマンドマネージャ
     [SerializeField]
     CommandManager2P _command2p;
-    public float CommandTime = 0f;
-    private float _commandTimeout = 3f; // 3秒
-    private float _commandTimeoutSecond = 7f;
+
+    // コマンドタイム関連の変数
+    public float CommandTime = 0f; // コマンドの現在のタイム
+    private float _commandTimeout = 3f; // コマンドタイムアウト時間 (3秒)
+    private float _commandTimeoutSecond = 7f; // 第二フェーズのコマンドタイムアウト時間 (7秒)
+
+    // 背景の回転制御
     [SerializeField]
-    CircularMovementWithBackground _circular;
+    CircularMovementWithBackground _circular; // 背景を回転させるオブジェクト
+
+    // ゲームマネージャの参照
     GameManager _gameManager;
+
+    // プレイヤー2のコマンドマネージャ
     [SerializeField]
     CommandManager2P _2P;
-    public bool IsCoolDown = false;
+
+    // クールダウン状態
+    public bool IsCoolDown = false; // クールダウン状態かどうか
+
+    // サードリセット状態
     private bool _oneResetThard = false;
+
+    // コントローラーデータ
     public ControllerData ControllerData;
+
+    // サードオブジェクトコントローラ
     [SerializeField]
     ThardObjectController _thardObjectController;
+
+    // ゲーム開始状態
     private bool _oneStart = false;
 
+    // 回転速度
+    public float RotationSpeed = 3f; // 一秒間に二往復する速度
+
+    // 最大回転角度
+    public float MaxAngle = 30f;    // 最大角度
+
+    // 回転中フラグ（プレイヤー1）
+    private bool _isRotating = false; // 回転中かどうかを判定するフラグ
+
+    // 回転中フラグ（プレイヤー2）
+    private bool _isRotating2P = false; // 回転中かどうかを判定するフラグ
+
+    // スタートメソッド
     private void Start()
     {
-       
+        // ゲームマネージャのインスタンス取得
         _gameManager = FindObjectOfType<GameManager>();
 
+        // コマンドリストの初期化
         _commands = new List<string> { "A", "B", "X", "Y", "Right", "Left", "Up", "Down" };
 
+        // コマンドに対応するスプライトのディクショナリ初期化
         _commandSprites = new Dictionary<string, Sprite>
-        {
-            { "A", ASprite },
-            { "B", BSprite },
-            { "X", XSprite },
-            { "Y", YSprite },
-            { "Right", RightSprite },
-            { "Left", LeftSprite },
-            { "Up", UpSprite },
-            { "Down", DownSprite }
-        };
-        _gameManager.ThardImagesActive(false);
-        _gameManager.JudgementRing.SetActive(false);
-        _gameManager.LaneRing.SetActive(false);
-      
+    {
+        { "A", ASprite },
+        { "B", BSprite },
+        { "X", XSprite },
+        { "Y", YSprite },
+        { "Right", RightSprite },
+        { "Left", LeftSprite },
+        { "Up", UpSprite },
+        { "Down", DownSprite }
+    };
+
+        // ゲーム開始時の状態設定
+        _gameManager.ThardImagesActive(false); // サードの画像を非表示
+        _gameManager.JudgementRing.SetActive(false); // ジャッジメントリングを非表示
+        _gameManager.LaneRing.SetActive(false); // レーンリングを非表示
+
+        // コントローラーのデータを購読し、データ受信時の処理を登録
         ControllerManager.Instance.OnControllerData.Subscribe(OnControllerDataReceived).AddTo(this);
     }
     private void Update()
     {
+        // コマンドの生成を開始
         StartCommand();
-        if(_gameManager.TimeUpThard1P && _gameManager.GameStart)
+
+        // 第三フェーズでタイムアップが発生し、ゲームが開始されている場合
+        if (_gameManager.TimeUpThard1P && _gameManager.GameStart)
         {
+            // 見逃した際の処理をコルーチンで実行
             StartCoroutine(MissTimeUp(ControllerData));
+            // タイムアップフラグをリセット
             _gameManager.TimeUpThard1P = false;
         }
-      
-        if(_gameManager.ClearSecond)
+
+        // 第二フェーズがクリアされ、クールダウン状態でない場合
+        if (_gameManager.ClearSecond && !IsCoolDown)
         {
-           
+            // 第二フェーズのクリア時にタイムをリセット
             _gameManager.SecondCommandTime = 0;
+            // 第二フェーズクリア処理をコルーチンで実行
             StartCoroutine(ClearSecond());
         }
+        // 第三フェーズがクリアされた場合
         else if (_gameManager.ClearThard)
         {
+            // 第三フェーズクリア処理をコルーチンで実行
             StartCoroutine(ClearThard());
+            // 第三フェーズクリアフラグをリセット
             _gameManager.ClearThard = false;
         }
-        if(_gameManager.OneClear)
+
+        // 一度クリアが完了した場合
+        if (_gameManager.OneClear)
         {
+            // コマンド画像を非表示にする
             FirstImage.gameObject.SetActive(false);
             SecondImage.gameObject.SetActive(false);
             ThirdImage.gameObject.SetActive(false);
         }
     }
-    private void  StartCommand()
+
+    // コマンドを開始するメソッド
+    private void StartCommand()
     {
-        if(_gameManager.GameStart && !_oneStart)
+        // ゲームが開始されており、コマンド生成がまだ行われていない場合
+        if (_gameManager.GameStart && !_oneStart)
         {
+            // プレイヤー1および2のタイマーを表示
+            _gameManager.Timer1P.SetActive(true);
+            _gameManager.Timer2P.SetActive(true);
+
+            // コマンドボックスやコマンド画像を表示
             FirstBox.SetActive(true);
             FirstImage.gameObject.SetActive(true);
             SecondImage.gameObject.SetActive(true);
             ThirdImage.gameObject.SetActive(true);
+
+            // コマンド生成を1度だけ開始
             _oneStart = true;
+
+            // コマンド生成をコルーチンで実行
             StartCoroutine(GenerateCommands());
         }
     }
@@ -110,106 +183,143 @@ public class CommandManager1P : MonoBehaviour
             _currentIndex = 0;
             _gameManager.ClearSecond = false;
             _gameManager.ClearThard = false;
+            // ゲームのフェーズカウントが0の時（最初のフェーズ）
             if (_gameManager.PhaseCount == 0)
             {
+                // 一度もクリアしていない場合、プレイヤー1のタイマーを表示
+                if (!_gameManager.OneClear)
+                {
+                    _gameManager.Timer1P.SetActive(true);
+                }
 
+                // コマンド画像を表示
                 FirstImage.gameObject.SetActive(true);
                 SecondImage.gameObject.SetActive(true);
                 ThirdImage.gameObject.SetActive(true);
+
+                // アニメーターをリセットして開始
                 _gameManager.EnableAllAnimators(0);
+
+                // 3つのランダムなコマンドを選択し、それに対応するスプライトを設定
                 for (int i = 0; i < 3; i++)
                 {
-                    string randomCommand = _commands[UnityEngine.Random.Range(0, _commands.Count)];
-                    _currentSequence.Add(randomCommand);
+                    string randomCommand = _commands[UnityEngine.Random.Range(0, _commands.Count)];  // ランダムにコマンドを選択
+                    _currentSequence.Add(randomCommand);  // コマンドシーケンスに追加
 
-                    Sprite commandSprite = _commandSprites[randomCommand];
+                    Sprite commandSprite = _commandSprites[randomCommand];  // コマンドに対応するスプライトを取得
+                                                                            // それぞれのコマンドに対応したスプライトを設定
                     if (i == 0)
                         FirstImage.sprite = commandSprite;
                     else if (i == 1)
                         SecondImage.sprite = commandSprite;
                     else if (i == 2)
-                        ThirdImage.sprite = commandSprite; //3個までランダムでボタンスプライト表示
+                        ThirdImage.sprite = commandSprite; // 最大3つまでランダムなボタンスプライトを表示
                 }
 
-                //_commandTime = 0f;
+                //_commandTime = 0f;  // コメントアウトされた行（時間計測の初期化）
 
+                // コマンドのシーケンスが終わるまで処理を続ける
                 while (_currentIndex < _currentSequence.Count && _gameManager.GameStart)
                 {
-                    CommandTime += Time.deltaTime; // 経過時間を加算
+                    CommandTime += Time.deltaTime;  // 経過時間を加算
 
-                    if (CommandTime >= _commandTimeout) // 3秒経過した場合
+                    // 3秒以上経過した場合
+                    if (CommandTime >= _commandTimeout)
                     {
+                        // コマンドミス処理を開始
                         StartCoroutine(MissCommand());
-                        yield break; // コルーチンを終了
+                        yield break;  // コルーチンを終了
                     }
 
-                    yield return null;
+                    yield return null;  // 次のフレームを待つ
                 }
 
-
+                // コマンド画像を非表示にする
                 FirstImage.gameObject.SetActive(false);
                 SecondImage.gameObject.SetActive(false);
                 ThirdImage.gameObject.SetActive(false);
-                _gameManager.EnemyAnim.SetTrigger("damage");
-               
-                _gameManager.LeftHP.value -= 2.5f;
-               _gameManager.RightHP.value -= 2.5f; //HP減少処理
-                AudioManager.Instance.PlaySE("毒魔法", 0.8f);
-                Animator1P.SetTrigger("Attack");
-                    CommandTime = 0f; // 経過時間リセット
-              
 
+                // 敵のダメージアニメーションをトリガー
+                _gameManager.EnemyAnim.SetTrigger("damage");
+
+                // プレイヤー1のタイマーを非表示にする
+                _gameManager.Timer1P.SetActive(false);
+
+                // プレイヤーのHPを減少させる（2.5ずつ）
+                _gameManager.LeftHP.value -= 2.5f;
+                _gameManager.RightHP.value -= 2.5f;
+
+                // 毒魔法のSEを再生
+                AudioManager.Instance.PlaySE("毒魔法", 0.8f);
+
+                // プレイヤー1の攻撃アニメーションをトリガー
+                Animator1P.SetTrigger("Attack");
+
+                CommandTime = 0f;  // 経過時間をリセット
+
+                // 少し待機してから次の処理へ
                 yield return new WaitForSeconds(1.0f);
             }
-            else if(_gameManager.PhaseCount == 1)
+            else if (_gameManager.PhaseCount == 1)
             {
+                // フェーズ1の場合、最初のボックスや画像を非表示にする
                 FirstBox.SetActive(false);
                 FirstImage.gameObject.SetActive(false);
                 SecondImage.gameObject.SetActive(false);
                 ThirdImage.gameObject.SetActive(false);
 
-                    _gameManager.RandomCommandNum = Random.Range(0, 3);
-                    _gameManager.FirstPlayerRandomNum = Random.Range(0, 2);
+                // プレイヤー1および2のタイマーを非表示
+                _gameManager.Timer1P.SetActive(false);
+                _gameManager.Timer2P.SetActive(false);
 
-                _gameManager.SecondImagesActive(true);
-                _gameManager.SecondBoxImage();
+                // ランダムにコマンドとプレイヤーの番号を選択
+                _gameManager.RandomCommandNum = Random.Range(0, 3);  // 0〜2のランダムなコマンド数
+                _gameManager.FirstPlayerRandomNum = Random.Range(0, 2);  // プレイヤー1のランダムな番号（0か1）
 
-                if(_gameManager.RandomCommandNum == 0)
+                // ミキシングタイマーと画像を表示
+                _gameManager.TimerMix.SetActive(true);
+                _gameManager.SecondImagesActive(true);  // 2番目の画像をアクティブにする
+                _gameManager.SecondBoxImage();  // ボックスの画像を設定
+
+                // ランダムコマンドの数に応じて異なる処理を行う
+                if (_gameManager.RandomCommandNum == 0)
                 {
-                    _gameManager.EnableAllAnimators(2);
-                    if (_gameManager.FirstPlayerRandomNum == 0)
+                    _gameManager.EnableAllAnimators(2);  // 2番目のアニメーションを有効にする
+
+                    if (_gameManager.FirstPlayerRandomNum == 0)  // プレイヤー1が0の時
                     {
-                       
+                        // プレイヤー1が0の場合、2つのランダムなコマンドを選択し、それぞれに対応するスプライトを設定
                         for (int i = 0; i < 2; i++)
                         {
-                            string randomCommand = _commands[UnityEngine.Random.Range(0, _commands.Count)];
-                            _currentSequence.Add(randomCommand);
+                            string randomCommand = _commands[UnityEngine.Random.Range(0, _commands.Count)];  // ランダムコマンドを選択
+                            _currentSequence.Add(randomCommand);  // コマンドシーケンスに追加
 
-                            Sprite commandSprite = _commandSprites[randomCommand];
+                            Sprite commandSprite = _commandSprites[randomCommand];  // コマンドに対応するスプライトを取得
                             if (i == 0)
-                                _gameManager.ThreeCommand[0].sprite = commandSprite;
+                                _gameManager.ThreeCommand[0].sprite = commandSprite;  // 1つ目のコマンドスプライトを設定
                             else if (i == 1)
-                                _gameManager.ThreeCommand[2].sprite = commandSprite;
+                                _gameManager.ThreeCommand[2].sprite = commandSprite;  // 2つ目のコマンドスプライトを設定
                         }
-                    }else if(_gameManager.FirstPlayerRandomNum == 1)
+                    }
+                    else if (_gameManager.FirstPlayerRandomNum == 1)  // プレイヤー1が1の場合
                     {
-                      
+                        // プレイヤー1が1の場合、1つのランダムなコマンドを選択し、それに対応するスプライトを設定
                         string randomCommand = _commands[UnityEngine.Random.Range(0, _commands.Count)];
-                            _currentSequence.Add(randomCommand);
+                        _currentSequence.Add(randomCommand);
 
-                            Sprite commandSprite = _commandSprites[randomCommand];
-                          
-                                _gameManager.ThreeCommand[1].sprite = commandSprite;
-
-                        
+                        Sprite commandSprite = _commandSprites[randomCommand];
+                        _gameManager.ThreeCommand[1].sprite = commandSprite;  // 2番目のコマンドスプライトを設定
                     }
                 }
+
+                // 同様に、ランダムコマンドの数が1の場合
                 if (_gameManager.RandomCommandNum == 1)
                 {
-                    _gameManager.EnableAllAnimators(3);
-                    if (_gameManager.FirstPlayerRandomNum == 0)
+                    _gameManager.EnableAllAnimators(3);  // 3番目のアニメーションを有効にする
+
+                    if (_gameManager.FirstPlayerRandomNum == 0)  // プレイヤー1が0の時
                     {
-                       
+                        // プレイヤー1が0の場合、2つのランダムなコマンドを選択し、それぞれに対応するスプライトを設定
                         for (int i = 0; i < 2; i++)
                         {
                             string randomCommand = _commands[UnityEngine.Random.Range(0, _commands.Count)];
@@ -222,9 +332,9 @@ public class CommandManager1P : MonoBehaviour
                                 _gameManager.FourCommand[2].sprite = commandSprite;
                         }
                     }
-                    else if (_gameManager.FirstPlayerRandomNum == 1)
+                    else if (_gameManager.FirstPlayerRandomNum == 1)  // プレイヤー1が1の場合
                     {
-                      
+                        // プレイヤー1が1の場合、2つのランダムなコマンドを選択し、それぞれに対応するスプライトを設定
                         for (int i = 0; i < 2; i++)
                         {
                             string randomCommand = _commands[UnityEngine.Random.Range(0, _commands.Count)];
@@ -238,12 +348,15 @@ public class CommandManager1P : MonoBehaviour
                         }
                     }
                 }
+
+                // ランダムコマンドの数が2の場合
                 if (_gameManager.RandomCommandNum == 2)
                 {
-                    _gameManager.EnableAllAnimators(4);
-                    if (_gameManager.FirstPlayerRandomNum == 0)
+                    _gameManager.EnableAllAnimators(4);  // 4番目のアニメーションを有効にする
+
+                    if (_gameManager.FirstPlayerRandomNum == 0)  // プレイヤー1が0の場合
                     {
-                    
+                        // プレイヤー1が0の場合、3つのランダムなコマンドを選択し、それぞれに対応するスプライトを設定
                         for (int i = 0; i < 3; i++)
                         {
                             string randomCommand = _commands[UnityEngine.Random.Range(0, _commands.Count)];
@@ -258,9 +371,9 @@ public class CommandManager1P : MonoBehaviour
                                 _gameManager.FiveCommand[4].sprite = commandSprite;
                         }
                     }
-                    else if (_gameManager.FirstPlayerRandomNum == 1)
+                    else if (_gameManager.FirstPlayerRandomNum == 1)  // プレイヤー1が1の場合
                     {
-                      
+                        // プレイヤー1が1の場合、2つのランダムなコマンドを選択し、それぞれに対応するスプライトを設定
                         for (int i = 0; i < 2; i++)
                         {
                             string randomCommand = _commands[UnityEngine.Random.Range(0, _commands.Count)];
@@ -275,25 +388,27 @@ public class CommandManager1P : MonoBehaviour
                     }
                 }
 
-                
-                while (_currentIndex <= _currentSequence.Count )
+                // コマンドシーケンスが終わるまで時間を経過させる
+                while (_currentIndex <= _currentSequence.Count)
                 {
-                    _gameManager.SecondCommandTime  += Time.deltaTime; // 経過時間を加算
-                    
-                    if (_gameManager.SecondCommandTime  >= _commandTimeoutSecond && _gameManager.GameStart ) // 5秒経過した場合
+                    _gameManager.SecondCommandTime += Time.deltaTime; // 経過時間を加算
+
+                    // 5秒経過した場合に処理を実行
+                    if (_gameManager.SecondCommandTime >= _commandTimeoutSecond && _gameManager.GameStart)
                     {
+                        // プレイヤーが指定通りの入力をしていない場合、ミス処理を開始
                         if (_gameManager.FirstPlayerRandomNum == 0 && !_gameManager.SwitchPlayer || _gameManager.FirstPlayerRandomNum == 1 && _gameManager.SwitchPlayer)
                         {
-                            _gameManager.SecondImagesActive(false);
+                            _gameManager.SecondImagesActive(false);  // 画像を非表示
 
+                            // ミス処理を開始
                             StartCoroutine(MissSecond(ControllerData));
                             yield break; // コルーチンを終了
                         }
                     }
 
-                    yield return null;
+                    yield return null; // 次のフレームまで待機
                 }
-               
             }
             else if(_gameManager.PhaseCount == 2)
             {
@@ -302,6 +417,7 @@ public class CommandManager1P : MonoBehaviour
                 {
                     _thardObjectController.ResetObjects();
                 }
+                _gameManager.TimerMix.SetActive(false);
                 _oneResetThard = true;
                 _gameManager.SecondBoxSprite.gameObject.SetActive(false);
                 FirstBox.SetActive(false);
@@ -478,150 +594,261 @@ public class CommandManager1P : MonoBehaviour
             }
             }
           
-        }    
+        }
 
-   public IEnumerator MissCommand()
+    public IEnumerator MissCommand()
     {
-        Animator1P.SetTrigger("Miss");
+        // 1Pタイマーを非表示にする
+        _gameManager.Timer1P.SetActive(false);
+
+        // ミスコマンドの表示
+        MissCommandBox(0);
+
+        // ミス回数を増加させる
+        _gameManager.Miss1pCountMark();
+
+        // ミス回数が5回でない場合、1Pのミスアニメーションをトリガー
+        if (_gameManager.MissCount != 5)
+        {
+            Animator1P.SetTrigger("Miss");
+        }
+
+        // キャンセルの音を再生
         AudioManager.Instance.PlaySE("キャンセル3", 1f);
+
+        // イメージの表示を非表示にする
         FirstImage.gameObject.SetActive(false);
         SecondImage.gameObject.SetActive(false);
         ThirdImage.gameObject.SetActive(false);
+
         // クールダウンを開始
         IsCoolDown = true;
         CommandTime = 0;
-        _gameManager.Miss1pCountMark();
+
+        // 2秒間待機
         yield return new WaitForSeconds(2.0f);
+
+        // クールダウン終了
         IsCoolDown = false;
+
+        // コマンドをリセット
         ResetCommands();
     }
-    //public IEnumerator MissSecondCommand()
-    //{
-    //    _gameManager.SecondImagesActive(false);
-    //    CommandTime = 0;
-    //    IsCoolDown = true;
-    //        _gameManager.Miss1pCountMark();
 
-    //    _2P.CommandTime = 0;
-        
-    //    yield return new WaitForSeconds(2.0f);
-    //    IsCoolDown = false;
-    //    _2P.ResetCommands();
-    //    ResetCommands();
-    //}
-
+    // コマンドのリセット処理
     public void ResetCommands()
     {
-        //if (Time.time - _lastResetTime < _resetCooldown)
-        //    return;
-        CommandTime = 0f; // 経過時間リセット
+        // 経過時間リセット
+        CommandTime = 0f;
         _gameManager.SecondCommandTime = 0;
 
+        // 全てのコルーチンを停止し、新たにコマンドを生成するコルーチンを開始
         StopAllCoroutines();
         StartCoroutine(GenerateCommands());
+
+        // 最後のリセット時間を現在の時間に設定
         _lastResetTime = Time.time;
     }
+
+    // 2Pのターン終了時の処理
     public IEnumerator ClearSecond()
     {
+        // ミキシングタイマーを非表示
+        _gameManager.TimerMix.SetActive(false);
 
-            _gameManager.SecondImagesActive(false);
+        // HPを回復
+        _gameManager.LifeHeal();
+
+        // セカンドイメージを非表示
+        _gameManager.SecondImagesActive(false);
+
+        // 敵のアニメーションをトリガー
         _gameManager.EnemyAnim.SetTrigger("damage");
+
+        // 毒魔法のSEを再生
         AudioManager.Instance.PlaySE("毒魔法", 0.8f);
+
+        // 左右のHPを減少
         _gameManager.LeftHP.value -= 5f;
-            _gameManager.RightHP.value -= 5f; //HP減少処理
-        Animator1P.SetTrigger("Attack");
-       _2P.Animator2P.SetTrigger("Attack2p");
-        _gameManager.SecondCommandTime = 0;
-        _gameManager.ClearSecond = false;
-            yield return new WaitForSeconds(1.0f);
-        IsCoolDown = false;
-        _2P.IsCoolDown = false;
-        ResetCommands();
-        _2P.ResetCommands();
+        _gameManager.RightHP.value -= 5f; // HP減少処理
 
-    }
-    public IEnumerator ClearThard()
-    {
-        AudioManager.Instance.PlaySE("毒魔法", 0.8f);
-        _gameManager.EnemyAnim.SetTrigger("damage");
-        _gameManager.ThardImagesActive(false);
-
-        _gameManager.LeftHP.value -= 10f;
-        _gameManager.RightHP.value -= 10f; //HP減少処理
+        // 1Pと2Pの攻撃アニメーションをトリガー
         Animator1P.SetTrigger("Attack");
         _2P.Animator2P.SetTrigger("Attack2p");
+
+        // セカンドコマンドタイマーをリセット
+        _gameManager.SecondCommandTime = 0;
         _gameManager.ClearSecond = false;
+
+        // 1秒間待機
         yield return new WaitForSeconds(1.0f);
+
+        // クールダウン終了
         IsCoolDown = false;
         _2P.IsCoolDown = false;
+
+        // コマンドをリセット
         ResetCommands();
         _2P.ResetCommands();
-
     }
+    // サードコマンドがクリアされた時の処理
+    public IEnumerator ClearThard()
+    {
+        // 毒魔法のSEを再生
+        AudioManager.Instance.PlaySE("毒魔法", 0.8f);
+
+        // 左側のHPが0でない場合、敵のダメージアニメーションをトリガー
+        if (_gameManager.LeftHP.value != 0)
+        {
+            _gameManager.EnemyAnim.SetTrigger("damage");
+        }
+
+        // サードイメージを非表示
+        _gameManager.ThardImagesActive(false);
+
+        // 左右のHPを減少
+        _gameManager.LeftHP.value -= 10f;
+        _gameManager.RightHP.value -= 10f; // HP減少処理
+
+        // 1Pと2Pの攻撃アニメーションをトリガー
+        Animator1P.SetTrigger("Attack");
+        _2P.Animator2P.SetTrigger("Attack2p");
+
+        // セカンドコマンドをリセット
+        _gameManager.ClearSecond = false;
+
+        // 1秒間待機
+        yield return new WaitForSeconds(1.0f);
+
+        // クールダウン終了
+        IsCoolDown = false;
+        _2P.IsCoolDown = false;
+
+        // コマンドをリセット
+        ResetCommands();
+        _2P.ResetCommands();
+    }
+
+    // セカンドコマンドがミスした時の処理
     public IEnumerator MissSecond(ControllerData controllerData)
     {
-        _2P.Animator2P.SetTrigger("Miss");
-        Animator1P.SetTrigger("Miss");
-        AudioManager.Instance.PlaySE("キャンセル3", 1f);
-        _gameManager.SecondImagesActive(false);
+        // ミスコマンドの表示
+        MissCommandBox(0);
+
+        // プレイヤーのタイプによってミス回数を増加させる
         if (controllerData.PlayerType == PlayerType.Player1)
         {
             _gameManager.Miss1pCountMark();
         }
-        else if(controllerData.PlayerType == PlayerType.Player2)
+        else if (controllerData.PlayerType == PlayerType.Player2)
         {
             _gameManager.Miss2pCountMark();
         }
-        else if(controllerData == null)
+        else if (controllerData == null)
         {
             Debug.Log("controllerDataないです" + controllerData);
         }
+
+        // ミス回数が5回でない場合、ミスアニメーションをトリガー
+        if (_gameManager.MissCount != 5)
+        {
+            _2P.Animator2P.SetTrigger("Miss");
+            Animator1P.SetTrigger("Miss");
+        }
+
+        // キャンセルの音を再生
+        AudioManager.Instance.PlaySE("キャンセル3", 1f);
+
+        // セカンドイメージとタイマーを非表示
+        _gameManager.SecondImagesActive(false);
+        _gameManager.TimerMix.SetActive(false);
+
+        // セカンドコマンドタイマーをリセット
         _gameManager.SecondCommandTime = 0;
+
+        // クールダウンを開始
         IsCoolDown = true;
         _2P.IsCoolDown = true;
+
+        // 2秒間待機
         yield return new WaitForSeconds(2.0f);
+
+        // クールダウン終了
         IsCoolDown = false;
         _2P.IsCoolDown = false;
+
+        // コマンドをリセット
+        ResetCommands();
+        _2P.ResetCommands();
+    }
+
+    // サードコマンドがミスした時の処理
+    public IEnumerator MissThard(ControllerData controllerData)
+    {
+        MissCommandBox(0);
+        // プレイヤーのタイプによってミス回数を増加させる
+        if (controllerData.PlayerType == PlayerType.Player1)
+        {
+            _gameManager.Miss1pCountMark();
+        }
+        else if (controllerData.PlayerType == PlayerType.Player2)
+        {
+            _gameManager.Miss2pCountMark();
+        }
+        else if (controllerData == null)
+        {
+            Debug.Log("controllerDataないです" + controllerData);
+        }
+
+        // ミス回数が5回でない場合、ミスアニメーションをトリガー
+        if (_gameManager.MissCount != 5)
+        {
+            Animator1P.SetTrigger("Miss");
+            _2P.Animator2P.SetTrigger("Miss");
+        }
+
+        // キャンセルの音を再生
+        AudioManager.Instance.PlaySE("キャンセル3", 1f);
+
+        // サードイメージを非表示
+        _gameManager.ThardImagesActive(false);
+
+        // サークルの全オブジェクトをリセット
+        _circular.ResetAllObjects();
+
+        // クールダウンを開始
+        IsCoolDown = true;
+        _2P.IsCoolDown = true;
+
+        // 2秒間待機
+        yield return new WaitForSeconds(2f);
+
+        // オブジェクトのサイズをリセット
+        _gameManager.AllObjectSizeReset = true;
+
+        // クールダウン終了
+        IsCoolDown = false;
+        _2P.IsCoolDown = false;
+
+        // コマンドをリセット
         ResetCommands();
         _2P.ResetCommands();
 
-    }
-    public IEnumerator MissThard(ControllerData controllerData)
-    {
-        Animator1P.SetTrigger("Miss");
-      _2P.Animator2P.SetTrigger("Miss");
-        AudioManager.Instance.PlaySE("キャンセル3", 1f);
-        _gameManager.ThardImagesActive(false);
-        _circular.ResetAllObjects();
-      
-        if (controllerData.PlayerType == PlayerType.Player1)
-        {
-            _gameManager.Miss1pCountMark();
-        }
-        else if (controllerData.PlayerType == PlayerType.Player2)
-        {
-            _gameManager.Miss2pCountMark();
-        }
-        else if (controllerData == null)
-        {
-            Debug.Log("controllerDataないです" + controllerData);
-        }
-        IsCoolDown = true;
-        _2P.IsCoolDown = true;
-        yield return new WaitForSeconds(2f);
-       
-        _gameManager.AllObjectSizeReset = true;
-        IsCoolDown = false;
-        _2P.IsCoolDown = false;
-        ResetCommands();
-        _2P.ResetCommands();
+        // 1回目のターンが終了したことを記録
         _gameManager.OneTimeUp = false;
     }
+
+    // ミスタイムアップ時の処理
     public IEnumerator MissTimeUp(ControllerData controllerData)
     {
+        // 1Pと2Pのミスアニメーションをトリガー
         Animator1P.SetTrigger("Miss");
         _2P.Animator2P.SetTrigger("Miss");
+
+        // キャンセルの音を再生
         AudioManager.Instance.PlaySE("キャンセル3", 1f);
+
+        // プレイヤーのタイプに応じてミス回数を増加させる
         if (controllerData.PlayerType == PlayerType.Player1)
         {
             _gameManager.Miss1pCountMark();
@@ -634,15 +861,32 @@ public class CommandManager1P : MonoBehaviour
         {
             Debug.Log("controllerDataないです" + controllerData);
         }
+
+        // クールダウンを開始
         IsCoolDown = true;
         _2P.IsCoolDown = true;
-        yield return new WaitForSeconds(3.5f);
-        _circular.ResetAllObjects();
+
+        // 条件が満たされるまで待機
+        yield return new WaitUntil(() => _gameManager.IsConditionMet);
+
+        // サードイメージを非表示
         _gameManager.ThardImagesActive(false);
+
+        // サークルの全オブジェクトをリセット
+        _circular.ResetAllObjects();
+
+        // クールダウン終了
         IsCoolDown = false;
         _2P.IsCoolDown = false;
+
+        // コマンドをリセット
         ResetCommands();
         _2P.ResetCommands();
+
+        // 条件をリセット
+        _gameManager.IsConditionMet = false;
+
+        // 1回目のターン終了フラグをリセット
         _gameManager.OneTimeUp = false;
     }
     private void OnControllerDataReceived(ControllerData controllerData)
@@ -657,7 +901,7 @@ public class CommandManager1P : MonoBehaviour
         string expectedCommand = _currentSequence[_currentIndex];
 
 
-         if (controllerData.ActionType == ActionType.Buttons && _oneStart && !_gameManager.OneClear)
+         if (controllerData.ActionType == ActionType.Buttons && _oneStart && !_gameManager.OneClear && !_gameManager.OnCutIn)
         {
             if (IsCorrectCommand(controllerData, expectedCommand) && _gameManager.PhaseCount == 0)
             {
@@ -716,12 +960,7 @@ public class CommandManager1P : MonoBehaviour
         StartCoroutine(MissCommand());
 
     }
-    //private void  ExecutePhaseCountSecond()
-    //{
 
-    //    StartCoroutine(MissSecondCommand());
-
-    //}
 
     private void HandleCommandInput()
     {
@@ -1115,5 +1354,83 @@ public class CommandManager1P : MonoBehaviour
         }
 
         return false;
+    }
+    public void MissCommandBox(int playerNum)
+    {
+        // コルーチンを開始して回転処理を実行
+        if (!_isRotating && playerNum == 0) // 二重起動を防ぐ
+        {
+            StartCoroutine(RotateForOneSecond(playerNum));
+        }
+        if(!_isRotating2P && playerNum == 1)
+        {
+            StartCoroutine(RotateForOneSecond(playerNum));
+        }
+    }
+    private System.Collections.IEnumerator RotateForOneSecond(int playerNum)
+    {
+        if (playerNum == 0)
+        {
+            _isRotating = true; // 回転中に設定
+        }
+        if(playerNum == 1)
+        {
+            _isRotating2P = true;
+        }
+        float timer = 0f;
+
+        while (timer < 0.5f)
+        {
+            
+            float angle = Mathf.Sin(timer * RotationSpeed * Mathf.PI * 2) * MaxAngle;
+        
+            if (_gameManager.PhaseCount == 0)
+            {
+                if (playerNum == 0)
+                {
+                    FirstBox.transform.rotation = Quaternion.Euler(0, 0, angle);
+                }
+                else if (playerNum == 1)
+                {
+                    _2P.FirstBox.transform.rotation = Quaternion.Euler(0, 0, angle);
+                }
+            }
+            else if(_gameManager.PhaseCount == 1)
+            {
+                SecondBox.transform.rotation = Quaternion.Euler(0, 0, angle);
+            }
+            else if (_gameManager.PhaseCount == 2)
+            {
+                ThardRing.transform.rotation = Quaternion.Euler(0, 0, angle);
+            }
+            // 時間を更新
+            timer += Time.deltaTime;
+            yield return null; // 次のフレームまで待機
+        }
+        if (_gameManager.PhaseCount == 0)
+        {
+            if (playerNum == 0)
+            {
+                // 一秒経過後に回転を0にリセット
+                FirstBox.transform.rotation = Quaternion.Euler(0, 0, 0);
+                _isRotating = false; // 回転終了
+            }
+            else if (playerNum == 1)
+            {
+                _2P.FirstBox.transform.rotation = Quaternion.Euler(0, 0, 0);
+                _isRotating2P = false;
+            }
+           
+        }else if(_gameManager.PhaseCount == 1)
+        {
+            SecondBox.transform.rotation = Quaternion.Euler(0, 0, 0);
+            _isRotating = false; // 回転終了
+        }
+        else if (_gameManager.PhaseCount == 2)
+        {
+            ThardRing.transform.rotation = Quaternion.Euler(0, 0, 0);
+            _isRotating = false; // 回転終了
+        }
+
     }
 }

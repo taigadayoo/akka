@@ -91,12 +91,16 @@ public class CommandManager2P : MonoBehaviour
             _currentSequence = new List<string>();
             _currentIndex = 0;
 
-
+        
             if (_gameManager.PhaseCount == 0)
             {
                 if (_gameManager.PhaseCount == 1)
                 {
                     yield return null;
+                }
+                if (!_gameManager.OneClear)
+                {
+                    _gameManager.Timer2P.SetActive(true);
                 }
                 FirstImage.gameObject.SetActive(true);
                 SecondImage.gameObject.SetActive(true);
@@ -139,6 +143,7 @@ public class CommandManager2P : MonoBehaviour
                 SecondImage.gameObject.SetActive(false);
                 ThirdImage.gameObject.SetActive(false);
                 _gameManager.EnemyAnim.SetTrigger("damage");
+                _gameManager.Timer2P.SetActive(false);
                 _gameManager.LeftHP.value -= 2.5f;
                 _gameManager.RightHP.value -= 2.5f; //HP減少処理
                 Animator2P.SetTrigger("Attack2p");
@@ -445,7 +450,13 @@ public class CommandManager2P : MonoBehaviour
     }
    public IEnumerator MissCommand()
     {
-        Animator2P.SetTrigger("Miss");
+        _1P.MissCommandBox(1);
+        _gameManager.Miss2pCountMark();
+        if (_gameManager.MissCount != 5)
+        {
+            Animator2P.SetTrigger("Miss");
+        }
+        _gameManager.Timer2P.SetActive(false);
         AudioManager.Instance.PlaySE("キャンセル3", 1f);
         FirstImage.gameObject.SetActive(false);
         SecondImage.gameObject.SetActive(false);
@@ -453,7 +464,7 @@ public class CommandManager2P : MonoBehaviour
         // クールダウンを開始
         IsCoolDown = true;
         CommandTime = 0;
-        _gameManager.Miss2pCountMark();
+       
         yield return new WaitForSeconds(2.0f);
         IsCoolDown = false;
         ResetCommands();
@@ -496,7 +507,7 @@ public class CommandManager2P : MonoBehaviour
 
         ControllerData = controllerData;
 
-        if (controllerData.ActionType == ActionType.Buttons && _oneStart && !_gameManager.OneClear)
+        if (controllerData.ActionType == ActionType.Buttons && _oneStart && !_gameManager.OneClear && !_gameManager.OnCutIn)
         {
             if (IsCorrectCommand(controllerData, expectedCommand) && _gameManager.PhaseCount == 0)
             {
