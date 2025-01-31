@@ -165,6 +165,7 @@ public class GameSettingEvent : MonoBehaviour
                 _timerDisposable = Observable.Timer(System.TimeSpan.FromSeconds(0.5f))
                     .Subscribe(_ =>
                     {
+                        _firstPanel.SetActive(false);
                         _secondPanel.SetActive(true);
                         DisablePlayerPanel();
                         NextPhase();
