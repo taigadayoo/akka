@@ -137,13 +137,15 @@ public class CommandManager2P : MonoBehaviour
 
                     yield return null;
                 }
-               
 
+                _1P.ShakeOncePlayer(1);
                 FirstImage.gameObject.SetActive(false);
                 SecondImage.gameObject.SetActive(false);
                 ThirdImage.gameObject.SetActive(false);
                 _gameManager.EnemyAnim.SetTrigger("damage");
                 _gameManager.Timer2P.SetActive(false);
+                _1P.ShakeForEnemySeconds(0.4f);
+              
                 _gameManager.LeftHP.value -= 2.5f;
                 _gameManager.RightHP.value -= 2.5f; //HP減少処理
                 Animator2P.SetTrigger("Attack2p");

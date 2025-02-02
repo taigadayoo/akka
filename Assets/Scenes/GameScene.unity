@@ -3100,6 +3100,13 @@ MonoBehaviour:
   _thardObjectController: {fileID: 89473862}
   RotationSpeed: 8
   MaxAngle: 10
+  Amount: 0.001
+  EnemyAmount: 1
+  PlayerAmount: 2
+  Duration: 2
+  Enemy: {fileID: 1206795324}
+  Player1: {fileID: 410726220}
+  Player2: {fileID: 1657244872}
 --- !u!4 &580301342
 Transform:
   m_ObjectHideFlags: 0

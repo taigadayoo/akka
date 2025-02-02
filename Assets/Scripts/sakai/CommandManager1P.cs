@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UniRx;
+using DG.Tweening;
 using UnityEngine.UI;
 public class CommandManager1P : MonoBehaviour
 {
@@ -79,10 +80,24 @@ public class CommandManager1P : MonoBehaviour
 
     // 回転中フラグ（プレイヤー2）
     private bool _isRotating2P = false; // 回転中かどうかを判定するフラグ
-
+    public float Amount = 0f; // 揺れの幅
+    public float EnemyAmount = 3f; // 揺れの幅
+    public float PlayerAmount = 2f; // 揺れの幅
+    public float Duration = 2f; // 揺れる時間
+    private Vector3 _rinOriginalPosition;
+    private Vector3 _enemyOriginalPosition;
+    public GameObject Enemy;
+    public GameObject Player1;
+    private Vector3 _player1OriginalPosition;
+    private Vector3 _player2OriginalPosition;
+    public GameObject Player2;
     // スタートメソッド
     private void Start()
     {
+        _rinOriginalPosition = ThardRing.transform.position;  // 最初の位置を保存
+        _enemyOriginalPosition = Enemy.transform.position;  // 最初の位置を保存
+        _player1OriginalPosition = Player1.transform.position;
+        _player2OriginalPosition = Player2.transform.position;
         // ゲームマネージャのインスタンス取得
         _gameManager = FindObjectOfType<GameManager>();
 
@@ -244,11 +259,11 @@ public class CommandManager1P : MonoBehaviour
 
                 // プレイヤー1のタイマーを非表示にする
                 _gameManager.Timer1P.SetActive(false);
-
+                ShakeOncePlayer(0);
                 // プレイヤーのHPを減少させる（2.5ずつ）
                 _gameManager.LeftHP.value -= 2.5f;
                 _gameManager.RightHP.value -= 2.5f;
-
+                ShakeForEnemySeconds(0.4f);
                 // 毒魔法のSEを再生
                 AudioManager.Instance.PlaySE("毒魔法", 0.8f);
 
@@ -653,6 +668,8 @@ public class CommandManager1P : MonoBehaviour
     // 2Pのターン終了時の処理
     public IEnumerator ClearSecond()
     {
+        ShakeOncePlayer(0);
+        ShakeOncePlayer(1);
         // ミキシングタイマーを非表示
         _gameManager.TimerMix.SetActive(false);
 
@@ -664,7 +681,7 @@ public class CommandManager1P : MonoBehaviour
 
         // 敵のアニメーションをトリガー
         _gameManager.EnemyAnim.SetTrigger("damage");
-
+        ShakeForEnemySeconds(0.4f);
         // 毒魔法のSEを再生
         AudioManager.Instance.PlaySE("毒魔法", 0.8f);
 
@@ -694,15 +711,18 @@ public class CommandManager1P : MonoBehaviour
     // サードコマンドがクリアされた時の処理
     public IEnumerator ClearThard()
     {
+        ShakeOncePlayer(0);
+        ShakeOncePlayer(1);
         // 毒魔法のSEを再生
         AudioManager.Instance.PlaySE("毒魔法", 0.8f);
 
         // 左側のHPが0でない場合、敵のダメージアニメーションをトリガー
         if (_gameManager.LeftHP.value != 0)
         {
+            ShakeForEnemySeconds(0.4f);
             _gameManager.EnemyAnim.SetTrigger("damage");
         }
-
+       
         // サードイメージを非表示
         _gameManager.ThardImagesActive(false);
 
@@ -781,11 +801,11 @@ public class CommandManager1P : MonoBehaviour
         ResetCommands();
         _2P.ResetCommands();
     }
-
+    
     // サードコマンドがミスした時の処理
     public IEnumerator MissThard(ControllerData controllerData)
     {
-        MissCommandBox(0);
+        ShakeForSeconds(0.4f);
         // プレイヤーのタイプによってミス回数を増加させる
         if (controllerData.PlayerType == PlayerType.Player1)
         {
@@ -1399,10 +1419,7 @@ public class CommandManager1P : MonoBehaviour
             {
                 SecondBox.transform.rotation = Quaternion.Euler(0, 0, angle);
             }
-            else if (_gameManager.PhaseCount == 2)
-            {
-                ThardRing.transform.rotation = Quaternion.Euler(0, 0, angle);
-            }
+
             // 時間を更新
             timer += Time.deltaTime;
             yield return null; // 次のフレームまで待機
@@ -1426,10 +1443,52 @@ public class CommandManager1P : MonoBehaviour
             SecondBox.transform.rotation = Quaternion.Euler(0, 0, 0);
             _isRotating = false; // 回転終了
         }
-        else if (_gameManager.PhaseCount == 2)
+
+
+    }
+    public void ShakeForSeconds(float duration)
+    {
+     
+        ThardRing.transform.DOLocalMoveX(Amount, 0.04f)
+             .SetLoops(Mathf.RoundToInt(duration / 0.1f), LoopType.Yoyo)
+             .SetEase(Ease.Linear)
+             .OnKill(() =>
+             {
+                 // 揺れ終了後に元の位置に戻す
+                 ThardRing.transform.position = _rinOriginalPosition;
+             });
+    }
+    public void ShakeForEnemySeconds(float duration)
+    {
+
+        Enemy.transform.DOLocalMoveX(EnemyAmount, 0.1f)
+             .SetLoops(Mathf.RoundToInt(duration / 0.1f), LoopType.Yoyo)
+             .SetEase(Ease.Linear)
+             .OnKill(() =>
+             {
+                 // 揺れ終了後に元の位置に戻す
+                 Enemy.transform.position = _enemyOriginalPosition;
+             });
+    }
+    public void ShakeOncePlayer(int playerNum1)
+    {
+        StartCoroutine(ShakeOncePlayerDelay(playerNum1));
+    }
+    public IEnumerator ShakeOncePlayerDelay(int playerNum)
+    {
+        yield return new WaitForSeconds(0.8f);
+        if (playerNum == 0)
         {
-            ThardRing.transform.rotation = Quaternion.Euler(0, 0, 0);
-            _isRotating = false; // 回転終了
+           Player1.transform.DOLocalMoveX(_player1OriginalPosition.x - PlayerAmount, 0.2f)  // 右に移動
+                .SetLoops(2, LoopType.Yoyo)  // 1回だけ往復させる
+                .SetEase(Ease.InOutSine)  // 滑らかな加速と減速
+                .OnKill(() =>Player1.transform.localPosition = _player1OriginalPosition);  // 終了後に元の位置に戻す
+        }else if(playerNum == 1)
+        {
+            Player2.transform.DOLocalMoveX(_player2OriginalPosition.x + PlayerAmount, 0.2f)  // 右に移動
+              .SetLoops(2, LoopType.Yoyo)  // 1回だけ往復させる
+              .SetEase(Ease.InOutSine)  // 滑らかな加速と減速
+              .OnKill(() => Player2.transform.localPosition = _player2OriginalPosition);  // 終了後に元の位置に戻す
         }
 
     }
