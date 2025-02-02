@@ -17,13 +17,4 @@ public class CreditCanvas : MonoBehaviour
             Canvas.gameObject.SetActive(!_isVisible);
         }
     }
-
-    //void Update()
-    //{
-    //    if (Input.GetKeyDown(KeyCode.Space))
-    //    {
-    //        _isVisible = !_isVisible;
-    //        Canvas.gameObject.SetActive(!_isVisible);
-    //    }
-    //}
 }
