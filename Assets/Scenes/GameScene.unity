@@ -3080,6 +3080,7 @@ MonoBehaviour:
   FirstImage: {fileID: 69983482}
   SecondImage: {fileID: 1226104980}
   ThirdImage: {fileID: 310062661}
+  MainCanvas: {fileID: 352452530}
   ASprite: {fileID: 21300000, guid: ce16fbed6d17ca64c913f1f7d364631e, type: 3}
   BSprite: {fileID: 21300000, guid: cf30bd9ee0285f14aba54c6f30bd10c5, type: 3}
   XSprite: {fileID: 21300000, guid: 47698bf3e60b35844be3a3691b1ed064, type: 3}
@@ -3102,11 +3103,13 @@ MonoBehaviour:
   MaxAngle: 10
   Amount: 0.001
   EnemyAmount: 1
-  PlayerAmount: 2
+  PlayerAmount: 1
   Duration: 2
   Enemy: {fileID: 1206795324}
   Player1: {fileID: 410726220}
   Player2: {fileID: 1657244872}
+  BombEffect: {fileID: 790972117526294512, guid: 64c8c9bde90b96f4299856fa3be96933, type: 3}
+  BombEffect2: {fileID: 790972117526294512, guid: e7e9a7744357d884697114f6f29e5cf4, type: 3}
 --- !u!4 &580301342
 Transform:
   m_ObjectHideFlags: 0

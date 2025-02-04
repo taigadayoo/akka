@@ -9,7 +9,8 @@ public class CommandManager1P : MonoBehaviour
     public SpriteRenderer FirstImage; // 最初のコマンド画像
     public SpriteRenderer SecondImage; // 二番目のコマンド画像
     public SpriteRenderer ThirdImage; // 三番目のコマンド画像
-
+                                      // メインキャンバスのTransform
+    public Transform MainCanvas;
     // コマンドに対応するスプライト
     public Sprite ASprite, BSprite, XSprite, YSprite, RightSprite, LeftSprite, UpSprite, DownSprite;
 
@@ -91,6 +92,8 @@ public class CommandManager1P : MonoBehaviour
     private Vector3 _player1OriginalPosition;
     private Vector3 _player2OriginalPosition;
     public GameObject Player2;
+    public GameObject BombEffect;
+    public GameObject BombEffect2;
     // スタートメソッド
     private void Start()
     {
@@ -259,7 +262,10 @@ public class CommandManager1P : MonoBehaviour
 
                 // プレイヤー1のタイマーを非表示にする
                 _gameManager.Timer1P.SetActive(false);
-                ShakeOncePlayer(0);
+                if (_gameManager.MissCount != 5)
+                {
+                    ShakeOncePlayer(0);
+                }
                 // プレイヤーのHPを減少させる（2.5ずつ）
                 _gameManager.LeftHP.value -= 2.5f;
                 _gameManager.RightHP.value -= 2.5f;
@@ -610,9 +616,44 @@ public class CommandManager1P : MonoBehaviour
             }
           
         }
+    public void MissEffect(int playerNum)
+    {
+        Vector3 spawnPosition = Player1.transform.position + new Vector3(-0.3f, 0f, 0f);
+        Vector3 spawnPosition2 = Player2.transform.position + new Vector3(+2f, 0f, 0f);
+        if (playerNum == 0)
+        {
+           
+            GameObject spawnedObject = Instantiate(BombEffect, MainCanvas);//回復エフェクト出す
+            GameObject spawnedObject2 = Instantiate(BombEffect2, MainCanvas);//回復エフェクト出す
 
+
+            spawnedObject.transform.position = spawnPosition;
+            spawnedObject2.transform.position = spawnPosition;
+        }
+        else if(playerNum == 1)
+        {
+            GameObject spawnedObject = Instantiate(BombEffect, MainCanvas);//回復エフェクト出す
+            GameObject spawnedObject2 = Instantiate(BombEffect2, MainCanvas);//回復エフェクト出す
+
+            spawnedObject.transform.position = spawnPosition2;
+            spawnedObject2.transform.position = spawnPosition2;
+        }
+        else if (playerNum == 2)
+        {
+            GameObject spawnedObject = Instantiate(BombEffect, MainCanvas);//回復エフェクト出す
+            GameObject spawnedObject2 = Instantiate(BombEffect2, MainCanvas);//回復エフェクト出す
+            GameObject spawnedObject3 = Instantiate(BombEffect, MainCanvas);//回復エフェクト出す
+            GameObject spawnedObject4 = Instantiate(BombEffect2, MainCanvas);//回復エフェクト出す
+
+            spawnedObject.transform.position = spawnPosition;
+            spawnedObject2.transform.position = spawnPosition;
+            spawnedObject3.transform.position = spawnPosition2;
+            spawnedObject4.transform.position = spawnPosition2;
+        }
+    }
     public IEnumerator MissCommand()
     {
+       
         // 1Pタイマーを非表示にする
         _gameManager.Timer1P.SetActive(false);
 
@@ -625,7 +666,7 @@ public class CommandManager1P : MonoBehaviour
         // ミス回数が5回でない場合、1Pのミスアニメーションをトリガー
         if (_gameManager.MissCount != 5)
         {
-            Animator1P.SetTrigger("Miss");
+            MissEffect(0);
         }
 
         // キャンセルの音を再生
@@ -754,7 +795,7 @@ public class CommandManager1P : MonoBehaviour
     {
         // ミスコマンドの表示
         MissCommandBox(0);
-
+        MissEffect(2);
         // プレイヤーのタイプによってミス回数を増加させる
         if (controllerData.PlayerType == PlayerType.Player1)
         {
@@ -770,11 +811,6 @@ public class CommandManager1P : MonoBehaviour
         }
 
         // ミス回数が5回でない場合、ミスアニメーションをトリガー
-        if (_gameManager.MissCount != 5)
-        {
-            _2P.Animator2P.SetTrigger("Miss");
-            Animator1P.SetTrigger("Miss");
-        }
 
         // キャンセルの音を再生
         AudioManager.Instance.PlaySE("キャンセル3", 1f);
@@ -819,14 +855,7 @@ public class CommandManager1P : MonoBehaviour
         {
             Debug.Log("controllerDataないです" + controllerData);
         }
-
-        // ミス回数が5回でない場合、ミスアニメーションをトリガー
-        if (_gameManager.MissCount != 5)
-        {
-            Animator1P.SetTrigger("Miss");
-            _2P.Animator2P.SetTrigger("Miss");
-        }
-
+        MissEffect(2);
         // キャンセルの音を再生
         AudioManager.Instance.PlaySE("キャンセル3", 1f);
 
@@ -861,9 +890,7 @@ public class CommandManager1P : MonoBehaviour
     // ミスタイムアップ時の処理
     public IEnumerator MissTimeUp(ControllerData controllerData)
     {
-        // 1Pと2Pのミスアニメーションをトリガー
-        Animator1P.SetTrigger("Miss");
-        _2P.Animator2P.SetTrigger("Miss");
+        MissEffect(2);
 
         // キャンセルの音を再生
         AudioManager.Instance.PlaySE("キャンセル3", 1f);

@@ -456,7 +456,7 @@ public class CommandManager2P : MonoBehaviour
         _gameManager.Miss2pCountMark();
         if (_gameManager.MissCount != 5)
         {
-            Animator2P.SetTrigger("Miss");
+            _1P.MissEffect(1);
         }
         _gameManager.Timer2P.SetActive(false);
         AudioManager.Instance.PlaySE("キャンセル3", 1f);
